@@ -1,11 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import AuthGuard from '../components/layout/AuthGuard';
-import PartyRoster from '../components/Dashboard/PartyRoster';
-import StatsSummary from '../components/Dashboard/StatsSummary';
-import { apiFetch } from '../lib/apiFetch';
-
 /**
  * Dashboard Page
  *
@@ -14,8 +6,19 @@ import { apiFetch } from '../lib/apiFetch';
  * - Stats summary (box count, Pokedex progress, badges)
  * - Navigation to detailed stats page
  *
- * Protected by AuthGuard - requires authentication and at least one Pokemon.
+ * Now wrapped with GameLayout for consistent navigation.
+ *
+ * Feature: 011-game-layout (updated)
  */
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import GameLayout from '../components/layout/GameLayout';
+import PartyRoster from '../components/Dashboard/PartyRoster';
+import StatsSummary from '../components/Dashboard/StatsSummary';
+import { apiFetch } from '../lib/apiFetch';
+
 function DashboardContent() {
   const router = useRouter();
   const [dashboardData, setDashboardData] = useState(null);
@@ -47,31 +50,26 @@ function DashboardContent() {
   // Loading state with spinner
   if (loading) {
     return (
-      <div className="dashboard">
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>Loading your Pokemon...</p>
-        </div>
+      <div className="dashboard-loading">
+        <div className="spinner"></div>
+        <p>Loading your Pokemon...</p>
         <style jsx>{`
-          .dashboard {
-            min-height: 100vh;
+          .dashboard-loading {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          }
-          .loading {
-            text-align: center;
+            min-height: 400px;
             color: white;
           }
           .spinner {
             width: 50px;
             height: 50px;
             border: 4px solid rgba(255,255,255,0.3);
-            border-top-color: white;
+            border-top-color: #fbbf24;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin-bottom: 20px;
           }
           @keyframes spin {
             to { transform: rotate(360deg); }
@@ -84,42 +82,34 @@ function DashboardContent() {
   // Error state
   if (error) {
     return (
-      <div className="dashboard">
-        <div className="error-container">
-          <h1>Error</h1>
-          <p>{error}</p>
-          <button onClick={() => router.push('/test-auth')}>
-            Return to Login
-          </button>
-        </div>
+      <div className="dashboard-error">
+        <h2>Error</h2>
+        <p>{error}</p>
+        <button onClick={fetchDashboardData}>Try Again</button>
         <style jsx>{`
-          .dashboard {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          }
-          .error-container {
-            background: white;
+          .dashboard-error {
+            background: rgba(255,255,255,0.1);
             padding: 40px;
             border-radius: 16px;
             text-align: center;
             max-width: 400px;
+            margin: 0 auto;
+            color: white;
           }
-          .error-container h1 {
-            color: #dc2626;
+          .dashboard-error h2 {
+            color: #f87171;
             margin-bottom: 16px;
           }
-          .error-container button {
+          .dashboard-error button {
             margin-top: 20px;
             padding: 12px 24px;
-            background: #3b82f6;
-            color: white;
+            background: #fbbf24;
+            color: #1a1a2e;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: 600;
           }
         `}</style>
       </div>
@@ -128,65 +118,54 @@ function DashboardContent() {
 
   return (
     <div className="dashboard">
-      <div className="dashboard-content">
-        <h1>Welcome, Trainer!</h1>
+      <h1>Welcome, Trainer!</h1>
 
-        <StatsSummary
-          boxCount={dashboardData?.box_count || 0}
-          pokedexCaught={dashboardData?.pokedex_caught || 0}
-          badgeCount={dashboardData?.badge_count || 0}
-        />
+      <StatsSummary
+        boxCount={dashboardData?.box_count || 0}
+        pokedexCaught={dashboardData?.pokedex_caught || 0}
+        badgeCount={dashboardData?.badge_count || 0}
+      />
 
-        <PartyRoster pokemon={dashboardData?.pokemon || []} />
+      <PartyRoster pokemon={dashboardData?.pokemon || []} />
 
-        <div className="dashboard-actions">
-          <Link href="/stats" className="stats-link">
-            View Detailed Stats
-          </Link>
-        </div>
+      <div className="dashboard-actions">
+        <Link href="/stats" className="stats-link">
+          View Detailed Stats
+        </Link>
       </div>
 
       <style jsx>{`
         .dashboard {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          padding: 40px 20px;
-        }
-
-        .dashboard-content {
           max-width: 1000px;
           margin: 0 auto;
         }
 
         h1 {
           color: white;
-          font-size: 36px;
-          margin-bottom: 32px;
-          text-align: center;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+          font-size: 32px;
+          margin-bottom: 24px;
         }
 
         .dashboard-actions {
           margin-top: 24px;
-          text-align: center;
         }
 
         .dashboard-actions :global(.stats-link) {
           display: inline-block;
-          padding: 14px 28px;
-          background: white;
-          color: #667eea;
+          padding: 12px 24px;
+          background: rgba(255,255,255,0.1);
+          color: white;
           text-decoration: none;
           border-radius: 8px;
-          font-weight: 600;
-          font-size: 16px;
+          font-weight: 500;
+          font-size: 14px;
           transition: all 0.2s ease;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          border: 1px solid rgba(255,255,255,0.2);
         }
 
         .dashboard-actions :global(.stats-link:hover) {
+          background: rgba(255,255,255,0.15);
           transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(0,0,0,0.2);
         }
       `}</style>
     </div>
@@ -194,13 +173,13 @@ function DashboardContent() {
 }
 
 /**
- * Dashboard wrapped with AuthGuard
- * Requires authentication and at least one Pokemon
+ * Dashboard wrapped with GameLayout
+ * GameLayout handles AuthGuard and provides navigation
  */
 export default function Dashboard() {
   return (
-    <AuthGuard requirePokemon={true}>
+    <GameLayout>
       <DashboardContent />
-    </AuthGuard>
+    </GameLayout>
   );
 }

@@ -1,0 +1,338 @@
+# API Contracts: PokeMart Item Shop Page
+#
+# Note: These endpoints already exist. This document serves as a reference
+# for the frontend implementation.
+
+openapi: 3.0.3
+info:
+  title: PokeMart Shop API Contracts
+  version: 1.0.0
+  description: API endpoints used by the PokeMart page
+
+paths:
+  /api/shop:
+    get:
+      summary: Get purchasable item catalog
+      description: Fetches all items available for purchase (excludes null-cost items)
+      operationId: getShopCatalog
+      responses:
+        '200':
+          description: Successfully retrieved catalog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopCatalogResponse'
+
+    post:
+      summary: Purchase an item
+      description: Purchase a specified quantity of an item, deducting currency
+      operationId: purchaseItem
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseRequest'
+      responses:
+        '200':
+          description: Purchase successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseResponse'
+        '400':
+          description: Bad request (invalid item, invalid quantity)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          description: Insufficient funds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsufficientFundsResponse'
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/player/inventory:
+    get:
+      summary: Get player inventory and currency
+      description: Fetches player's current inventory items and currency balance
+      operationId: getPlayerInventory
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved inventory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Base64-encoded JSON token containing user_id
+
+  schemas:
+    ShopItem:
+      type: object
+      description: Item available for purchase
+      required:
+        - id
+        - name
+        - type
+        - cost
+        - description
+      properties:
+        id:
+          type: string
+          description: Unique item identifier
+          example: "poke-ball"
+        name:
+          type: string
+          description: Display name
+          example: "Poke Ball"
+        type:
+          type: string
+          enum: [pokeball, medicine, holditem, tm]
+          description: Item category
+          example: "pokeball"
+        cost:
+          type: integer
+          minimum: 1
+          description: Purchase price in currency
+          example: 250
+        description:
+          type: string
+          description: Item description
+          example: "Lets a trainer attempt a Capture Roll to catch a Pokemon."
+
+    ShopCatalogResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - items
+            - count
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/ShopItem'
+            count:
+              type: integer
+              description: Total number of items in catalog
+              example: 35
+
+    PurchaseRequest:
+      type: object
+      required:
+        - item_id
+        - quantity
+      properties:
+        item_id:
+          type: string
+          description: ID of item to purchase
+          example: "poke-ball"
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 99
+          description: Number of items to purchase
+          example: 5
+
+    PurchaseResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - purchased
+            - inventory
+            - balance
+          properties:
+            purchased:
+              type: object
+              properties:
+                item_id:
+                  type: string
+                  example: "poke-ball"
+                name:
+                  type: string
+                  example: "Poke Ball"
+                quantity:
+                  type: integer
+                  example: 5
+                total_cost:
+                  type: integer
+                  example: 1250
+            inventory:
+              type: object
+              properties:
+                item_id:
+                  type: string
+                  example: "poke-ball"
+                name:
+                  type: string
+                  example: "Poke Ball"
+                quantity:
+                  type: integer
+                  description: Total quantity after purchase
+                  example: 10
+            balance:
+              type: object
+              properties:
+                previous:
+                  type: integer
+                  description: Balance before purchase
+                  example: 5000
+                spent:
+                  type: integer
+                  description: Amount spent on this purchase
+                  example: 1250
+                remaining:
+                  type: integer
+                  description: Balance after purchase
+                  example: 3750
+
+    InsufficientFundsResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+            - details
+          properties:
+            code:
+              type: string
+              example: "INSUFFICIENT_FUNDS"
+            message:
+              type: string
+              example: "Not enough currency to complete purchase"
+            details:
+              type: object
+              properties:
+                required:
+                  type: integer
+                  description: Total cost of attempted purchase
+                  example: 1250
+                available:
+                  type: integer
+                  description: Player's current balance
+                  example: 500
+                item_id:
+                  type: string
+                  example: "poke-ball"
+                item_name:
+                  type: string
+                  example: "Poke Ball"
+                quantity:
+                  type: integer
+                  example: 5
+
+    InventoryResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - inventory
+            - count
+            - currency
+          properties:
+            inventory:
+              type: array
+              items:
+                type: object
+                properties:
+                  item_id:
+                    type: string
+                  quantity:
+                    type: integer
+                  name:
+                    type: string
+                  type:
+                    type: string
+                  description:
+                    type: string
+                  cost:
+                    type: integer
+            count:
+              type: integer
+              description: Number of unique items in inventory
+              example: 3
+            currency:
+              type: integer
+              description: Player's current currency balance
+              example: 3750
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code identifier
+              example: "ITEM_NOT_FOUND"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Item not found in shop catalog"
+            details:
+              type: object
+              additionalProperties: true
+              description: Additional error context

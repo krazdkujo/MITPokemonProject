@@ -1,0 +1,252 @@
+# API Contracts: Pokemon Center Page
+#
+# Note: These endpoints already exist. This document serves as a reference
+# for the frontend implementation.
+
+openapi: 3.0.3
+info:
+  title: Pokemon Center API Contracts
+  version: 1.0.0
+  description: API endpoints used by the Pokemon Center page
+
+paths:
+  /api/player/pokemon:
+    get:
+      summary: Get player's Pokemon party
+      description: Fetches all Pokemon owned by the authenticated player
+      operationId: getPlayerPokemon
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved party data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerPokemonResponse'
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/heal:
+    post:
+      summary: Heal all active party Pokemon
+      description: Restores HP and PP for all active Pokemon in the player's party
+      operationId: healParty
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Party healed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealResponse'
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Base64-encoded JSON token containing user_id
+
+  schemas:
+    PartyPokemon:
+      type: object
+      description: Pokemon in player's party with merged Source data
+      required:
+        - id
+        - pokemon_id
+        - name
+        - type
+        - level
+        - current_hp
+        - max_hp
+        - is_active
+        - slot_number
+        - sprite
+        - artwork
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Database record UUID
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        pokemon_id:
+          type: string
+          description: Pokemon identifier from Source data
+          example: "bulbasaur"
+        name:
+          type: string
+          description: Display name from Source data
+          example: "Bulbasaur"
+        type:
+          type: array
+          items:
+            type: string
+          description: Pokemon types from Source data
+          example: ["Grass", "Poison"]
+        level:
+          type: integer
+          minimum: 1
+          maximum: 20
+          description: Pokemon's current level
+          example: 5
+        current_hp:
+          type: integer
+          minimum: 0
+          description: Current health points
+          example: 15
+        max_hp:
+          type: integer
+          minimum: 1
+          description: Maximum health points
+          example: 22
+        is_active:
+          type: boolean
+          description: True if in active party, false if in PC box
+          example: true
+        slot_number:
+          type: integer
+          minimum: 1
+          maximum: 6
+          description: Party position (1-6)
+          example: 1
+        sprite:
+          type: string
+          description: Path to Pokemon sprite image
+          example: "/images/pokemon/1.png"
+        artwork:
+          type: string
+          description: Path to Pokemon artwork image
+          example: "/images/pokemon/1.png"
+        selected_moves:
+          type: array
+          items:
+            type: string
+          description: Array of move IDs
+          example: ["tackle", "growl"]
+        move_pp:
+          type: object
+          additionalProperties:
+            type: integer
+          description: Current PP for each move
+          example: { "tackle": 35, "growl": 40 }
+
+    PlayerPokemonResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - pokemon
+            - has_starter
+            - active_count
+          properties:
+            pokemon:
+              type: array
+              items:
+                $ref: '#/components/schemas/PartyPokemon'
+            has_starter:
+              type: boolean
+              description: Whether player has selected a starter
+              example: true
+            active_count:
+              type: integer
+              description: Number of Pokemon in active party
+              example: 3
+            box_count:
+              type: integer
+              description: Number of Pokemon in PC box
+              example: 0
+            pokedex_caught:
+              type: integer
+              description: Number of unique Pokemon caught
+              example: 3
+            badge_count:
+              type: integer
+              description: Number of badges earned
+              example: 0
+            total_count:
+              type: integer
+              description: Total Pokemon owned
+              example: 3
+
+    HealResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          required:
+            - healed
+            - healed_count
+            - message
+          properties:
+            healed:
+              type: array
+              items:
+                $ref: '#/components/schemas/PartyPokemon'
+              description: List of healed Pokemon with updated HP/PP
+            healed_count:
+              type: integer
+              description: Number of Pokemon healed
+              example: 3
+            message:
+              type: string
+              description: Human-readable status message
+              example: "Party healed successfully"
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code identifier
+              example: "UNAUTHORIZED"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Authentication required"
+            details:
+              type: object
+              additionalProperties: true
+              description: Additional error context
