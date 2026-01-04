@@ -34,9 +34,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 008-healing-api: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities
 - 007-combat-engine: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, uuid (existing)
 - 006-battle-api: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities
-- 005-player-statistics: Added JavaScript (ES2020+) / Node.js 18+ / Next.js 14 + Recharts (new), @supabase/supabase-js, React 18
 
 
 <!-- MANUAL ADDITIONS START -->
