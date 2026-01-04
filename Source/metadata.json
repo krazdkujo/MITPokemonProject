@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "importedAt": "2025-12-15T23:22:58.215Z",
+  "source": {
+    "repository": "https://github.com/Auroratide/poke5e.git",
+    "commit": "c25d52b"
+  },
+  "entityCounts": {
+    "pokemon": 1142,
+    "moves": 800,
+    "abilities": 328,
+    "items": 360,
+    "tms": 101,
+    "evolution": 534,
+    "natures": 25,
+    "classes": 31,
+    "feats": 27,
+    "rules": 78
+  }
+}

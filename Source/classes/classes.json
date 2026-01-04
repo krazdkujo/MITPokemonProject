@@ -1,0 +1,492 @@
+[
+  {
+    "id": "poke-fan",
+    "name": "Poke Fan",
+    "type": "specialization",
+    "description": "Increase your CHA by 1, to a maximum of 20. Add a +1 bonus to all skill checks made by any of your Normal-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "black-belt",
+    "name": "Black Belt",
+    "type": "specialization",
+    "description": "You gain proficiency in Athletics, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Fighting-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "bird-keeper",
+    "name": "Bird Keeper",
+    "type": "specialization",
+    "description": "You gain proficiency in Perception, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Flying-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "punk",
+    "name": "Punk",
+    "type": "specialization",
+    "description": "You gain proficiency in Sleight of Hand, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Poison-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "camper",
+    "name": "Camper",
+    "type": "specialization",
+    "description": "You gain proficiency in Survival, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Ground-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "hiker",
+    "name": "Hiker",
+    "type": "specialization",
+    "description": "Increase your CON by 1, to a maximum of 20. Add a +1 bonus to all skill checks made by any of your Rock-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "bug-maniac",
+    "name": "Bug Maniac",
+    "type": "specialization",
+    "description": "You gain proficiency in Nature, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Bug-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "mystic",
+    "name": "Mystic",
+    "type": "specialization",
+    "description": "You gain proficiency in Religion, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Ghost-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "worker",
+    "name": "Worker",
+    "type": "specialization",
+    "description": "Increase your STR by 1, to a maximum of 20. Add a +1 bonus to all skill checks made by any of your Steel-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "kindler",
+    "name": "Kindler",
+    "type": "specialization",
+    "description": "You gain proficiency in Intimidation, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Fire-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "swimmer",
+    "name": "Swimmer",
+    "type": "specialization",
+    "description": "Increase your DEX by 1, to a maximum of 20. Add a +1 bonus to all skill checks made by any of your Water-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "gardener",
+    "name": "Gardener",
+    "type": "specialization",
+    "description": "You gain proficiency in Medicine, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Grass-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "engineer",
+    "name": "Engineer",
+    "type": "specialization",
+    "description": "Increase your INT by 1, to a maximum of 20. Add a +1 bonus to all skill checks made by any of your Electric-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "psychic",
+    "name": "Psychic",
+    "type": "specialization",
+    "description": "You gain proficiency in Arcana, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Psychic-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "skier",
+    "name": "Skier",
+    "type": "specialization",
+    "description": "You gain proficiency in Acrobatics, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Ice-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "dragon-tamer",
+    "name": "Dragon Tamer",
+    "type": "specialization",
+    "description": "Increase your WIS by 1, to a maximum of 20. Add a +1 bonus to all skill checks made by any of your Dragon-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "delinquent",
+    "name": "Delinquent",
+    "type": "specialization",
+    "description": "You gain proficiency in Stealth, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Dark-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "actor",
+    "name": "Actor",
+    "type": "specialization",
+    "description": "You gain proficiency in Performance, or if you already had proficiency, you gain expertise. Add a +1 bonus to all skill checks made by any of your Fairy-type Pokemon.",
+    "features": null
+  },
+  {
+    "id": "ace-trainer",
+    "name": "Ace Trainer",
+    "type": "path",
+    "description": "Your goal is to become one of the strongest trainers in the world, and so you excel in battle. All of your Pokemon gain a +1 bonus to their attack and damage rolls.",
+    "features": [
+      {
+        "name": "Ace Trainer",
+        "level": 2,
+        "description": "Your goal is to become one of the strongest trainers in the world, and so you excel in battle. All of your Pokemon gain a +1 bonus to their attack and damage rolls."
+      },
+      {
+        "name": "Battle Master",
+        "level": 5,
+        "description": "When you reach level 5, you gain a number of battle dice (d6) equal to 1 + your Dexterity modifier (minimum of 1). You may assign one of these to any of your Pokemon to be added to a single attack or damage roll, after the result of the initial roll. You replenish your pool of battle dice at each long rest."
+      },
+      {
+        "name": "Tactical Mastery",
+        "level": 9,
+        "description": "Certain trainers choose to excel in one arena, utilizing it to its fullest potential. When you reach level 9, choose an ability score. Each of your Pokemon increases that ability score by one. You must choose the same ability score to increase for all of your Pokemon. This increase will also apply to all Pokemon you catch in the future.\n\nAdditionally, your battle dice become a d8."
+      },
+      {
+        "name": "Rapid Switching",
+        "level": 15,
+        "description": "When you reach level 15, your Pokemon can choose to take a single action or move on the turn they are switched (not both). They still cannot use a bonus action or a reaction on that turn.\n\nAdditionally, your battle dice become a d10."
+      }
+    ]
+  },
+  {
+    "id": "hobbyist",
+    "name": "Hobbyist",
+    "type": "path",
+    "description": "You think being a trainer requires being very good at a little bit of everything. Select one additional Specialization and two new skill proficiencies for your trainer. The specialization you choose must be different from any specializations you already have.",
+    "features": [
+      {
+        "name": "Hobbyist",
+        "level": 2,
+        "description": "You think being a trainer requires being very good at a little bit of everything. Select one additional Specialization and two new skill proficiencies for your trainer. The specialization you choose must be different from any specializations you already have."
+      },
+      {
+        "name": "Versatile",
+        "level": 5,
+        "description": "At level 5, you gain a number of skill dice (d6) equal to 1 + your Wisdom modifier (minimum of 1). You may assign one of these to any of your Pokemon to be added to a single skill check or saving throw, after the result of the initial roll. You replenish your pool of skill dice at each long rest."
+      },
+      {
+        "name": "Generalist",
+        "level": 9,
+        "description": "At level 9, you can add half your Proficiency Bonus (round down) to any ability check you make that uses a skill proficiency you lack and that doesn't otherwise use your Proficiency Bonus. You may also add half your Proficiency Bonus (round down) to any ability check your Pokemon make that uses a skill they lack.\n\nAdditionally, your skill dice become a d8."
+      },
+      {
+        "name": "Multitalented",
+        "level": 15,
+        "description": "At level 15, each of your Pokemon may become proficient in one additional skill of your choice. You may choose a different skill per Pokemon, and this will apply to all Pokemon you catch in the future.\n\nAdditionally, your skill dice become a d10."
+      }
+    ]
+  },
+  {
+    "id": "poke-mentor",
+    "name": "Poke Mentor",
+    "type": "path",
+    "description": "You have a skill for mentoring Pokemon to bring out the best in them. Beginning at level 2, your TMs can be used twice before breaking.",
+    "features": [
+      {
+        "name": "Poke Mentor",
+        "level": 2,
+        "description": "You have a skill for mentoring Pokemon to bring out the best in them. Beginning at level 2, your TMs can be used twice before breaking."
+      },
+      {
+        "name": "Retention",
+        "level": 5,
+        "description": "The Extra Move feat now costs one ASI point instead of two at levels 4, 8, 12, 16, or 20. If any of your Pokemon already has this feature, they may gain one ASI at this time."
+      },
+      {
+        "name": "Cheerleader",
+        "level": 9,
+        "description": "At level 9, once per short rest, you may use a bonus action to boost all allied Pokemon with inspiring words. Until your next turn, you may add your CHA modifier (minimum of 1) to all allied attack rolls OR damage rolls OR AC."
+      },
+      {
+        "name": "Master Teacher",
+        "level": 15,
+        "description": "You have become an incredibly skilled teacher, and move learning is accelerated under your leadership. When you reach level 15, your Pokemon's moves may be learned and unlearned at each long rest instead of level up."
+      }
+    ]
+  },
+  {
+    "id": "researcher",
+    "name": "Researcher",
+    "type": "path",
+    "description": "You wish to learn more about Pokemon and the secrets that they hold within. Due to your heightened understanding of your Pokemon, you may add your Intelligence modifier (minimum one) to any skill check your Pokemon makes. You may use this ability a number of times equal to your proficiency bonus per long rest.",
+    "features": [
+      {
+        "name": "Researcher",
+        "level": 2,
+        "description": "You wish to learn more about Pokemon and the secrets that they hold within. Due to your heightened understanding of your Pokemon, you may add your Intelligence modifier (minimum one) to any skill check your Pokemon makes. You may use this ability a number of times equal to your proficiency bonus per long rest."
+      },
+      {
+        "name": "Analyst",
+        "level": 5,
+        "description": "At level 5 your keen mind allows you to discern details about a Pokemon others might overlook. As an action, you can make an Investigation check contested by a Pokemon's Deception check. If you succeed, you learn that Pokemon's ability and the name of one random move it knows."
+      },
+      {
+        "name": "Evolution Expert",
+        "level": 9,
+        "description": "At level 9, your understanding of the secrets behind Pokemon evolution allows you to enhance the process. When one of your Pokemon evolves, you may use two of its evolution points to spend on a feat."
+      },
+      {
+        "name": "Professor",
+        "level": 15,
+        "description": "At level 15, you are an expert in your field. You may now use your Analyst ability as a bonus action. Additionally, your Analyst ability now reveals either one additional ability or move the target Pokemon has."
+      }
+    ]
+  },
+  {
+    "id": "pokemon-collector",
+    "name": "Pokemon Collector",
+    "type": "path",
+    "description": "Your fascination with all the different types of Pokemon of the world drives your need to collect them all. Beginning at level 2, you now have expertise in Animal Handling, doubling your proficiency in this skill.",
+    "features": [
+      {
+        "name": "Pokemon Collector",
+        "level": 2,
+        "description": "Your fascination with all the different types of Pokemon of the world drives your need to collect them all. Beginning at level 2, you now have expertise in Animal Handling, doubling your proficiency in this skill."
+      },
+      {
+        "name": "Gotta Catch 'Em All",
+        "level": 5,
+        "description": "At level 5, once per long rest, you may roll an Animal Handling check with advantage, even if the opponent is not suffering from a negative status effect."
+      },
+      {
+        "name": "Disciplined Strikes",
+        "level": 9,
+        "description": "At level 9, you have trained your Pokemon to hold back or unleash power when necessary. When damaging a Pokemon enough to cause it to faint, you can choose to bring it to 1 HP instead."
+      },
+      {
+        "name": "Expert Tracker",
+        "level": 15,
+        "description": "At level 15, you become an expert at tracking Pokemon. When you use your Pokemon Tracker class feature, you may roll a DC 11 Investigation or Nature check in order to encounter any single Pokemon in the list of wild Pokemon for the area. Additionally, you may now use the Pokemon Tracker class feature twice per long rest."
+      }
+    ]
+  },
+  {
+    "id": "nurse",
+    "name": "Nurse",
+    "type": "path",
+    "description": "You have a nurturing touch and a skill for mentoring Pokemon to bring out the best in them. You gain proficiency in the Medicine skill. Every time you use an item or ability to heal a Pokemon, that Pokemon regains additional hit points equal to your Wisdom modifier (minimum one).",
+    "features": [
+      {
+        "name": "Nurse",
+        "level": 2,
+        "description": "You have a nurturing touch and a skill for mentoring Pokemon to bring out the best in them. You gain proficiency in the Medicine skill. Every time you use an item or ability to heal a Pokemon, that Pokemon regains additional hit points equal to your Wisdom modifier (minimum one)."
+      },
+      {
+        "name": "Pokechef",
+        "level": 5,
+        "description": "You excel at creating meals for your Pokemon, seemingly out of nothing. At level 5, you are frequently prepared with some sort of edible treat, granting 2d4+2 hit points when given. You can give the treat to an adjacent creature as a bonus action and other creatures can administer it as an action. You can use this feature a number of times equal to your proficiency modifier per long rest."
+      },
+      {
+        "name": "Field Medic",
+        "level": 9,
+        "description": "At 9th level, you can perform first aid in the heat of battle. As an action, you may make a Medicine Check DC 12 to cure an adjacent Pokemon of a non-volatile status effect.\n\nIn addition, your Pokechef treat now heals 3d10+6 hit points."
+      },
+      {
+        "name": "Tip-top Shape",
+        "level": 15,
+        "description": "When you reach level 15, your Pokemon have advantage on saving throws against acquiring negative status conditions.\n\nIn addition, your Pokechef treat now heals 4d12+10 hit points."
+      }
+    ]
+  },
+  {
+    "id": "type-master",
+    "name": "Type Master",
+    "type": "path",
+    "description": "You feel drawn to the elements, focusing your skills into a particular type of Pokemon. Beginning at level 2, increase the STAB of any Pokemon that is the same type as your specialization by +1 at all levels. If you select multiple specializations at later levels, the bonus applies to the new type as well. If your Pokemon is dual-type and you are specialized in both types, the bonus is +2.",
+    "features": [
+      {
+        "name": "Type Master",
+        "level": 2,
+        "description": "You feel drawn to the elements, focusing your skills into a particular type of Pokemon. Beginning at level 2, increase the STAB of any Pokemon that is the same type as your specialization by +1 at all levels. If you select multiple specializations at later levels, the bonus applies to the new type as well. If your Pokemon is dual-type and you are specialized in both types, the bonus is +2."
+      },
+      {
+        "name": "Drawing Power",
+        "level": 5,
+        "description": "Your Pokemon are trained to draw power from each other. When you reach level 5, Pokemon of the same type as your specialized types add +2 to their attack rolls."
+      },
+      {
+        "name": "Storing Power",
+        "level": 9,
+        "description": "Your skills within your specialized types give your Pokemon a great defensive power. When you reach level 9, all of your carried Pokemon within your specialized types have resistance to a choice of one of your specialization types, determined at the time of gaining this feature. This type may never change, so choose wisely. If a Pokemon was once vulnerable to that type, it now takes the regular amount of damage."
+      },
+      {
+        "name": "Releasing Power",
+        "level": 15,
+        "description": "Your Pokemon are masters of their own types, focusing their energy in every attack they make. When you reach level 15, for Pokemon of the same types you are specialized in, their STAB can be added to any damaging move of their choosing, even if it is a different type from their own."
+      }
+    ]
+  },
+  {
+    "id": "commander",
+    "name": "Commander",
+    "type": "path",
+    "description": "You rule over your Pokemon with an iron fist, demanding respect and forming an unbreakable bond with your team. When you choose this path at level 2, your starter's Bond Level becomes +2. In addition, all of your Pokemon with a positive Bond Level have 1 additional Bond Point.",
+    "features": [
+      {
+        "name": "Commander",
+        "level": 2,
+        "description": "You rule over your Pokemon with an iron fist, demanding respect and forming an unbreakable bond with your team. When you choose this path at level 2, your starter's Bond Level becomes +2. In addition, all of your Pokemon with a positive Bond Level have 1 additional Bond Point."
+      },
+      {
+        "name": "Follow Me",
+        "level": 5,
+        "description": "You have a firm hand, but a trusting presence. When you reach level 5, any new Pokemon you catch get a +1 bonus to Bond Level (max Bond Level +2). In addition, your Pokemon's Bond Level cannot be decreased by losing a battle."
+      },
+      {
+        "name": "Show Me What You've Got",
+        "level": 9,
+        "description": "Your confidence and leadership inspire your Pokemon to reach deep inside themselves for unknown power. At level 9, your Pokemon may spend a Bond Point to use any move they can learn at one tier higher than their current tier or below. Each Pokemon may only do this once per long rest.\n\nFor example, a Level 4 Bulbasaur can spend a Bond Point to use Sleep Power, since Sleep Power can be learned at one tier higher (level 6) than the Bulbasaur's current level."
+      },
+      {
+        "name": "We're a Team",
+        "level": 15,
+        "description": "Your commanding presence is felt by all ally Pokemon on the battlefield. When you reach level 15, you may use your reaction to speak a commanding phrase, allowing one of your Pokemon to spend one of its Bond Points to confer its benefit for an allied Pokemon, even if this allied Pokemon is not one of your own."
+      }
+    ]
+  },
+  {
+    "id": "grunt",
+    "name": "Grunt",
+    "type": "path",
+    "description": "Whether current or aspiring evil team member, your goal is to cast down all goody two shoe trainers and rise up in the ranks! Beginning at level 2, gain a pool of Shadow Points equal to your level. Your point pool increases with each level, and resets on each long rest. At level 2, you gain access to the Sabotage ability.",
+    "features": [
+      {
+        "name": "Grunt",
+        "level": 2,
+        "description": "Whether current or aspiring evil team member, your goal is to cast down all goody two shoe trainers and rise up in the ranks! Beginning at level 2, gain a pool of Shadow Points equal to your level. Your point pool increases with each level, and resets on each long rest.\n\nAt level 2, you gain access to the Sabotage ability. As a reaction, you may spend any number of points to decrease the total result of an attack roll (including modifiers) that hits your Pokemon if it would cause the attack to miss. The natural attack roll is unaffected by this ability for purposes of move effects, and attacks with a natural roll of 20 may not be decreased at all."
+      },
+      {
+        "name": "Dark Advantage",
+        "level": 5,
+        "description": "You know the ins and outs of what it means to be a part of an evil team! At level 5, gain access to the Dark Advantage ability, allowing you to spend 3 Shadow Points to roll advantage on any skill check, attack roll or saving throw by you or your Pokemon."
+      },
+      {
+        "name": "Sinister Dodge",
+        "level": 9,
+        "description": "You have made it to the top ranks, commanding authority through your influence of your ruthless tactics. When you reach level 9, you gain the Sinister Dodge ability. As a reaction, you may spend 4 shadow points to add one level of resistance to a move that damages one of your Pokemon. (Vulnerable -> Neutral, Neutral -> Resistant, Resistant -> Immune)"
+      },
+      {
+        "name": "Nefarious Stagger",
+        "level": 15,
+        "description": "No means are beneath you if it means attaining victory, so you and your Pokemon fully embrace the darkness within. At level 15, gain access to the Nefarious Stagger ability, allowing you to spend 2 Shadow Points whenever any of your Pokemon inflict the Flinched condition to inflict the Stunned condition instead."
+      }
+    ]
+  },
+  {
+    "id": "tactician",
+    "name": "Tactician",
+    "type": "path",
+    "description": "You have an eye for detail and a unique set of skills to use in battle. Beginning at level 2, you gain a pool of Tactical Points equal to your trainer level. Your point pool increases with each level, and resets after each long rest.",
+    "features": [
+      {
+        "name": "Tactician",
+        "level": 2,
+        "description": "You have an eye for detail and a unique set of skills to use in battle. Beginning at level 2, you gain a pool of Tactical Points equal to your trainer level. Your point pool increases with each level, and resets after each long rest.\n\nAt level 2, when a Pokemon regains hit points from an item or move, you may increase the amount by 1d4 for each Tactical Point spent."
+      },
+      {
+        "name": "Directed Strike",
+        "level": 5,
+        "description": "You know precisely where to hit a Pokemon for the maximum amount of damage. At level 5 and higher, you can spend 2 Tactical Points to roll the damage for an attack twice, taking the higher result."
+      },
+      {
+        "name": "Raise Your Defenses",
+        "level": 9,
+        "description": "You are quickly able to sense an incoming blow to your Pokemon. At level 9 and higher, you can use a reaction to expend up to 5 of your Tactical Points to add to a Pokemon's AC or Saving Throw, if it would cause an attack to miss or the Pokemon to succeed its save."
+      },
+      {
+        "name": "Not This Time",
+        "level": 15,
+        "description": "At level 15, your Pokemon are trained to be unrelenting in battle, never holding back. After an opponent rolls a saving throw for one of your Pokemon's moves, you may increase the DC by up to 5 points if it would cause a failure, spending a Tactical Point for each increase."
+      }
+    ]
+  },
+  {
+    "id": "ranger",
+    "name": "Ranger",
+    "type": "path",
+    "description": "You are comfortable in the wild, and have an incredible respect for Pokemon in their natural habitat. You gain proficiency in Nature and Survival. In addition, your walking speed increases by 10, and you gain a climbing and swimming speed equal to half your walking speed.",
+    "features": [
+      {
+        "name": "Ranger",
+        "level": 2,
+        "description": "You are comfortable in the wild, and have an incredible respect for Pokemon in their natural habitat. You gain proficiency in Nature and Survival. In addition, your walking speed increases by 10, and you gain a climbing and swimming speed equal to half your walking speed."
+      },
+      {
+        "name": "Capture Styler",
+        "level": 5,
+        "description": "As a Pokemon Ranger you use a special tool to capture Pokemon called a Capture Styler. At level 5, if you have run all the way around a Pokemon, drawing a closed shape by the path you traveled, you gain a +10 to capturing that Pokemon."
+      },
+      {
+        "name": "Partners",
+        "level": 9,
+        "description": "At level 9, after each long rest, you may choose one of your Pokemon to be your partner for the day. Your partner Pokemon may add your Wisdom modifier to any skill check they make. They may also add your Wisdom modifier to attack rolls made against wild Pokemon."
+      },
+      {
+        "name": "Poke Assist",
+        "level": 15,
+        "description": "At level 15, your partner Pokemon boosts the power of your Capture Styler. When any of your Pokemon use a move that is the same type as either of your current partner Pokemon's types, the move's attack roll is made with advantage. Additionally, you have advantage on making captures against Pokemon that share a type with your partner Pokemon."
+      }
+    ]
+  },
+  {
+    "id": "guru",
+    "name": "Guru",
+    "type": "path",
+    "description": "You and your Pokemon are connected by way of more than just trainer and beast. Your past has trained you to be in complete control of your Mind, Body, and Spirit, and you transfer that aura to your Pokemon. When you choose this path at level 2, your Max SR you can control increases by 1.",
+    "features": [
+      {
+        "name": "Guru",
+        "level": 2,
+        "description": "You and your Pokemon are connected by way of more than just trainer and beast. Your past has trained you to be in complete control of your Mind, Body, and Spirit, and you transfer that aura to your Pokemon. When you choose this path at level 2, your Max SR you can control increases by 1."
+      },
+      {
+        "name": "Mind",
+        "level": 5,
+        "description": "Your presence in battle keeps your Pokemon at ease, so that they can fully focus on the task at hand without distraction. At level 5, all of your Pokemon are proficient in Wisdom saving throws and have advantage on the roll to avoid failing confusion."
+      },
+      {
+        "name": "Body",
+        "level": 9,
+        "description": "You have trained your Pokemon to focus deep within themselves to unleash their full potential. At level 9, all of your Pokemon have access to two of their abilities (if two are available). In addition, the Tireless feat now costs one ASI point instead of two at levels 4, 8, 12, 16, or 20. If any of your Pokemon already has this feature, they may gain one ASI at this time."
+      },
+      {
+        "name": "Spirit",
+        "level": 15,
+        "description": "Your connection to your Pokemon is masterful. Trainer and beast move together in perfect harmony. At level 15, you may control a Pokemon as if it were an extension of your body. At the beginning of your turn, you may activate this feature to add your WIS modifier to all attack OR damage rolls your Pokemon makes until the beginning of your next turn. The option of attack OR damage must be selected each time this is activated, and cannot change during the round. You may use this feature a number of times equal to 1 + your Wisdom modifier (minimum of 1), resetting this pool at each long rest."
+      }
+    ]
+  },
+  {
+    "id": "pokemon-breeder",
+    "name": "Pokemon Breeder",
+    "type": "path",
+    "description": "You have a fascination with Pokemon that has led you down the path of raising them carefully to create specific improvements in their species. Beginning at level 2, when you attempt to breed two Pokemon, you may add your WIS modifier to the d20 roll for a successful attempt.",
+    "features": [
+      {
+        "name": "Pokemon Breeder",
+        "level": 2,
+        "description": "You have a fascination with Pokemon that has led you down the path of raising them carefully to create specific improvements in their species. Beginning at level 2, when you attempt to breed two Pokemon, you may add your WIS modifier to the d20 roll for a successful attempt."
+      },
+      {
+        "name": "Tender Love and Care",
+        "level": 5,
+        "description": "As a Breeder, you have studied Pokemon eggs and know just what they need to create the perfect environment for optimal growth, no matter the species. When you reach level 5, gain advantage on all rolls that reduce the incubation counter for Pokemon egg hatching times."
+      },
+      {
+        "name": "Good Genes",
+        "level": 9,
+        "description": "Your skill as a Breeder shines as people around begin to notice how much stronger your Pokemon seem to be than their typical counterparts. When you reach level 9, any Pokemon you hatch (or have hatched) from an egg gains 2 points to add to its abilities, or spend on a feat."
+      },
+      {
+        "name": "Enhanced Diversity",
+        "level": 15,
+        "description": "You are a master of your craft, able to unlock power from Pokemon never thought possible. When you reach level 15, for any future hatched Pokemon, it may inherit a single move from one of its parents that the parent knows, even if that move is not in the child Pokemon's moveset, as long as the parent's SR is less than 15."
+      }
+    ]
+  }
+]

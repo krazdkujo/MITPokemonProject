@@ -1,0 +1,470 @@
+[
+  {
+    "id": "intro-welcome",
+    "section": "Introduction",
+    "title": "Welcome to Pokemon 5e",
+    "content": "Hello, and welcome to Pokemon 5e! This is an online guide and tool for playing D&D in the Pokemon universe with your friends.\n\nThese reference pages provide the core rules for playing the game. The only prerequisite for understanding the content on this site is that you understand the rules of Dungeons and Dragons found in its Player Handbook. Rules that would be found in the D&D Player Handbook will not be reprinted on this site, so it is recommended that you own a copy in order to get the most out of Pokemon 5e.\n\nIf you're just getting started, we recommended starting with these pages:\n1. Trainer Class\n2. Trainer Paths\n3. Catching Pokemon\n4. Pokemon Leveling\n5. Combat\n6. Fainting, Resting, and Healing"
+  },
+  {
+    "id": "intro-versioning",
+    "section": "Introduction",
+    "title": "Versioning Disclaimer",
+    "content": "The precise rules found in this reference are not necessarily permanent or set in stone. As the community identifies core balance issues, the rules may be updated.\n\nAdditionally, if there are rules your group personally thinks could be better, this is a Homebrew! Remix it as much as you want to make the game as fun as possible."
+  },
+  {
+    "id": "intro-rulesets",
+    "section": "Introduction",
+    "title": "2018 vs 2024 Rulesets",
+    "content": "The rules to Pokemon 5e were originally published as a handbook and monster manual in 2018, but was eventually discontinued. The version of the rules found on this website are slightly updated from the version originally published in 2018.\n\nSummary of updates in 2024 rules:\n- Loyalty Levels renamed to Bond Levels, with simpler mechanics\n- Slightly modified DC calculation for making captures\n- Combat rules updated to allow for double battles\n- STAB simplified, though buffed at lower levels\n- Pokemon death rules added\n- Adapted feats to D&D 2024 rules, and added a couple new feats\n- Updated natures table to include all actual Pokemon natures\n- Simplified Pokemon experience awards\n- Gave Pokemon a cool level 20 capstone feature\n- Added Z-Moves, Dynamax, and Terastallization\n- Rework trainer specializations to match Pokemon's trainer class names\n- Made Asleep a volatile condition, added Badly Poisoned, and reworked Confused\n- Change trainer hit dice to d6 since they are basically full-casters\n- Added multiclassing potential\n- Added Epic Boon Feat at Level 19\n- Simplified weather effects"
+  },
+  {
+    "id": "trainer-class-level-table",
+    "section": "Trainer Class",
+    "title": "Trainer Level Table",
+    "content": "Level | Prof | Features | Pokeslots | Max SR\n1 | +2 | Starter Pokemon, Specialization | 3 | 2\n2 | +2 | Trainer Path | 3 | 2\n3 | +2 | Control Upgrade | 3 | 5\n4 | +2 | Ability Score Improvement | 3 | 5\n5 | +3 | Trainer Path Feature, Pokeslot | 4 | 5\n6 | +3 | Control Upgrade | 4 | 8\n7 | +3 | Specialization | 4 | 8\n8 | +3 | ASI, Control Upgrade | 4 | 10\n9 | +4 | Trainer Path Feature | 4 | 10\n10 | +4 | Trainer's Resolve, Pokeslot | 5 | 10\n11 | +4 | Control Upgrade | 5 | 12\n12 | +4 | Ability Score Improvement | 5 | 12\n13 | +5 | Pokemon Tracker | 5 | 12\n14 | +5 | Control Upgrade | 5 | 14\n15 | +5 | Trainer Path Feature, Pokeslot | 6 | 14\n16 | +5 | Ability Score Improvement | 6 | 14\n17 | +6 | Control Upgrade | 6 | 15\n18 | +6 | Specialization | 6 | 15\n19 | +6 | Epic Boon | 6 | 15\n20 | +6 | Master Trainer | 6 | 15"
+  },
+  {
+    "id": "trainer-class-license",
+    "section": "Trainer Class",
+    "title": "Trainer License",
+    "content": "Only licensed trainers are permitted to capture Pokemon, and this license identifies you as having such authorization. It also allows trainers to gain access to special services at Pokemon centers and to purchase goods at the Poke Mart.\n\nTrainers can lose their license for attacking other trainers or their Pokemon, or failing to take care of their own Pokemon."
+  },
+  {
+    "id": "trainer-class-starter",
+    "section": "Trainer Class",
+    "title": "Starter Pokemon",
+    "content": "A trainer must begin with any single unevolved Pokemon of Species Rating (SR) 1/2 or lower with the base stats in its stat block. This Pokemon starts with a nature and non-hidden ability of the player's choice."
+  },
+  {
+    "id": "trainer-class-pokedex",
+    "section": "Trainer Class",
+    "title": "Pokedex",
+    "content": "A hand-held computer with an advanced camera and image recognition software. A trainer can use a bonus action to identify a Pokemon within 60 feet using the Pokedex's scanner. Doing so registers the Pokemon on the Pokedex, and reveals the base SR and some brief facts about the species."
+  },
+  {
+    "id": "trainer-class-pokeslots",
+    "section": "Trainer Class",
+    "title": "Pokeslots",
+    "content": "A Trainer's Pokeslots are the number of Pokemon a Trainer can carry in their pack. At level 1, a Trainer carries their Starter and has two empty slots. Trainers can carry an additional Pokemon at levels 5, 10, and 15."
+  },
+  {
+    "id": "trainer-class-control",
+    "section": "Trainer Class",
+    "title": "Control Upgrade",
+    "content": "Each species of Pokemon is given its own Species Rating (SR). The stronger the Pokemon, the more difficult they are to control. The type of Pokemon you can control in the game depends on the level of your character.\n\nWithout the proper level, a Pokemon with a higher SR than allowed will refuse to leave their Pokeball or obey the trainer's orders. The maximum SR you can control increases at levels 3, 6, 8, 11, 14, and 17.\n\nMax SR by level: Level 1-2: SR 2, Level 3-5: SR 5, Level 6-7: SR 8, Level 8-10: SR 10, Level 11-13: SR 12, Level 14-16: SR 14, Level 17+: SR 15"
+  },
+  {
+    "id": "trainer-class-resolve",
+    "section": "Trainer Class",
+    "title": "Trainer's Resolve",
+    "content": "By the time you reach 10th level, you have had your fair share of experience in difficult battles and have emerged victorious and strong. You are now immune to being frightened, and may choose a second saving throw to become proficient in."
+  },
+  {
+    "id": "trainer-class-tracker",
+    "section": "Trainer Class",
+    "title": "Pokemon Tracker",
+    "content": "At level 13, you have already spent countless hours in the wild, searching for Pokemon high and low. Once per long rest you may search for Pokemon in the nearby area. You learn a list of wild Pokemon that can be found in the nearby area.\n\nAdditionally, you gain Expertise in Animal Handling."
+  },
+  {
+    "id": "trainer-class-boon",
+    "section": "Trainer Class",
+    "title": "Epic Boon",
+    "content": "You gain an Epic Boon feat or another feat of your choice for which you qualify. Boon of Fate is recommended.\n\nA list of Epic Boons can be found in the D&D Player Handbook, page 210.\n\nBe creative roleplaying boons that seem \"magical\" for a Pokemon universe. For example, perhaps Boon of Fate could be interpretted as your trainer giving a last-minute critical command that gets your Pokemon out of danger."
+  },
+  {
+    "id": "trainer-class-master",
+    "section": "Trainer Class",
+    "title": "Master Trainer",
+    "content": "You have finally achieved the title of Master Trainer. Your Pokemon are at peak fighting performance. When you or your Pokemon fail a saving throw, you may choose to succeed instead. This feature can be used twice per long rest."
+  },
+  {
+    "id": "combat-rules",
+    "section": "Combat",
+    "title": "Combat Rules",
+    "content": "Being a master of your Pokemon in battle is one of the most important parts of this game. Pokemon have their own set of moves, stats, and levels to gain.\n\nCombat rules are the same as in D&D 5e, with the following extensions:\n\n- At the start of a battle, you make one initiative roll for each of your Pokemon in battle, using your Pokemon's initiative bonus. Your trainer's turn happens concurrently with their first Pokemon in the initiative order.\n- A trainer's turn is spent either issuing commands to their Pokemon, using items, or interacting with the environment. As an action, a trainer may issue up to two commands, and only a single command per Pokemon.\n- A trainer may also use their bonus action to issue up to two commands for moves with a Move Time of 1 Bonus Action, one bonus move per Pokemon.\n- If a trainer has three or more Pokemon out, they may only issue commands to two of them, and the other Pokemon may only use their turns to move.\n- On your turn, both your trainer and your active Pokemon have movement up to their speed.\n- Both you and your Pokemon have one reaction you can use per round of battle."
+  },
+  {
+    "id": "combat-moves",
+    "section": "Combat",
+    "title": "Moves and Move Power",
+    "content": "Moves in Pokemon 5e work similarly to spells in 5e D&D. Instead of a single character having a set amount of spell slots, each move has a set amount of Power Points (PP). PP determines how many times the move can be used, one use per one PP. Refilling PP can be done by long resting or using an item such as Ether.\n\nMost moves have a Move Power - the focused ability of that move. Move Powers can be any of the six main ability scores, and determine which ability to use for attack, damage, and saving throw DC. If a move specifies multiple move powers, you choose one of the move powers for calculations.\n\nFormulas:\n- Attack Roll Bonus = Move Power Mod + Prof. Mod\n- Damage Bonus = Move Power Mod + STAB\n- Saving Throw DC = 8 + Move Power Mod + Prof. Mod\n\nPokemon are proficient in all the moves they know."
+  },
+  {
+    "id": "combat-stab",
+    "section": "Combat",
+    "title": "STAB (Same Type Attack Bonus)",
+    "content": "When a Pokemon uses a damaging move that shares a type with the Pokemon, it deals bonus damage equal to the Pokemon's proficiency bonus. This is called Same Type Attack Bonus (STAB).\n\nFor example, a level 5 Charmander (+3 proficiency) using Ember (fire-type) adds +3 damage because Charmander is fire-type."
+  },
+  {
+    "id": "combat-struggle",
+    "section": "Combat",
+    "title": "The Struggle Move",
+    "content": "When a Pokemon runs out of PP on all of the moves it knows, the only action it may take is Struggle. Struggle can be used at any time, regardless of PP remaining in other moves."
+  },
+  {
+    "id": "combat-switching",
+    "section": "Combat",
+    "title": "Switching Pokemon",
+    "content": "Switching Pokemon in battle follows these rules:\n\n- Recalling a Pokemon to its Pokeball uses your action.\n- Sending out a Pokemon from its Pokeball uses your bonus action.\n- A newly sent out Pokemon cannot take an action, bonus action, or reaction until its next turn.\n- Recalling a Pokemon does not provoke attacks of opportunity.\n- Sending out a Pokemon in a threatened space does provoke attacks of opportunity against that Pokemon."
+  },
+  {
+    "id": "combat-opportunity",
+    "section": "Combat",
+    "title": "Attacks of Opportunity",
+    "content": "If a Pokemon leaves the melee range of another creature without using the Disengage action, or when not returning to a Pokeball, the opponent may use a melee move that has a move time of 1 action immediately as a reaction targeting the fleeing Pokemon. The move costs the normal amount of PP."
+  },
+  {
+    "id": "combat-ready",
+    "section": "Combat",
+    "title": "Readying an Action",
+    "content": "A Pokemon can choose to use the action on their turn to \"ready\" one of their Moves to use as a reaction that triggers after a set of circumstances determined by the player.\n\nIn order to ready a Move, the Move must be selected and PP reduced. Readying a Move and waiting for the perfect moment to activate it requires concentration. If concentration breaks before the trigger, the Move cannot be used and the PP is lost."
+  },
+  {
+    "id": "catching-overview",
+    "section": "Catching Pokemon",
+    "title": "Catching Overview",
+    "content": "Catching Pokemon is crucial to your success as a trainer. Important rules:\n\n- To attempt to catch a Pokemon, use the Throw Pokeball action.\n- A trainer can hold no more Pokemon than their Pokeslots allow. If a trainer's Pokeslots are full when a Pokemon is caught, the trainer must choose one Pokemon to send to their PC.\n- A Pokeball is destroyed on a failed catch attempt.\n- A caught Pokemon retains its level, all status effects, and current HP at the time of the catch.\n- It is impossible for a Trainer to catch a Pokemon whose level is greater than their current level.\n- A fainted Pokemon cannot be caught.\n\nWhen a Pokemon is caught:\n- A caught Pokemon is given the minimum amount of experience for that Pokemon's level to start.\n- Catching a Pokemon gives 1/5 the normal XP.\n\nPokeballs are not the only way to catch Pokemon. There may be Pokemon in the wild that are friendly and happy to join you in your adventures."
+  },
+  {
+    "id": "catching-action",
+    "section": "Catching Pokemon",
+    "title": "Throw Pokeball Action",
+    "content": "Time: 1 Action\nRange: 30ft/60ft\nConsumes: 1 Pokeball variant\n\nYou hurl a Pokeball at a wild Pokemon in attempt to capture it. Make an Animal Handling skill check. You have advantage on the throw if the Pokemon is poisoned, restrained, asleep, burning, confused, paralyzed, or frozen.\n\nIf you succeed the DC, the wild Pokemon is captured.\n\nCapture DC Formula: 10 + SR (rounded down) + Pokemon Level\n\nReduce the DC by 5 if the Pokemon is below half health (in the yellow), and reduce the DC by another 5 if the Pokemon is below 10% of its max health (in the red). Additionally, the Pokeball variant may reduce the DC even further."
+  },
+  {
+    "id": "catching-pokeballs",
+    "section": "Catching Pokemon",
+    "title": "Pokeball Types",
+    "content": "Pokeball - No Effect\nGreat Ball - Reduce capture DC by 5\nUltra Ball - Reduce capture DC by 10\nMaster Ball - Automatic success on capture roll\nSafari Ball - Reduce the capture DC by your Nature skill modifier\nFast Ball - Can throw as a reaction to a fleeing Pokemon\nLevel Ball - Reduce capture DC by 5 if your trainer level is higher than the target Pokemon's level\nLure Ball - Reduce capture DC by 10 if used while fishing\nHeavy Ball - Reduce capture DC by 10 if the target Pokemon is size medium or larger\nLove Ball - Reduce the capture DC by twice your active Pokemon's Charisma modifier\nFriend Ball - Reduce the capture DC by your Persuasion skill modifier\nMoon Ball - Reduce capture DC by 10 against Pokemon that can evolve using a Moon Stone\nSport Ball - Reduce the capture DC by your Athletics skill modifier\nNet Ball - Reduce capture DC by 10 against Water- or Bug-type Pokemon\nDive Ball - Reduce capture DC by 10 while underwater\nNest Ball - Reduce capture DC by 5 if target Pokemon is level 5 or lower\nRepeat Ball - Reduce capture DC by 10 against a species you have already caught before\nTimer Ball - Hold and concentrate; reduce DC by 1 per turn spent concentrating (max 10)\nLuxury Ball - Pokemon residing in a Luxury Ball gain +1 to their max hit dice\nPremier Ball - No effect. Rare, and often considered a token of class\nDusk Ball - Reduce capture DC by 10 while at night or in darkness\nHeal Ball - When the Pokemon in the Heal Ball spends a hit die during a short rest, it may roll twice and take the higher result\nQuick Ball - Reduce the capture DC by 8 if used during the first round of combat\nDream Ball - Reduce the capture DC by 5 if used on a Pokemon affected by the Sleep condition"
+  },
+  {
+    "id": "pokemon-level-table",
+    "section": "Pokemon Leveling",
+    "title": "Pokemon Level Table",
+    "content": "Level | Prof | Features\n1 | +2 | -\n2 | +2 | New Moves\n3 | +2 | -\n4 | +2 | Ability Score Improvement\n5 | +3 | Damage Increase\n6 | +3 | New Moves\n7 | +3 | -\n8 | +3 | Ability Score Improvement\n9 | +4 | -\n10 | +4 | New Moves, Damage Increase\n11 | +4 | -\n12 | +4 | Ability Score Improvement\n13 | +5 | -\n14 | +5 | New Moves\n15 | +5 | -\n16 | +5 | Ability Score Improvement\n17 | +6 | Damage Increase\n18 | +6 | New Moves\n19 | +6 | -\n20 | +6 | Peak Power"
+  },
+  {
+    "id": "pokemon-level-methods",
+    "section": "Pokemon Leveling",
+    "title": "Leveling Methods",
+    "content": "Pokemon can level up in different ways depending on how your group wants to run the game. Some recommended ways include:\n\n- Experience Points: Gain experience from defeating other Pokemon\n- Milestones: Level up when hitting significant story beats\n- Matching Trainer: Level always matches the trainer's level\n\nWhen a Pokemon levels up, it gains benefits outlined in the table. Additionally, each time a Pokemon levels up, it gains HP equal to a roll of its hit dice + CON, retroactive with increased CON scores."
+  },
+  {
+    "id": "pokemon-level-newmoves",
+    "section": "Pokemon Leveling",
+    "title": "New Moves",
+    "content": "Pokemon cannot know more than 4 moves at one time. Every time your Pokemon levels up, you may replace any one move it knows with any of the moves listed on its stat block at its level or lower. At levels 2, 6, 10, 14, and 18, your Pokemon gains access to new moves.\n\nAfter evolving, a Pokemon retains all the moves it currently knows, even if its known moves are no longer listed on the evolved form's stat block. However, when switching a move upon level up, it may not learn a move from its previous evolutionary forms; only moves from its current form may be learned."
+  },
+  {
+    "id": "pokemon-level-asi",
+    "section": "Pokemon Leveling",
+    "title": "Ability Score Improvement",
+    "content": "Your Pokemon gains a number of points to allocate to any of its ability scores, to a maximum of 20. The number of points to allocate depends on the number of evolutionary stages in that Pokemon's line:\n\n- 1 stage: 4 points\n- 2 stages: 3 points\n- 3 stages: 2 points\n\nUp to 2 of these points may be used to acquire a Feat instead.\n\nThis happens at levels 4, 8, 12, and 16."
+  },
+  {
+    "id": "pokemon-level-damage",
+    "section": "Pokemon Leveling",
+    "title": "Damage Increase",
+    "content": "The damage of each damaging move increases at levels 5, 10, and 17, as shown in the move description."
+  },
+  {
+    "id": "pokemon-level-peak",
+    "section": "Pokemon Leveling",
+    "title": "Peak Power",
+    "content": "At level 20 your Pokemon is at its pinnacle. One ability score of your choice for this Pokemon increases by 2, up to a maximum of 22.\n\nIf the Pokemon's SR is 15 or more, then it may increase an ability score up to a maximum of 30 instead."
+  },
+  {
+    "id": "pokemon-experience",
+    "section": "Pokemon Leveling",
+    "title": "Experience Points",
+    "content": "Experience points are rewarded to Pokemon for successfully defeating other Pokemon, or given out at the DM's discretion when the players complete a particularly difficult challenge or trainer battle. Catching a Pokemon also gives experience, but at 1/5 the normal amount.\n\nXP can be distributed to a player's Pokemon in any amount, but only Pokemon that took an action in the fight can be rewarded. Fainted Pokemon can also be given XP as long as they were in the fight. If two or more people battle against a single Pokemon, the XP given to each player to distribute is determined by the DM.\n\nExperience Awarded Formula: 200 x Pokemon Level x SR\n\nExperience needed per level:\nLevel 1: 0 | Level 2: 200 | Level 3: 800 | Level 4: 2,000 | Level 5: 6,000\nLevel 6: 12,000 | Level 7: 20,000 | Level 8: 30,000 | Level 9: 44,000 | Level 10: 62,000\nLevel 11: 82,000 | Level 12: 104,000 | Level 13: 128,000 | Level 14: 158,000 | Level 15: 194,000\nLevel 16: 234,000 | Level 17: 278,000 | Level 18: 326,000 | Level 19: 382,000 | Level 20: 450,000"
+  },
+  {
+    "id": "pokemon-evolution",
+    "section": "Pokemon Leveling",
+    "title": "Evolution",
+    "content": "Pokemon can evolve into a new form once they meet the condition detailed in their stat block. When a Pokemon evolves, the following occurs:\n\n1. It keeps its current ability scores, but gains points to distribute towards any of those scores. No more than 4 of these points may be put into a single stat and no stat may be increased above 20. The number of points to distribute is provided on its stat block. These points cannot be used to acquire feats, unless specified otherwise.\n\n2. It gains an HP bonus of double its level.\n\n3. It acquires the hit dice of its evolved form to increase HP this level and for future rolls. Additionally, the pokemon's existing hit dice become that of the evolved form for the sake of rolling for short rests and other activites.\n\n4. It acquires the base AC of its evolved form, all new proficiencies, and vulnerabilities/resistances/immunities.\n\n5. If it loses its current ability by evolving, it should exchange its current known ability for any one of its evolved form's abilities.\n\n6. It keeps the known moves it had before evolution, but must learn all future moves from its new move list. For example, Pikachu evolving into Raichu at level 10 cannot learn any of Pikachu's level 10 moves.\n\n7. If the Pokemon would receive other benefits at this level (such as gaining ASI), it receives the benefits after it has evolved.\n\nEvolution can be delayed at the player's discretion, but once the decision has been made, the Pokemon cannot evolve until gaining an additional level."
+  },
+  {
+    "id": "pokemon-ac-note",
+    "section": "Pokemon Leveling",
+    "title": "A Note on Armor Class",
+    "content": "A Pokemon's AC is not necessarily tied to their Dexterity. This is intended. AC was assigned with a more formulaic approach, blending each Pokemon's DEF, SP. DEF, and SPEED stats from the core games into a single number on a scale that fits the normal D&D AC range. Think of it as if each Pokemon gets its own unique \"Natural Armor\". Any ties to Dexterity are purely coincidental."
+  },
+  {
+    "id": "fainting-reaching-0",
+    "section": "Fainting and Healing",
+    "title": "Reaching 0 HP",
+    "content": "The rules for HP, healing, and resting for Pokemon are the same as in D&D 5e, with some extensions.\n\nWhen a Pokemon reaches 0 HP, what happens to it depends on the circumstances:\n\n- In sanctioned combat (e.g. a gym battle), all damage is presumed non-lethal. Pokemon downed in sanctioned combat do not need to make death saving throws.\n- In other combat scenarios (e.g. a wild battle), downed Pokemon must make death saving throws until stabilized.\n- While inside a Pokeball, a Pokemon does not need to make death saving throws. After spending 10 uninterrupted minutes inside a Pokeball, the Pokemon stabilizes at 0 HP.\n- When a trainer's Pokemon reaches 0 HP, the trainer may use their reaction to immediately recall the Pokemon to its pokeball and send out another Pokemon."
+  },
+  {
+    "id": "fainting-death",
+    "section": "Fainting and Healing",
+    "title": "Pokemon Death",
+    "content": "Like in D&D 5e, a Pokemon dies if it reaches its third failed death saving throw. There is no known way for a deceased Pokemon to be revived. It is rumored that only legendary Pokemon may have such power."
+  },
+  {
+    "id": "fainting-healing",
+    "section": "Fainting and Healing",
+    "title": "Healing Methods",
+    "content": "There are three main ways to heal your Pokemon:\n- Bring them to a Pokecenter\n- Take a long or short rest\n- Give them potions or food"
+  },
+  {
+    "id": "fainting-pokecenter",
+    "section": "Fainting and Healing",
+    "title": "Pokecenters",
+    "content": "Pokecenters are small hospital-like facilities that can heal your Pokemon to full health and cure all their statuses in less than 30 minutes. In a traditional Pokemon setting, Pokecenters offer their services for free to those with Trainer Licenses.\n\nNeither PP nor hit dice are replenished at a Pokecenter.\n\nPokecenters are also able to treat more serious injuries Pokemon endure, the same way a hospital would for people. Such operations usually take longer than 30 minutes."
+  },
+  {
+    "id": "fainting-resting",
+    "section": "Fainting and Healing",
+    "title": "Resting",
+    "content": "Long rests take at least eight hours and refresh all Pokemon health, statuses, and PP.\n\nShort rests can be as little as a half an hour and recover hit points based on normal 5e rules. PP is not recovered on short rests, and short rests do not revive fainted Pokemon."
+  },
+  {
+    "id": "fainting-potions",
+    "section": "Fainting and Healing",
+    "title": "Potions and Food",
+    "content": "Certain items and food can be given to Pokemon as an action, or in some cases consumed as a reaction, to restore HP, PP, or status. Most of these items cannot be given to Pokemon within Pokeballs."
+  },
+  {
+    "id": "status-overview",
+    "section": "Status Conditions",
+    "title": "Status Conditions Overview",
+    "content": "Status conditions affect a creature's ability to perform in combat. Conditions listed here are often inflicted by many different moves. Some moves may confer unique conditions, the details of which are provided in the move description.\n\nA Pokemon can only be affected by one non-volatile status at a time. If a Pokemon is already affected by a non-volatile status, it cannot be affected by another until cured of the original status.\n\nA Pokemon can be affected by both a volatile and non-volatile condition. Volatile conditions immediately end outside of combat or when the Pokemon is switched out."
+  },
+  {
+    "id": "status-grace",
+    "section": "Status Conditions",
+    "title": "Grace Period",
+    "content": "When a Pokemon recovers from a status effect, they cannot succumb to the same effect until after the end of their next turn."
+  },
+  {
+    "id": "status-asleep",
+    "section": "Status Conditions",
+    "title": "Asleep (SLP) - Volatile",
+    "content": "Incapacitated and restrained, and rolls all saving throws with disadvantage. Lasts three rounds. When subject to forced movement and at the end of each of its turns, roll a d20. On 11 or higher, the condition ends."
+  },
+  {
+    "id": "status-burned",
+    "section": "Status Conditions",
+    "title": "Burned (BRN) - Non-Volatile",
+    "content": "Rolls all damage rolls twice and takes the lower result. Until cured or the creature becomes unconscious, it takes an amount of damage equal to its proficiency bonus at the end of each of its turns.\n\nFire-type Pokemon are immune to this condition."
+  },
+  {
+    "id": "status-frozen",
+    "section": "Status Conditions",
+    "title": "Frozen (FRZ) - Non-Volatile",
+    "content": "Incapacitated and restrained. Lasts 1 hour, or until the creature breaks free at the end of one of its turns with a STR save DC 10 + the proficiency of the creature that caused this condition. Ends if the creature takes fire-type damage or damage from a move that can afflict the Burned status.\n\nIce-type Pokemon are immune to this condition."
+  },
+  {
+    "id": "status-paralysis",
+    "section": "Status Conditions",
+    "title": "Paralysis (PAR) - Non-Volatile",
+    "content": "Disadvantage on STR and DEX saving throws, and moves at half speed. At the start of its turn, roll a d4. On a 1, the creature is incapacitated and restrained until the start of its next turn. This roll comes before rolls for the Asleep or Confused conditions.\n\nElectric-type Pokemon are immune to this condition."
+  },
+  {
+    "id": "status-poisoned",
+    "section": "Status Conditions",
+    "title": "Poisoned (PSN) - Non-Volatile",
+    "content": "Disadvantage on all ability checks and attack rolls. Until cured or the creature becomes unconscious, it takes an amount of damage equal to its proficiency bonus at the end of each of its turns.\n\nPoison- and Steel-type Pokemon are immune to this condition."
+  },
+  {
+    "id": "status-badly-poisoned",
+    "section": "Status Conditions",
+    "title": "Badly Poisoned (PSN) - Non-Volatile",
+    "content": "Disadvantage on all ability checks and attack rolls. Until cured or the creature becomes unconscious, it takes an amount of damage equal to twice its proficiency bonus at the end of each of its turns.\n\nPoison- and Steel-type Pokemon are immune to this condition."
+  },
+  {
+    "id": "status-confused",
+    "section": "Status Conditions",
+    "title": "Confused (CON) - Volatile",
+    "content": "Cannot take reactions. Lasts three rounds. At the start of the creature's turn, roll a d8:\n- On 1-4: the creature chooses its behavior\n- On 5: the creature doesn't move or take actions\n- On 6: the creature takes the Struggle action against itself and automatically hits\n- On 7: the creature takes the Struggle action against the nearest Pokemon target\n- On 8: the condition ends"
+  },
+  {
+    "id": "status-flinched",
+    "section": "Status Conditions",
+    "title": "Flinched (FLN) - Volatile",
+    "content": "Disadvantage on all attack rolls, ability checks, and saving throws until the end of its next turn. If the creature uses an action that requires a saving throw, the targets have advantage on the roll."
+  },
+  {
+    "id": "bonds-overview",
+    "section": "Bonds",
+    "title": "Bond Levels",
+    "content": "The bond between a Pokemon and its trainer is not always stable; It can ebb and flow as the two parties interact with one another. In Pokemon 5e, the relationship between a Pokemon and its trainer moves through various Bond Levels. These levels each have different effects on the ability of a Pokemon, how well they listen to you, and even whether or not certain Pokemon can evolve."
+  },
+  {
+    "id": "bonds-table",
+    "section": "Bonds",
+    "title": "Bond Level Effects",
+    "content": "Bond Level +3: This Pokemon has 3 Bond Points. Pokemon at this level have an incredible bond with their trainers, willing to risk their own life for their trainer's safety.\n\nBond Level +2: This Pokemon has 2 Bond Points. This Pokemon puts great trust in their owners, and enjoys spending quality time with them.\n\nBond Level +1: This Pokemon has 1 Bond Point. A content Pokemon shows a fondness and respect for their owners. Caught Pokemon very rarely begin at any bond level higher than this.\n\nBond Level +0: A neutral Pokemon responds to its trainers commands. Most recently caught Pokemon begin at this level or lower depending on the circumstances of their catch.\n\nBond Level -1: Upset Pokemon hold a small grudge against their trainers that affects them in battle.\n\nBond Level -2: When the trainer issues a command, roll a d20. On 10 or lower, the Pokemon hesitates and follows the command with disadvantage. Indifferent Pokemon do not care if their trainers win or lose.\n\nBond Level -3: When the trainer issues a command, roll a d20. On 10 or lower, the Pokemon disobeys the command, either by doing nothing or acting on its own. Disloyal Pokemon hold disdain for being captured, and would rather be free."
+  },
+  {
+    "id": "bonds-raising",
+    "section": "Bonds",
+    "title": "Raising/Lowering Bond",
+    "content": "Ultimately, the Bond Level of a Pokemon is determined by an agreement between you and the DM. Relationships are highly narrative, so there are no prescribed rules dictating when bond increases or decreases.\n\nExamples of raising bond may include spending time with a Pokemon, seeking out snack and foods that the Pokemon enjoys, winning a particularly difficult battle, and so on.\n\nLowering bond may involve catching a Pokemon in an undeserving way, leaving a Pokemon in the PC for too long, allowing a Pokemon to faint from poison instead of healing it with antidote, and more.\n\nKeep in mind that every Pokemon has a personality. Discover how your Pokemon's Nature interacts with your trainer's own personality!"
+  },
+  {
+    "id": "bonds-points",
+    "section": "Bonds",
+    "title": "Bond Points",
+    "content": "Pokemon with a good bond with their trainer may spend Bond Points equal to their Bond Level for the benefits below. Your Pokemon regains expended Bond Points at the end of a long rest.\n\nAdvantage: When you roll a d20 for an ability check, attack roll, or saving throw, you can spend 1 Bond Point to gain advantage on the roll.\n\nDisadvantage: When a creature rolls a d20 for an attack roll against you, you can spend 1 Bond Point to impose disadvantage on the roll."
+  },
+  {
+    "id": "breeding-eggs",
+    "section": "Breeding",
+    "title": "Pokemon Eggs",
+    "content": "A Pokemon egg is an object from which most Pokemon are known to hatch. An egg's shell will usually have a pattern that reflects the appearance of the Pokemon developing inside.\n\nEggs are fragile and should be kept safe. Eggs have an AC of 8 and 10 HP. When an egg drops to 0 HP, it breaks and the Pokemon inside is lost."
+  },
+  {
+    "id": "breeding-creating",
+    "section": "Breeding",
+    "title": "Creating an Egg",
+    "content": "At the end of each in-game day, trainers may have two of their Pokemon \"breed\" in an attempt to create an egg. Breeding has the following requirements:\n\n- Pokemon will only breed if they have the same trainer, or if their respective trainers are in the same party.\n- Each Pokemon must be at Bond Level 2 or higher.\n- One of the Pokemon is male, and the other Pokemon is female.\n- The Pokemon share a common Egg Group, as noted on their stat blocks. One exception is Pokemon in the Undiscovered egg group cannot breed.\n- The trainer has an available Pokeslot open for the egg.\n\nTo determine whether or not a breeding attempt was successful, a player will roll a straight d20 against a DC determined by the total Bond Levels of both parent Pokemon.\n\nBreeding DC:\n- Total Bond 4: DC 19\n- Total Bond 5: DC 18\n- Total Bond 6: DC 17"
+  },
+  {
+    "id": "breeding-incubation",
+    "section": "Breeding",
+    "title": "Incubation",
+    "content": "When an egg is created, it begins an incubation counter to determine how long it will take for the egg to hatch. Progress against this timer may only be made if the egg is being carried by its trainer through the night or a significant portion of the prior session.\n\nA trainer will roll 1d100 + 50 at the beginning of each in-campaign day (or session), and reduce the remaining counter by the result.\n\nHatch Times by SR:\nSR 1/8: 125 | SR 1/4: 250 | SR 1/2: 500 | SR 1: 600 | SR 2: 700\nSR 3: 800 | SR 4: 900 | SR 5: 1000 | SR 6: 1100 | SR 7: 1200\nSR 8: 1300 | SR 9: 1400 | SR 10: 1500 | SR 11: 1600\nSR 12: 1700 | SR 13: 1800 | SR 14: 1900 | SR 15: 2000"
+  },
+  {
+    "id": "breeding-incubators",
+    "section": "Breeding",
+    "title": "Incubators",
+    "content": "Incubators may be available for sale, offering an artificial, self-contained habitat especially catered to keeping your egg in pristine condition while you wait for it to hatch. Once an incubator has been used, however, it loses its effectiveness for the next egg and is no better than a backpack.\n\nEach incubator allows you to reduce the Hatch Time counter by an additional amount at the start of each day.\n\n- Basic (1,000 gp): Reduce Hatch Time by 1d20 daily\n- Plus (3,000 gp): Reduce Hatch Time by 2d20 daily\n- Super (10,000 gp): Reduce Hatch Time by 3d20 daily"
+  },
+  {
+    "id": "breeding-hatching",
+    "section": "Breeding",
+    "title": "Hatching",
+    "content": "Once the Hatch Time for an egg reaches 0, it hatches! Use the following rules:\n\nSpecies: The resulting Pokemon's species is that of the female parent's lowest evolutionary form, and at its minimum found level listed in its stat block.\n\nNature: The Nature of the hatched Pokemon should be determined by a random d100 roll against the Nature Table. It is not affected by the breeding parents.\n\nGender: The gender of the hatched Pokemon should be determined by a d100 roll against the Gender Rate in the hatched Pokemon's stat block.\n\nMoves: A bred Pokemon is unique due to the ability to inherit certain moves from its parents that it may not normally learn. At hatching, you may select any \"Starting Moves\" from the Pokemon's move list as its known moves at level 1. The following moves are immediately added to a hatched Pokemon's \"Starting Moves\" pool:\n- Any Egg Move listed in the hatched Pokemon's stat block that is known by either parent at the time of breeding.\n- Any move known by both parents at the time of breeding, so long as it is able to be learned by the hatched Pokemon in its natural progression (excluding TMs).\n\nAbility: Flip a coin. On a heads, the hatched Pokemon inherits the female parent's ability. On a tails, its ability is randomly determined from the list of abilities on its stat block.\n\nBond Level: All hatched Pokemon begin at Bond Level 1. If it spent its entire incubation period in your party, then it starts at Bond Level 2."
+  },
+  {
+    "id": "breeding-special",
+    "section": "Breeding",
+    "title": "Special Breeding Rules",
+    "content": "Ditto: Ditto is a very special case of genderless Pokemon. Any Pokemon can breed with it, regardless of gender or Egg Group. The species of the hatched Pokemon that results from breeding with a Ditto is always based on the \"non-ditto\" Pokemon, whether male or female.\n\nUndiscovered Group: Baby and Legendary Pokemon cannot breed. These are listed in the \"Undiscovered\" Egg Group for convenience.\n\nGendered Species: Certain species of Pokemon such as Nidoran have specific genders that have their own stat blocks. Breeding with one may result in a Pokemon of a different species than itself."
+  },
+  {
+    "id": "encounters-wild",
+    "section": "Encounters",
+    "title": "Wild Pokemon Encounters",
+    "content": "Encountering Pokemon in the wild can be dangerous! Players may venture into the wilderness to gain experience, catch new pokemon, or just as a part of travel. As a DM, you will want to balance the kinds of pokemon and their strength levels that players face throughout the campaign, both to create a feeling of risk and help players build an awesome team.\n\nWhen designing encounters with wild pokemon, keep the following in mind:\n- Clusters of pokemon should contain a mix of low and high levels. Players may not know the precise levels of wild pokemon, though astute trainers may be able to assess their relative strength.\n- On capture-focused expeditions, aim to have several pokemon of lower levels. On battle-focused encounters, include some high level pokemon to present a greater challenge.\n- Rarely, trainers may encounter an especially strong pokemon, one that is perhaps several levels above their own pokemon. Nature is unbiased, and trainers know that fleeing is always an option!\n- Wild pokemon are not restricted from attacking trainers directly if they perceive the trainer as a threat.\n\nExperience for wild Pokemon encounters should be given out at the discretion of the DM, based on participation in the fight by each PC, or distributed equally among all players."
+  },
+  {
+    "id": "encounters-sr-vs-cr",
+    "section": "Encounters",
+    "title": "SR vs CR",
+    "content": "SR (Species Rating) is NOT equivalent to CR (Challenge Rating)! The guidance on designing properly challenging encounters is to use pokemon levels. Pokemon of the same level will be similarly strong."
+  },
+  {
+    "id": "encounters-trainer",
+    "section": "Encounters",
+    "title": "Trainer Battles",
+    "content": "Trainers battle one another in order to become stronger! Trainer battles can be initiated by either the players or trainers they encounter. Running a trainer battle is similar to running wild pokemon battles, with two exceptions: the opposing trainer's pokemon cannot be captured with pokeballs, and the trainer's actions may be limited depending on the rules of the contest.\n\nWhen designing encounters with trainers, keep the following in mind:\n- Trainers' pokemon are usually stronger than those found in the wild. They may have an extra feat, benefit from trainer specialization, have moves only learned via TM, and have slightly elevated stats.\n- Trainers direct their pokemon's moves with purpose and strategy. The more experienced the trainer, the more they will leverage type advantage, switching, pokemon abilities, and other synergies.\n- What rules are in place for the trainer battle? Items allowed or disallowed? Single battle or double? Or, is the battle unsanctioned and therefore anything goes?\n- Trainers may not engage in combat directly, nor direct their pokemon to attack other trainers. This results in a forfeiture of their Trainer License.\n\nIt may be a good idea to give the entire party experience and money for defeating a trainer, in addition to experience gained from each defeated Pokemon."
+  },
+  {
+    "id": "encounters-money",
+    "section": "Encounters",
+    "title": "Awarding Money",
+    "content": "It is not an absolute requirement of Pokemon 5e that trainers hand over their money upon losing, though it may be a good way for your players to receive steady income over the course of a campaign. If you decide to do payouts, the following formula is a decent starting point:\n\nMoney = (highest level pokemon)d4 x 100\n\nFor example, if Trainer Harmony's strongest pokemon was a Level 5 Tepig, award 5d4 x 100 pokedollars.\n\nBesides battles, get creative with other ways players can earn some cash: bounties, odd jobs, official contests, gym battles, and so on!"
+  },
+  {
+    "id": "encounters-gym",
+    "section": "Encounters",
+    "title": "Gym Battles",
+    "content": "Gym battles are an official assessment of a trainer's strength and readiness to face the Pokemon League. They are much like trainer battles, but generally more challenging and with official rules.\n\n- Gym Leaders usually structure their teams around either a pokemon type (like Fire) or theme.\n- Gym Leaders are generally among the strongest trainers in their region.\n- Upon victory, it is good to award the players with a Gym Badge symbolizing their victory, a monetary or TM Move reward, and experience points for each defeated pokemon.\n\nFormats for running gym battles:\n- Teamed Double Battles: Two players each control one pokemon vs gym leader's two pokemon\n- Full Team vs Full Team: Each player controls one pokemon, gym leader has equal number\n- Parallel 1v1s: Run independent battles for each player simultaneously"
+  },
+  {
+    "id": "weather-table",
+    "section": "Weather",
+    "title": "Weather Effects",
+    "content": "Harsh Sunlight: Advantage on damage rolls for Fire-type moves. Disadvantage on damage rolls for Water-type moves.\n\nRain: Advantage on damage rolls for Water-type moves. Disadvantage on damage rolls for Fire-type moves.\n\nSandstorm: Lightly obscured. Rock-type Pokemon add +1 to their AC. If triggered by a Pokemon, the sandstorm may deal damage over time.\n\nHail: If triggered by a Pokemon, the hail may deal damage over time.\n\nSnow: Ice-type Pokemon add +1 to their AC. If triggered by a Pokemon, the AC bonus may be higher.\n\nFog: Heavily obscured."
+  },
+  {
+    "id": "terrain-table",
+    "section": "Terrain Effects",
+    "title": "Terrain Effects",
+    "content": "Electric Terrain: Creatures may double their MOVE modifier on damage rolls for electric-type moves activated inside the terrain. In addition, grounded creatures cannot be asleep.\n\nGrassy Terrain: Creatures may double their MOVE modifier on damage rolls for grass-type moves activated inside the terrain. In addition, grounded creatures that end their turn within the terrain heal an amount of hit points equal to their proficiency bonus.\n\nMisty Terrain: Grounded creatures in the terrain are resistant to dragon-type damage, or if they were vulnerable to dragon-type damage, they take regular damage instead. In addition, grounded creatures cannot suffer new status conditions.\n\nPsychic Terrain: Creatures may double their MOVE modifier on damage rolls for psychic-type moves activated inside the terrain. In addition, grounded creatures in the terrain cannot use bonus actions."
+  },
+  {
+    "id": "damage-types-overview",
+    "section": "Damage Types",
+    "title": "Pokemon Damage Types",
+    "content": "Pokemon 5e replaces the standard 5e damage types (bludgeoning, slashing, etc) with fire, water, grass, ice, ground, rock, electric, fighting, ghost, psychic, poison, bug, steel, dark, fairy, and normal."
+  },
+  {
+    "id": "damage-types-resistance",
+    "section": "Damage Types",
+    "title": "Resistance, Vulnerability, Immunity",
+    "content": "Unlike the games, vulnerability and resistance follow 5e rules, which means a Pokemon vulnerable to a damage type would take twice the damage. A Pokemon resistant would take half the damage. There is no \"double vulnerability\" or \"double resistance\" due to dual types.\n\nThe multiplier for vulnerability and resistance is applied after all other effects of damage are calculated.\n\nIf a Pokemon is \"immune\" to a damage type, it is immune to all damage and secondary effects of damaging moves of that type, but still may be affected by non-damaging moves of that type. For example, a normal-type Pokemon is immune to damage and flinch chance of Astonish, but can be Confused by Confuse Ray."
+  },
+  {
+    "id": "damage-types-conversion",
+    "section": "Damage Types",
+    "title": "Converting D&D Damage Types",
+    "content": "If you encounter D&D creatures on your adventures, you may use this guide to convert between Pokemon damage types and the standard 5e damage types.\n\nPokemon to D&D:\n- Normal: Bludgeoning, Slashing, Piercing\n- Fire: Fire\n- Water/Ice: Cold\n- Grass: Poison, Acid\n- Electric: Lightning\n- Fighting/Ground/Rock: Bludgeoning\n- Flying: Slashing\n- Psychic: Psychic\n- Bug: Acid, Piercing\n- Ghost/Dark: Necrotic\n- Dragon: Piercing, Slashing, Fire\n- Steel: Thunder\n- Fairy: Force, Radiant\n- Poison: Poison\n\nMagic Damage: D&D often makes a distinction between magical and non-magical damage. In Pokemon 5e, if a Pokemon would normally be immune to bludgeoning, slashing, or piercing damage, it instead takes normal damage if the source of that damage is considered magical."
+  },
+  {
+    "id": "legendary-overview",
+    "section": "Legendary Battles",
+    "title": "Legendary/Boss Battles",
+    "content": "Occasionally, a DM might want to throw an extra difficult boss at their players. A giant Onix terrorizing the town? A monstrous Huntail gobbling up fishing boats in the harbor? A Legendary Pokemon at the end of a long journey? Here are some actions and abilities you can give to an enemy to boost their deadliness in battle.\n\nIt is recommended for DMs to award extra experience for defeating creatures with one or more of these skills."
+  },
+  {
+    "id": "legendary-abilities",
+    "section": "Legendary Battles",
+    "title": "Legendary Abilities",
+    "content": "Legendary Grit (X/Day): If this Pokemon fails a saving throw, it can choose to succeed instead.\n\nLegendary Resilience: This Pokemon may sacrifice its action to remove a negative status effect from itself.\n\nLegendary Resistance (X/Day): When this Pokemon takes damage from a move, it can choose to halve the total.\n\nLegendary Attack I: This Pokemon can sacrifice its action now to make two attacks on its next turn. Or, it may make two attacks now and sacrifice its next action.\n\nLegendary Attack II: This Pokemon may make two attacks on its turn.\n\nLegendary Attack III: This Pokemon has a signature move that can be used twice in one turn.\n\nLegendary Energy I: This Pokemon can sacrifice an action to regain all PP for a single move.\n\nLegendary Energy II: This Pokemon has double the normal PP for every move.\n\nLegendary Nimbleness: This Pokemon may move up to its speed without provoking attacks of opportunity.\n\nLegendary Speed (X/Day): This Pokemon may double its movement.\n\nLegendary Toughness: This Pokemon's health is based off the maximum hit dice roll for each of its levels.\n\nLegendary Reflexes: This Pokemon can use two reactions in a round of combat.\n\nLegendary Knowledge: This Pokemon can learn moves from anywhere in its move list, regardless of level.\n\nLegendary Armor (X/Day): As a reaction, this Pokemon may increase its AC by (1, 2, or 3) if it would cause an attack to miss."
+  },
+  {
+    "id": "shiny-overview",
+    "section": "Shiny Pokemon",
+    "title": "Shiny Pokemon",
+    "content": "A Shiny Pokemon has a different coloration than is usual for its species. They are exceptionally rare and often prized for that reason.\n\nShiny Pokemon offer no notable advantage over their customary counterparts, besides being extra snazzy."
+  },
+  {
+    "id": "shiny-encountering",
+    "section": "Shiny Pokemon",
+    "title": "Encountering Shinies",
+    "content": "As a DM, when your party encounters a wild Pokemon, consider making a roll to determine whether the Pokemon is shiny! How to roll depends on how rare shinies should be in your game.\n\n1 in 100 Odds (Recommended): In most games, 1 in 100 odds is recommended since the rate of encountering wild Pokemon in a tabletop game is far lower than in the canon Pokemon games. Roll a d100. On a 100, the Pokemon is shiny.\n\n1 in 1000 Odds: Good for games where there are more encounters with wild Pokemon. Roll three d10 dice. If every outcome is a 10, the Pokemon is shiny.\n\n1 in 4096 Odds: This represents the actual odds in canon Pokemon games. Roll four d8 dice. If every outcome is an 8, the Pokemon is shiny."
+  },
+  {
+    "id": "transform-overview",
+    "section": "Pokemon Transformations",
+    "title": "Transformations Overview",
+    "content": "A transformation grants a pokemon a temporary, but potent, boost in power by altering its form and capabilities. Any pokemon can undergo one of four kinds of transformations:\n\n- Mega Evolution\n- Z-Move\n- Dynamax\n- Terastallization\n\nA pokemon may only undergo a single transformation per long rest. Additionally, due to the equipment needed to perform these transformations, a trainer may only induce each kind of transformation once per long rest.\n\nMost sanctioned battles only allow a single transformation. Some venues only allow a specific kind of transformation. Others allow any, and yet others disallow them entirely."
+  },
+  {
+    "id": "transform-mega",
+    "section": "Pokemon Transformations",
+    "title": "Mega Evolution",
+    "content": "Certain pokemon have special evolved forms called Mega Evolutions that can only be achieved through a powerful bond with their trainer.\n\nA pokemon may only mega evolve if it meets all of these conditions:\n- It is a species capable of Mega Evolution (has a Mega stat block)\n- It is at least level 10\n- It is holding its corresponding Mega Stone\n- Its trainer possesses a Key Stone\n- It has Bond Level +2 or higher with its trainer\n\nWhen a pokemon mega evolves, refer to its Mega stat block for its new stats, abilities, and typing. The transformation lasts until the end of combat or 1 minute outside of combat.\n\nA mega-evolved pokemon reverts back to its original form when:\n- Combat ends\n- 1 minute passes outside of combat\n- The pokemon faints\n- The trainer loses possession of the Key Stone"
+  },
+  {
+    "id": "transform-zmove",
+    "section": "Pokemon Transformations",
+    "title": "Z-Move",
+    "content": "A pokemon empowered with Z-Power may unleash a single, ultra-powerful move.\n\nRequirements:\n- Pokemon is at least level 6\n- Pokemon is holding a Z-Crystal\n- The type of Z-Crystal matches the type of at least one of the pokemon's known moves\n- Trainer possesses a Z-Ring\n\nWhen empowered, the pokemon chooses one of its known moves which has the same type as the Z-Crystal. This move:\n- Cannot miss its target(s)\n- If it requires a saving throw, the DC increases by 5\n- If it deals damage or heals, double the number of dice and the MOVE bonus\n- If it confers a stackable effect, two extra stacks are applied\n- If the move does not benefit from any of the above effects, work with your DM on a cool custom effect!"
+  },
+  {
+    "id": "transform-dynamax",
+    "section": "Pokemon Transformations",
+    "title": "Dynamax",
+    "content": "When a pokemon dynamaxes, it warps the space around it to gain tremendous size and strength.\n\nRequirements:\n- Pokemon is at least level 10\n- There is enough space around it to fit a Gargantuan creature\n- Trainer possesses a Dynamax Band\n\nWhen a pokemon dynamaxes:\n- It gains temporary HP equal to its current HP\n- Its size becomes Gargantuan\n- It becomes immune to all non-volatile status conditions (flinching, confusion, prone)\n- It cannot be voluntarily nor forcibly switched out\n- Damage rolls it makes are rolled twice, and it may choose either result\n\nA dynamaxed pokemon reverts when:\n- Combat ends\n- After 1 minute outside of combat\n- The pokemon loses all of its temporary HP\n- The pokemon faints\n- The trainer loses possession of their Dynamax Band"
+  },
+  {
+    "id": "transform-tera",
+    "section": "Pokemon Transformations",
+    "title": "Terastallization",
+    "content": "When a pokemon terastallizes, it shimmers like a gem and changes its typing.\n\nEach pokemon has a special Tera Type which is one of the 18 primary types or the Stellar type. For most pokemon, their Tera Type is the same as their primary type, but rarely, pokemon may possess a Tera Type that differs from their customary typing entirely.\n\nRequirements:\n- Pokemon is at least level 6\n- Trainer possesses a Tera Orb\n\nWild pokemon may terastallize if their Tera Type differs from both their primary and secondary types.\n\nWhen a pokemon terastallizes:\n- Its type changes to its Tera Type; its resistances, vulnerabilities, and immunities change accordingly\n- It retains the STAB bonus of its original typing\n- If the pokemon's Tera Type is the same as either its primary or secondary types, then its STAB bonus for the Tera Type doubles\n- Other moves or effects cannot change this pokemon's type\n- It becomes vulnerable to Stellar-type damage\n\nA terastallized pokemon reverts when:\n- Combat ends\n- After 1 minute outside of combat\n- The pokemon faints\n- The trainer loses possession of their Tera Orb"
+  },
+  {
+    "id": "transform-stellar",
+    "section": "Pokemon Transformations",
+    "title": "Stellar Type",
+    "content": "Some pokemon may terastallize into the Stellar Type.\n\nPokemon with the Stellar tera type retain the vulnerabilities and resistances of their original type when terastallized.\n\nA pokemon that is terastallized is vulnerable to Stellar-type moves."
+  }
+]

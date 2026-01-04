@@ -1,10 +1,59 @@
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useAuth } from '../lib/authContext';
 import { isConfigured, getMissingEnvVars } from '../lib/supabase';
+import { apiFetch } from '../lib/apiFetch';
 
 export default function Home() {
-  const { user, loading, signOut } = useAuth();
+  const router = useRouter();
+  const { user, loading: authLoading, signOut } = useAuth();
   const configured = isConfigured();
   const missingVars = getMissingEnvVars();
+  const [checking, setChecking] = useState(false);
+
+  // Check if user has Pokemon and redirect accordingly
+  useEffect(() => {
+    if (authLoading || !user) return;
+
+    const checkAndRedirect = async () => {
+      setChecking(true);
+      try {
+        const response = await apiFetch('/api/player/pokemon');
+        const data = await response.json();
+
+        if (data.success) {
+          if (data.data.has_starter) {
+            // User has Pokemon, go to dashboard
+            router.replace('/dashboard');
+          } else {
+            // User needs to select starter
+            router.replace('/starter-select');
+          }
+        }
+      } catch (error) {
+        console.error('Error checking Pokemon status:', error);
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    checkAndRedirect();
+  }, [user, authLoading, router]);
+
+  // Show loading while checking
+  if (authLoading || checking) {
+    return (
+      <div style={styles.loadingContainer}>
+        <div style={styles.spinner}></div>
+        <p style={styles.loadingText}>Loading...</p>
+        <style jsx>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
@@ -47,7 +96,7 @@ export default function Home() {
           <div style={styles.statusRow}>
             <span>User Session:</span>
             <span style={user ? styles.statusOk : styles.statusWarn}>
-              {loading ? 'Loading...' : user ? `Logged in as ${user.email}` : 'Not authenticated'}
+              {user ? `Logged in as ${user.email}` : 'Not authenticated'}
             </span>
           </div>
 
@@ -73,6 +122,20 @@ export default function Home() {
               </div>
             </a>
 
+            <a href="/starter-select" style={styles.link}>
+              <div style={styles.linkCard}>
+                <h3>Select Starter</h3>
+                <p>Choose your first Pokemon</p>
+              </div>
+            </a>
+
+            <a href="/dashboard" style={styles.link}>
+              <div style={styles.linkCard}>
+                <h3>Dashboard</h3>
+                <p>View your Pokemon</p>
+              </div>
+            </a>
+
             <a href="/api/health" style={styles.link} target="_blank" rel="noopener noreferrer">
               <div style={styles.linkCard}>
                 <h3>Health Check</h3>
@@ -93,6 +156,26 @@ export default function Home() {
 }
 
 const styles = {
+  loadingContainer: {
+    minHeight: '100vh',
+    backgroundColor: '#1a1a2e',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  spinner: {
+    width: '50px',
+    height: '50px',
+    border: '4px solid #333',
+    borderTopColor: '#4ade80',
+    borderRadius: '50%',
+    animation: 'spin 1s linear infinite',
+  },
+  loadingText: {
+    color: '#888',
+    marginTop: '20px',
+  },
   container: {
     minHeight: '100vh',
     backgroundColor: '#1a1a2e',

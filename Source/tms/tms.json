@@ -1,0 +1,608 @@
+[
+  {
+    "number": 1,
+    "move": "work-up",
+    "type": "normal",
+    "cost": 8000
+  },
+  {
+    "number": 2,
+    "move": "dragon-claw",
+    "type": "dragon",
+    "cost": 6000
+  },
+  {
+    "number": 3,
+    "move": "psyshock",
+    "type": "psychic",
+    "cost": 6000
+  },
+  {
+    "number": 4,
+    "move": "calm-mind",
+    "type": "psychic",
+    "cost": 5500
+  },
+  {
+    "number": 5,
+    "move": "roar",
+    "type": "normal",
+    "cost": 4000
+  },
+  {
+    "number": 6,
+    "move": "toxic",
+    "type": "poison",
+    "cost": 8000
+  },
+  {
+    "number": 7,
+    "move": "hail",
+    "type": "ice",
+    "cost": 8000
+  },
+  {
+    "number": 8,
+    "move": "bulk-up",
+    "type": "fighting",
+    "cost": 6000
+  },
+  {
+    "number": 9,
+    "move": "venoshock",
+    "type": "poison",
+    "cost": 5200
+  },
+  {
+    "number": 10,
+    "move": "hidden-power",
+    "type": "normal",
+    "cost": 5200
+  },
+  {
+    "number": 11,
+    "move": "sunny-day",
+    "type": "fire",
+    "cost": 4400
+  },
+  {
+    "number": 12,
+    "move": "taunt",
+    "type": "dark",
+    "cost": 4400
+  },
+  {
+    "number": 13,
+    "move": "ice-beam",
+    "type": "ice",
+    "cost": 7200
+  },
+  {
+    "number": 14,
+    "move": "blizzard",
+    "type": "ice",
+    "cost": 8400
+  },
+  {
+    "number": 15,
+    "move": "hyper-beam",
+    "type": "normal",
+    "cost": 10800
+  },
+  {
+    "number": 16,
+    "move": "light-screen",
+    "type": "psychic",
+    "cost": 4400
+  },
+  {
+    "number": 17,
+    "move": "protect",
+    "type": "normal",
+    "cost": 8000
+  },
+  {
+    "number": 18,
+    "move": "rain-dance",
+    "type": "water",
+    "cost": 4400
+  },
+  {
+    "number": 19,
+    "move": "roost",
+    "type": "flying",
+    "cost": 5600
+  },
+  {
+    "number": 20,
+    "move": "safeguard",
+    "type": "normal",
+    "cost": 6000
+  },
+  {
+    "number": 21,
+    "move": "frustration",
+    "type": "normal",
+    "cost": 3600
+  },
+  {
+    "number": 22,
+    "move": "solar-beam",
+    "type": "grass",
+    "cost": 8800
+  },
+  {
+    "number": 23,
+    "move": "smack-down",
+    "type": "rock",
+    "cost": 4400
+  },
+  {
+    "number": 24,
+    "move": "thunderbolt",
+    "type": "electric",
+    "cost": 7200
+  },
+  {
+    "number": 25,
+    "move": "thunder",
+    "type": "electric",
+    "cost": 8400
+  },
+  {
+    "number": 26,
+    "move": "earthquake",
+    "type": "ground",
+    "cost": 8000
+  },
+  {
+    "number": 27,
+    "move": "return",
+    "type": "normal",
+    "cost": 5200
+  },
+  {
+    "number": 28,
+    "move": "leech-life",
+    "type": "bug",
+    "cost": 6000
+  },
+  {
+    "number": 29,
+    "move": "psychic",
+    "type": "psychic",
+    "cost": 7200
+  },
+  {
+    "number": 30,
+    "move": "shadow-ball",
+    "type": "ghost",
+    "cost": 6000
+  },
+  {
+    "number": 31,
+    "move": "brick-break",
+    "type": "fighting",
+    "cost": 5600
+  },
+  {
+    "number": 32,
+    "move": "double-team",
+    "type": "normal",
+    "cost": 7000
+  },
+  {
+    "number": 33,
+    "move": "reflect",
+    "type": "psychic",
+    "cost": 8000
+  },
+  {
+    "number": 34,
+    "move": "sludge-wave",
+    "type": "poison",
+    "cost": 7200
+  },
+  {
+    "number": 35,
+    "move": "flamethrower",
+    "type": "fire",
+    "cost": 7200
+  },
+  {
+    "number": 36,
+    "move": "sludge-bomb",
+    "type": "poison",
+    "cost": 7200
+  },
+  {
+    "number": 37,
+    "move": "sandstorm",
+    "type": "rock",
+    "cost": 8400
+  },
+  {
+    "number": 38,
+    "move": "fire-blast",
+    "type": "fire",
+    "cost": 8400
+  },
+  {
+    "number": 39,
+    "move": "rock-tomb",
+    "type": "rock",
+    "cost": 5200
+  },
+  {
+    "number": 40,
+    "move": "aerial-ace",
+    "type": "flying",
+    "cost": 5200
+  },
+  {
+    "number": 41,
+    "move": "torment",
+    "type": "dark",
+    "cost": 6000
+  },
+  {
+    "number": 42,
+    "move": "facade",
+    "type": "normal",
+    "cost": 5600
+  },
+  {
+    "number": 43,
+    "move": "flame-charge",
+    "type": "fire",
+    "cost": 4400
+  },
+  {
+    "number": 44,
+    "move": "rest",
+    "type": "psychic",
+    "cost": 6000
+  },
+  {
+    "number": 45,
+    "move": "attract",
+    "type": "normal",
+    "cost": 4000
+  },
+  {
+    "number": 46,
+    "move": "thief",
+    "type": "dark",
+    "cost": 5200
+  },
+  {
+    "number": 47,
+    "move": "low-sweep",
+    "type": "fighting",
+    "cost": 5200
+  },
+  {
+    "number": 48,
+    "move": "round",
+    "type": "normal",
+    "cost": 5200
+  },
+  {
+    "number": 49,
+    "move": "echoed-voice",
+    "type": "normal",
+    "cost": 4000
+  },
+  {
+    "number": 50,
+    "move": "overheat",
+    "type": "fire",
+    "cost": 10000
+  },
+  {
+    "number": 51,
+    "move": "steel-wing",
+    "type": "steel",
+    "cost": 5600
+  },
+  {
+    "number": 52,
+    "move": "focus-blast",
+    "type": "fighting",
+    "cost": 8800
+  },
+  {
+    "number": 53,
+    "move": "energy-ball",
+    "type": "grass",
+    "cost": 7200
+  },
+  {
+    "number": 54,
+    "move": "false-swipe",
+    "type": "normal",
+    "cost": 4000
+  },
+  {
+    "number": 55,
+    "move": "scald",
+    "type": "water",
+    "cost": 6000
+  },
+  {
+    "number": 56,
+    "move": "fling",
+    "type": "dark",
+    "cost": 4500
+  },
+  {
+    "number": 57,
+    "move": "charge-beam",
+    "type": "electric",
+    "cost": 4400
+  },
+  {
+    "number": 58,
+    "move": "sky-drop",
+    "type": "flying",
+    "cost": 5200
+  },
+  {
+    "number": 59,
+    "move": "brutal-swing",
+    "type": "dark",
+    "cost": 5200
+  },
+  {
+    "number": 60,
+    "move": "quash",
+    "type": "dark",
+    "cost": 5600
+  },
+  {
+    "number": 61,
+    "move": "will-o-wisp",
+    "type": "fire",
+    "cost": 6000
+  },
+  {
+    "number": 62,
+    "move": "acrobatics",
+    "type": "flying",
+    "cost": 4400
+  },
+  {
+    "number": 63,
+    "move": "embargo",
+    "type": "dark",
+    "cost": 5000
+  },
+  {
+    "number": 64,
+    "move": "explosion",
+    "type": "normal",
+    "cost": 14000
+  },
+  {
+    "number": 65,
+    "move": "shadow-claw",
+    "type": "ghost",
+    "cost": 5600
+  },
+  {
+    "number": 66,
+    "move": "payback",
+    "type": "dark",
+    "cost": 4400
+  },
+  {
+    "number": 67,
+    "move": "smart-strike",
+    "type": "steel",
+    "cost": 5600
+  },
+  {
+    "number": 68,
+    "move": "giga-impact",
+    "type": "normal",
+    "cost": 10800
+  },
+  {
+    "number": 69,
+    "move": "rock-polish",
+    "type": "rock",
+    "cost": 8000
+  },
+  {
+    "number": 70,
+    "move": "aurora-veil",
+    "type": "ice",
+    "cost": 2500
+  },
+  {
+    "number": 71,
+    "move": "stone-edge",
+    "type": "rock",
+    "cost": 8000
+  },
+  {
+    "number": 72,
+    "move": "volt-switch",
+    "type": "electric",
+    "cost": 5600
+  },
+  {
+    "number": 73,
+    "move": "thunder-wave",
+    "type": "electric",
+    "cost": 5000
+  },
+  {
+    "number": 74,
+    "move": "gyro-ball",
+    "type": "steel",
+    "cost": 5500
+  },
+  {
+    "number": 75,
+    "move": "swords-dance",
+    "type": "normal",
+    "cost": 8000
+  },
+  {
+    "number": 76,
+    "move": "fly",
+    "type": "flying",
+    "cost": 7200
+  },
+  {
+    "number": 77,
+    "move": "psych-up",
+    "type": "normal",
+    "cost": 4500
+  },
+  {
+    "number": 78,
+    "move": "bulldoze",
+    "type": "ground",
+    "cost": 5200
+  },
+  {
+    "number": 79,
+    "move": "frost-breath",
+    "type": "ice",
+    "cost": 5200
+  },
+  {
+    "number": 80,
+    "move": "rock-slide",
+    "type": "rock",
+    "cost": 5600
+  },
+  {
+    "number": 81,
+    "move": "x-scissor",
+    "type": "bug",
+    "cost": 6000
+  },
+  {
+    "number": 82,
+    "move": "dragon-tail",
+    "type": "dragon",
+    "cost": 5200
+  },
+  {
+    "number": 83,
+    "move": "infestation",
+    "type": "bug",
+    "cost": 2800
+  },
+  {
+    "number": 84,
+    "move": "poison-jab",
+    "type": "poison",
+    "cost": 6000
+  },
+  {
+    "number": 85,
+    "move": "dream-eater",
+    "type": "psychic",
+    "cost": 8000
+  },
+  {
+    "number": 86,
+    "move": "grass-knot",
+    "type": "grass",
+    "cost": 6500
+  },
+  {
+    "number": 87,
+    "move": "swagger",
+    "type": "normal",
+    "cost": 5000
+  },
+  {
+    "number": 88,
+    "move": "sleep-talk",
+    "type": "normal",
+    "cost": 4500
+  },
+  {
+    "number": 89,
+    "move": "u-turn",
+    "type": "bug",
+    "cost": 5600
+  },
+  {
+    "number": 90,
+    "move": "substitute",
+    "type": "normal",
+    "cost": 7500
+  },
+  {
+    "number": 91,
+    "move": "flash-cannon",
+    "type": "steel",
+    "cost": 6000
+  },
+  {
+    "number": 92,
+    "move": "trick-room",
+    "type": "psychic",
+    "cost": 5000
+  },
+  {
+    "number": 93,
+    "move": "wild-charge",
+    "type": "electric",
+    "cost": 7200
+  },
+  {
+    "number": 94,
+    "move": "surf",
+    "type": "water",
+    "cost": 7200
+  },
+  {
+    "number": 95,
+    "move": "snarl",
+    "type": "dark",
+    "cost": 4400
+  },
+  {
+    "number": 96,
+    "move": "nature-power",
+    "type": "normal",
+    "cost": 5000
+  },
+  {
+    "number": 97,
+    "move": "dark-pulse",
+    "type": "dark",
+    "cost": 6000
+  },
+  {
+    "number": 98,
+    "move": "waterfall",
+    "type": "water",
+    "cost": 6000
+  },
+  {
+    "number": 99,
+    "move": "dazzling-gleam",
+    "type": "fairy",
+    "cost": 6000
+  },
+  {
+    "number": 100,
+    "move": "confide",
+    "type": "normal",
+    "cost": 4400
+  },
+  {
+    "number": 101,
+    "move": "pounce",
+    "type": "bug",
+    "cost": 6400
+  }
+]
