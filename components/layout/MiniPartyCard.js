@@ -21,7 +21,7 @@ export default function MiniPartyCard({ pokemon }) {
     router.push('/pokecenter');
   };
 
-  const { name, level, current_hp, max_hp, sprite_url, is_fainted } = pokemon;
+  const { name, level, current_hp, max_hp, sprite, is_fainted } = pokemon;
 
   return (
     <div
@@ -34,7 +34,7 @@ export default function MiniPartyCard({ pokemon }) {
     >
       <div className="mini-party-card__sprite">
         <img
-          src={sprite_url}
+          src={sprite}
           alt={name}
           onError={(e) => {
             e.target.src = '/images/pokemon/placeholder.png';
