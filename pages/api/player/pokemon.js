@@ -13,6 +13,8 @@ import {
   isStarterEligible,
   buildPlayerPokemonResponse,
   buildPlayerPokemonListResponse,
+  getMoveIdsForPokemonAtLevel,
+  initializeMovePP,
 } from '../../../lib/pokemonData';
 
 /**
@@ -164,6 +166,11 @@ async function handlePost(req, res, userId) {
       }
     }
 
+    // Initialize moves and PP for the new Pokemon
+    const availableMoves = getMoveIdsForPokemonAtLevel(pokemon_id, 1);
+    const selectedMoves = availableMoves.slice(0, 4); // First 4 moves
+    const movePP = initializeMovePP(selectedMoves);
+
     // Insert the new Pokemon
     const { data: newPokemon, error: insertError } = await supabase
       .from('player_pokemon')
@@ -173,6 +180,10 @@ async function handlePost(req, res, userId) {
         level: 1,
         is_active: is_starter ? true : (slotNumber !== null),
         slot_number: slotNumber,
+        selected_moves: selectedMoves,
+        move_pp: movePP,
+        experience: 0,
+        pending_levelup: false,
       })
       .select()
       .single();

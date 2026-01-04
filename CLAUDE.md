@@ -10,6 +10,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Static files in `public/images/pokemon/` directory (served by Next.js) (004-pokemon-images)
 - JavaScript (ES2020+) / Node.js 18+ / Next.js 14 + Recharts (new), @supabase/supabase-js, React 18 (005-player-statistics)
 - Supabase PostgreSQL (existing `player_pokemon` table - no new tables) (005-player-statistics)
+- JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities (006-battle-api)
+- Supabase PostgreSQL (player_pokemon table with RLS) (006-battle-api)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -30,9 +32,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 006-battle-api: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities
 - 005-player-statistics: Added JavaScript (ES2020+) / Node.js 18+ / Next.js 14 + Recharts (new), @supabase/supabase-js, React 18
 - 004-pokemon-images: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, node-fetch (for download script)
-- 003-player-dashboard: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18
 
 
 <!-- MANUAL ADDITIONS START -->
