@@ -7,7 +7,7 @@
  * Calculates damage using Pokemon 5e rules, updates HP/PP in database,
  * and returns detailed battle log for N8N workflow parsing.
  *
- * Feature: 006-battle-api
+ * Feature: 006-battle-api, 007-combat-engine
  */
 
 import { v4 as uuidv4 } from 'uuid';
@@ -31,11 +31,15 @@ import {
 } from '../../lib/pokemonData';
 import {
   processBattleTurn,
+  processPlayerTurn,
+  processOpponentTurn,
   createBattle,
-  applyStruggleRecoil
+  buildCombatant,
+  buildOpponentCombatant
 } from '../../lib/battleEngine';
 import { generateWildPokemon } from '../../lib/opponentGenerator';
 import { calculateXpAward, calculateCurrencyAward, checkLevelUp } from '../../lib/experienceUtils';
+import { canUseMove, consumePP, mustUseStruggle, getStruggleMove, applyStruggleRecoil } from '../../lib/ppTracker';
 
 export default async function handler(req, res) {
   // Only allow POST
@@ -50,8 +54,8 @@ export default async function handler(req, res) {
       return sendUnauthorizedError(res, authError);
     }
 
-    // T016: Validate request body
-    const { player_pokemon_id, move_id, opponent_pokemon_id, opponent_level } = req.body;
+    // Validate request body
+    const { player_pokemon_id, move_id, power_stat_choice, battle_state, opponent_pokemon_id, opponent_level } = req.body;
 
     if (!player_pokemon_id) {
       return sendValidationError(res, 'Missing required field', {
@@ -63,6 +67,20 @@ export default async function handler(req, res) {
       return sendValidationError(res, 'Missing required field', {
         move_id: 'move_id is required'
       });
+    }
+
+    // Validate battle_state if provided
+    if (battle_state) {
+      if (!battle_state.battle_id) {
+        return sendValidationError(res, 'Invalid battle state', {
+          battle_state: 'battle_id is required in battle_state'
+        });
+      }
+      if (!battle_state.opponent) {
+        return sendValidationError(res, 'Invalid battle state', {
+          battle_state: 'opponent is required in battle_state'
+        });
+      }
     }
 
     const supabase = createAdminClient();
@@ -171,20 +189,52 @@ export default async function handler(req, res) {
       moves: getMovesForPokemonAtLevel(playerPokemonRecord.pokemon_id, playerPokemonRecord.level)
     };
 
-    // T050: Generate or load opponent
+    // Load opponent from battle_state or generate new one
     let opponent;
-    try {
-      opponent = generateWildPokemon(
-        playerPokemonRecord.level,
-        opponent_pokemon_id,
-        opponent_level
-      );
-    } catch (opponentError) {
-      return sendInternalError(res, 'Failed to generate opponent: ' + opponentError.message);
+    let battleId;
+    let roundNumber = 1;
+    let initiativeOrder = ['player', 'opponent']; // Default order
+
+    if (battle_state) {
+      // Use existing battle state
+      battleId = battle_state.battle_id;
+      roundNumber = battle_state.round_number || 1;
+      initiativeOrder = battle_state.initiative_order || ['player', 'opponent'];
+
+      // Rebuild opponent from battle_state
+      const opponentState = battle_state.opponent;
+      try {
+        opponent = buildOpponentCombatant(opponentState.pokemon_id, opponentState.level);
+        // Apply current state from battle_state
+        opponent.current_hp = opponentState.current_hp;
+        opponent.move_pp = opponentState.move_pp || opponent.move_pp;
+        opponent.status_effects = opponentState.status_effects || [];
+      } catch (buildError) {
+        return sendInternalError(res, 'Failed to rebuild opponent: ' + buildError.message);
+      }
+    } else {
+      // Generate new opponent (legacy mode or initial battle)
+      try {
+        opponent = generateWildPokemon(
+          playerPokemonRecord.level,
+          opponent_pokemon_id,
+          opponent_level
+        );
+      } catch (opponentError) {
+        return sendInternalError(res, 'Failed to generate opponent: ' + opponentError.message);
+      }
+      battleId = uuidv4();
     }
 
-    // Create battle instance
-    const battle = createBattle(playerPokemon, opponent);
+    // Create battle instance for tracking
+    const battle = {
+      battle_id: battleId,
+      player_pokemon: playerPokemon,
+      opponent: opponent,
+      turns: [],
+      outcome: 'ongoing',
+      started_at: new Date().toISOString()
+    };
 
     // Determine which move to actually use
     let actualMoveId = move_id;
@@ -195,25 +245,79 @@ export default async function handler(req, res) {
       struggleUsed = true;
     }
 
-    // Process battle turn
-    const turnResult = processBattleTurn(playerPokemon, opponent, actualMoveId, 1);
-    battle.turns.push(turnResult.turn);
+    // Process battle turn based on initiative order
+    let turn = {
+      turn_number: roundNumber,
+      player_action: null,
+      opponent_action: null,
+      end_of_turn: {
+        status_damage: [],
+        status_changes: []
+      }
+    };
 
-    // Apply Struggle recoil if used
-    let struggleRecoil = 0;
-    if (struggleUsed) {
-      struggleRecoil = applyStruggleRecoil(playerPokemon);
+    let outcome = 'ongoing';
+    let struggleRecoil = null;
+
+    // Determine action order based on initiative
+    const playerFirst = initiativeOrder[0] === 'player';
+
+    if (playerFirst) {
+      // Player attacks first
+      turn.player_action = processPlayerTurn(playerPokemon, opponent, actualMoveId);
+
+      // Apply Struggle recoil if used
+      if (struggleUsed) {
+        const recoilResult = applyStruggleRecoil(playerPokemon);
+        struggleRecoil = recoilResult;
+      }
+
+      // Check if opponent is knocked out
+      if (opponent.current_hp <= 0) {
+        outcome = 'victory';
+      } else {
+        // Opponent attacks back
+        turn.opponent_action = processOpponentTurn(opponent, playerPokemon);
+
+        // Check if player is knocked out
+        if (playerPokemon.current_hp <= 0) {
+          outcome = 'defeat';
+        }
+      }
+    } else {
+      // Opponent attacks first
+      turn.opponent_action = processOpponentTurn(opponent, playerPokemon);
+
+      // Check if player is knocked out
+      if (playerPokemon.current_hp <= 0) {
+        outcome = 'defeat';
+      } else {
+        // Player attacks back
+        turn.player_action = processPlayerTurn(playerPokemon, opponent, actualMoveId);
+
+        // Apply Struggle recoil if used
+        if (struggleUsed) {
+          const recoilResult = applyStruggleRecoil(playerPokemon);
+          struggleRecoil = recoilResult;
+
+          // Check if recoil knocked out player
+          if (playerPokemon.current_hp <= 0) {
+            outcome = 'defeat';
+          }
+        }
+
+        // Check if opponent is knocked out
+        if (opponent.current_hp <= 0 && outcome !== 'defeat') {
+          outcome = 'victory';
+        }
+      }
     }
 
-    // T039: Deduct PP for the move used (not for Struggle)
+    battle.turns.push(turn);
+
+    // Deduct PP for the move used (not for Struggle)
     if (!struggleUsed && movePP[move_id] !== undefined) {
       movePP[move_id] = Math.max(0, movePP[move_id] - 1);
-    }
-
-    // Determine final outcome
-    let outcome = turnResult.outcome;
-    if (playerPokemon.current_hp <= 0 && outcome !== 'defeat') {
-      outcome = 'defeat';
     }
 
     // Prepare rewards (only on victory)
@@ -272,42 +376,52 @@ export default async function handler(req, res) {
       .update(updateData)
       .eq('id', player_pokemon_id);
 
-    // T021: Build response
+    // Build response per combat-api.md contract
     const response = {
       battle_id: battle.battle_id,
-      outcome: outcome,
-      turns: battle.turns,
-      final_state: {
+      turn: turn,
+      battle_state: {
+        battle_id: battle.battle_id,
+        round_number: roundNumber,
+        outcome: outcome,
         player_pokemon: {
-          id: playerPokemon.id,
-          pokemon_id: playerPokemon.pokemon_id,
-          name: playerPokemon.name,
-          level: playerPokemon.level,
           current_hp: Math.max(0, playerPokemon.current_hp),
           max_hp: playerPokemon.max_hp,
-          is_fainted: playerPokemon.current_hp <= 0,
-          pp_remaining: movePP
+          move_pp: movePP,
+          status_effects: playerPokemon.status_effects || []
         },
         opponent: {
           pokemon_id: opponent.pokemon_id,
-          name: opponent.name,
-          level: opponent.level,
           current_hp: Math.max(0, opponent.current_hp),
           max_hp: opponent.max_hp,
-          is_fainted: opponent.current_hp <= 0
-        }
-      }
+          level: opponent.level,
+          move_pp: opponent.move_pp || {},
+          status_effects: opponent.status_effects || []
+        },
+        initiative_order: initiativeOrder
+      },
+      outcome: outcome,
+      battle_continues: outcome === 'ongoing'
     };
 
     // Add rewards only on victory
     if (rewards) {
-      response.rewards = rewards;
+      response.rewards = {
+        xp_awarded: rewards.experience_gained,
+        currency_awarded: rewards.currency_gained,
+        xp_distributed_to: [playerPokemon.id]
+      };
+    }
+
+    // Add defeat info if applicable
+    if (outcome === 'defeat') {
+      response.player_pokemon_fainted = true;
     }
 
     // Add struggle info if applicable
-    if (struggleUsed) {
+    if (struggleUsed && struggleRecoil) {
       response.struggle_used = true;
-      response.struggle_recoil = struggleRecoil;
+      response.struggle_recoil = struggleRecoil.recoilDamage;
     }
 
     return sendSuccess(res, response);

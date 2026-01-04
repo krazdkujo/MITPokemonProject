@@ -12,6 +12,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Supabase PostgreSQL (existing `player_pokemon` table - no new tables) (005-player-statistics)
 - JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities (006-battle-api)
 - Supabase PostgreSQL (player_pokemon table with RLS) (006-battle-api)
+- JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, uuid (existing) (007-combat-engine)
+- Supabase PostgreSQL with RLS (player_pokemon table with current_hp, pp tracking) (007-combat-engine)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -32,9 +34,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 007-combat-engine: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, uuid (existing)
 - 006-battle-api: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities
 - 005-player-statistics: Added JavaScript (ES2020+) / Node.js 18+ / Next.js 14 + Recharts (new), @supabase/supabase-js, React 18
-- 004-pokemon-images: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, node-fetch (for download script)
 
 
 <!-- MANUAL ADDITIONS START -->
