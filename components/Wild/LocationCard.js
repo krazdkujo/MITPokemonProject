@@ -34,6 +34,22 @@ const pokemonNumbers = {
   'geodude': 74,
   'clefairy': 35,
   'paras': 46,
+  'oddish': 43,
+  'bellsprout': 69,
+  'jigglypuff': 39,
+  'pidgeotto': 17,
+  'nidorina': 30,
+  'nidorino': 33,
+  'gloom': 44,
+  'haunter': 93,
+  'butterfree': 12,
+  'golbat': 42,
+  'parasect': 47,
+  'primeape': 57,
+  'graveler': 75,
+  'venomoth': 49,
+  'onix': 95,
+  'golem': 76,
 };
 
 // Get sprite URL for a pokemon ID
@@ -99,8 +115,9 @@ export default function LocationCard({ location, isSelected, onSelect }) {
         )}
       </div>
 
-      <div className="location-card__level">
-        Levels {location.levelRange.min}-{location.levelRange.max}
+      <div className="location-card__info">
+        <span className="location-card__difficulty">Difficulty {location.difficulty}</span>
+        <span className="location-card__sr">SR {location.srRange.min}-{location.srRange.max}</span>
       </div>
 
       <style jsx>{`
@@ -180,14 +197,28 @@ export default function LocationCard({ location, isSelected, onSelect }) {
           padding: 8px;
         }
 
-        .location-card__level {
+        .location-card__info {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+
+        .location-card__difficulty {
+          font-size: 12px;
+          font-weight: 600;
+          color: #fbbf24;
+          background: rgba(251, 191, 36, 0.2);
+          padding: 4px 10px;
+          border-radius: 4px;
+        }
+
+        .location-card__sr {
           font-size: 12px;
           font-weight: 500;
           color: rgba(255, 255, 255, 0.8);
           background: rgba(0, 0, 0, 0.2);
-          padding: 4px 8px;
+          padding: 4px 10px;
           border-radius: 4px;
-          display: inline-block;
         }
       `}</style>
     </div>

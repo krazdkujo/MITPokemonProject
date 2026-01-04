@@ -4,10 +4,13 @@
       "id": "route-1",
       "name": "Route 1",
       "description": "A peaceful path connecting Pallet Town to Viridian City. New trainers often begin their journey here.",
-      "levelRange": { "min": 2, "max": 4 },
+      "difficulty": 1,
+      "srRange": { "min": 0, "max": 0.5 },
       "pokemon": [
-        { "id": "rattata", "weight": 50 },
-        { "id": "pidgey", "weight": 50 }
+        { "id": "caterpie", "weight": 30, "sr": 0.125 },
+        { "id": "weedle", "weight": 30, "sr": 0.125 },
+        { "id": "pidgey", "weight": 20, "sr": 0.25 },
+        { "id": "rattata", "weight": 20, "sr": 0.25 }
       ],
       "terrain": "grass",
       "unlockRequirement": null
@@ -15,14 +18,15 @@
     {
       "id": "viridian-forest",
       "name": "Viridian Forest",
-      "description": "A dense forest maze filled with bug Pokemon. Trainers often get lost in its winding paths.",
-      "levelRange": { "min": 3, "max": 6 },
+      "description": "A dense forest maze filled with bug Pokemon. Some stronger creatures lurk deeper inside.",
+      "difficulty": 2,
+      "srRange": { "min": 0.25, "max": 1 },
       "pokemon": [
-        { "id": "caterpie", "weight": 40 },
-        { "id": "weedle", "weight": 40 },
-        { "id": "pikachu", "weight": 5 },
-        { "id": "metapod", "weight": 10 },
-        { "id": "kakuna", "weight": 5 }
+        { "id": "oddish", "weight": 25, "sr": 0.25 },
+        { "id": "bellsprout", "weight": 25, "sr": 0.25 },
+        { "id": "pikachu", "weight": 20, "sr": 0.5 },
+        { "id": "metapod", "weight": 15, "sr": 1 },
+        { "id": "kakuna", "weight": 15, "sr": 1 }
       ],
       "terrain": "forest",
       "unlockRequirement": null
@@ -30,13 +34,15 @@
     {
       "id": "route-22",
       "name": "Route 22",
-      "description": "A rugged path west of Viridian City, known for its diverse Pokemon population.",
-      "levelRange": { "min": 3, "max": 5 },
+      "description": "A rugged path west of Viridian City. Moderately challenging Pokemon await.",
+      "difficulty": 3,
+      "srRange": { "min": 1, "max": 4 },
       "pokemon": [
-        { "id": "rattata", "weight": 30 },
-        { "id": "spearow", "weight": 30 },
-        { "id": "nidoran-m", "weight": 20 },
-        { "id": "nidoran-f", "weight": 20 }
+        { "id": "clefairy", "weight": 25, "sr": 1 },
+        { "id": "jigglypuff", "weight": 25, "sr": 1 },
+        { "id": "pidgeotto", "weight": 20, "sr": 3 },
+        { "id": "nidorina", "weight": 15, "sr": 4 },
+        { "id": "nidorino", "weight": 15, "sr": 4 }
       ],
       "terrain": "grass",
       "unlockRequirement": null
@@ -44,13 +50,31 @@
     {
       "id": "mt-moon",
       "name": "Mt. Moon",
-      "description": "A mountain cave system filled with mysterious Pokemon. Rare fossils are said to be found here.",
-      "levelRange": { "min": 6, "max": 10 },
+      "description": "A mountain cave system with evolved Pokemon. Only experienced trainers should venture here.",
+      "difficulty": 4,
+      "srRange": { "min": 3, "max": 7 },
       "pokemon": [
-        { "id": "zubat", "weight": 50 },
-        { "id": "geodude", "weight": 30 },
-        { "id": "clefairy", "weight": 10 },
-        { "id": "paras", "weight": 10 }
+        { "id": "gloom", "weight": 25, "sr": 5 },
+        { "id": "haunter", "weight": 25, "sr": 5 },
+        { "id": "butterfree", "weight": 20, "sr": 6 },
+        { "id": "golbat", "weight": 15, "sr": 7 },
+        { "id": "parasect", "weight": 15, "sr": 7 }
+      ],
+      "terrain": "cave",
+      "unlockRequirement": null
+    },
+    {
+      "id": "rock-tunnel",
+      "name": "Rock Tunnel",
+      "description": "A treacherous underground passage. Powerful Pokemon guard these dark corridors.",
+      "difficulty": 5,
+      "srRange": { "min": 6, "max": 13 },
+      "pokemon": [
+        { "id": "primeape", "weight": 25, "sr": 6 },
+        { "id": "graveler", "weight": 25, "sr": 6 },
+        { "id": "venomoth", "weight": 20, "sr": 8 },
+        { "id": "onix", "weight": 15, "sr": 10 },
+        { "id": "golem", "weight": 15, "sr": 13 }
       ],
       "terrain": "cave",
       "unlockRequirement": null

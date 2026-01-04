@@ -30,9 +30,16 @@ const pokemonNumbers = {
   'nidoran-f': 29, 'nidorina': 30, 'nidoqueen': 31,
   'nidoran-m': 32, 'nidorino': 33, 'nidoking': 34,
   'clefairy': 35, 'clefable': 36,
+  'jigglypuff': 39, 'wigglytuff': 40,
   'zubat': 41, 'golbat': 42,
+  'oddish': 43, 'gloom': 44, 'vileplume': 45,
   'paras': 46, 'parasect': 47,
+  'venomoth': 49,
+  'primeape': 57,
+  'bellsprout': 69, 'weepinbell': 70, 'victreebel': 71,
   'geodude': 74, 'graveler': 75, 'golem': 76,
+  'haunter': 93, 'gengar': 94,
+  'onix': 95,
 };
 
 // Client-side functions for encounter generation
@@ -47,20 +54,30 @@ function selectRandomPokemon(location) {
   for (const entry of location.pokemon) {
     random -= entry.weight;
     if (random <= 0) {
-      return entry.id;
+      return entry; // Return full entry including SR
     }
   }
 
-  return location.pokemon[0].id;
+  return location.pokemon[0];
 }
 
-function generateEncounterLevel(location) {
-  if (!location || !location.levelRange) {
-    return 1;
-  }
-
-  const { min, max } = location.levelRange;
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+// Calculate level based on SR (Species Rating)
+// SR roughly maps to appropriate encounter level in Pokemon 5e
+function generateLevelFromSR(sr) {
+  if (sr <= 0.125) return Math.floor(Math.random() * 2) + 1; // 1-2
+  if (sr <= 0.25) return Math.floor(Math.random() * 2) + 2;  // 2-3
+  if (sr <= 0.5) return Math.floor(Math.random() * 2) + 3;   // 3-4
+  if (sr <= 1) return Math.floor(Math.random() * 2) + 4;     // 4-5
+  if (sr <= 2) return Math.floor(Math.random() * 2) + 5;     // 5-6
+  if (sr <= 3) return Math.floor(Math.random() * 2) + 6;     // 6-7
+  if (sr <= 4) return Math.floor(Math.random() * 2) + 7;     // 7-8
+  if (sr <= 5) return Math.floor(Math.random() * 2) + 8;     // 8-9
+  if (sr <= 6) return Math.floor(Math.random() * 2) + 9;     // 9-10
+  if (sr <= 7) return Math.floor(Math.random() * 2) + 10;    // 10-11
+  if (sr <= 8) return Math.floor(Math.random() * 2) + 11;    // 11-12
+  if (sr <= 10) return Math.floor(Math.random() * 2) + 13;   // 13-14
+  if (sr <= 13) return Math.floor(Math.random() * 3) + 15;   // 15-17
+  return Math.floor(Math.random() * 3) + 18;                 // 18-20
 }
 
 // Error component for no party
@@ -230,9 +247,13 @@ function WildContent() {
     setSearchError(null);
 
     try {
-      // Generate random Pokemon and level from location
-      const wildPokemonId = selectRandomPokemon(selectedLocation);
-      const wildLevel = generateEncounterLevel(selectedLocation);
+      // Generate random Pokemon and level from location using SR-based scaling
+      const wildPokemonEntry = selectRandomPokemon(selectedLocation);
+      if (!wildPokemonEntry) {
+        setSearchError('No Pokemon found in this location');
+        return;
+      }
+      const wildLevel = generateLevelFromSR(wildPokemonEntry.sr || 1);
 
       // Get first healthy Pokemon from party
       const playerPokemon = party.find(p => p.current_hp > 0);
@@ -248,7 +269,7 @@ function WildContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           player_pokemon_id: playerPokemon.id,
-          opponent_pokemon_id: wildPokemonId,
+          opponent_pokemon_id: wildPokemonEntry.id,
           opponent_level: wildLevel,
           battle_type: 'wild'
         })
