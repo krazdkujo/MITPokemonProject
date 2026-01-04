@@ -1,0 +1,312 @@
+openapi: 3.0.3
+info:
+  title: Player Statistics API
+  description: API endpoint for retrieving player statistics
+  version: 1.0.0
+
+paths:
+  /api/player/stats:
+    get:
+      summary: Get player statistics
+      description: |
+        Returns comprehensive statistics for the authenticated player including:
+        - Collection summary (total Pokemon, unique species)
+        - Type distribution (count of Pokemon by type)
+        - Level distribution (histogram of levels)
+        - Top Pokemon by level
+
+        Requires authentication via Bearer token.
+      operationId: getPlayerStats
+      tags:
+        - Player
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsSuccessResponse'
+              examples:
+                withPokemon:
+                  summary: Player with Pokemon
+                  value:
+                    success: true
+                    data:
+                      collection:
+                        totalPokemon: 12
+                        uniqueSpecies: 10
+                        typeDistribution:
+                          - type: "water"
+                            count: 5
+                            percentage: 33.3
+                          - type: "fire"
+                            count: 3
+                            percentage: 20.0
+                          - type: "grass"
+                            count: 4
+                            percentage: 26.7
+                          - type: "poison"
+                            count: 2
+                            percentage: 13.3
+                          - type: "normal"
+                            count: 1
+                            percentage: 6.7
+                      levels:
+                        topPokemon:
+                          - id: "uuid-1"
+                            pokemon_id: "charizard"
+                            name: "Charizard"
+                            level: 15
+                            sprite: "/images/pokemon/6.png"
+                            type: ["fire", "flying"]
+                          - id: "uuid-2"
+                            pokemon_id: "blastoise"
+                            name: "Blastoise"
+                            level: 12
+                            sprite: "/images/pokemon/9.png"
+                            type: ["water"]
+                        distribution:
+                          "1-5": 4
+                          "6-10": 5
+                          "11-15": 3
+                          "16-20": 0
+                      battles: null
+                      badges: null
+                emptyCollection:
+                  summary: Player with no Pokemon
+                  value:
+                    success: true
+                    data:
+                      collection:
+                        totalPokemon: 0
+                        uniqueSpecies: 0
+                        typeDistribution: []
+                      levels:
+                        topPokemon: []
+                        distribution:
+                          "1-5": 0
+                          "6-10": 0
+                          "11-15": 0
+                          "16-20": 0
+                      battles: null
+                      badges: null
+        '401':
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: "UNAUTHORIZED"
+                  message: "Authentication required"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: "INTERNAL_ERROR"
+                  message: "An unexpected error occurred"
+                  details:
+                    hint: "Check server logs for more information"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: External JWT containing email and name claims
+
+  schemas:
+    StatsSuccessResponse:
+      type: object
+      required:
+        - success
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/PlayerStats'
+
+    PlayerStats:
+      type: object
+      required:
+        - collection
+        - levels
+        - battles
+        - badges
+      properties:
+        collection:
+          $ref: '#/components/schemas/CollectionStats'
+        levels:
+          $ref: '#/components/schemas/LevelStats'
+        battles:
+          nullable: true
+          description: Battle statistics (null until battle system implemented)
+        badges:
+          nullable: true
+          description: Badge statistics (null until badge system implemented)
+
+    CollectionStats:
+      type: object
+      required:
+        - totalPokemon
+        - uniqueSpecies
+        - typeDistribution
+      properties:
+        totalPokemon:
+          type: integer
+          minimum: 0
+          description: Total number of Pokemon owned
+          example: 12
+        uniqueSpecies:
+          type: integer
+          minimum: 0
+          description: Number of distinct Pokemon species
+          example: 10
+        typeDistribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/TypeCount'
+          description: Count of Pokemon by type (sorted by count descending)
+
+    TypeCount:
+      type: object
+      required:
+        - type
+        - count
+        - percentage
+      properties:
+        type:
+          type: string
+          description: Pokemon type name
+          example: "water"
+        count:
+          type: integer
+          minimum: 0
+          description: Number of Pokemon with this type
+          example: 5
+        percentage:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Percentage of total Pokemon (dual-types may sum >100%)
+          example: 33.3
+
+    LevelStats:
+      type: object
+      required:
+        - topPokemon
+        - distribution
+      properties:
+        topPokemon:
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/TopPokemon'
+          description: Top 5 Pokemon by level
+        distribution:
+          $ref: '#/components/schemas/LevelDistribution'
+
+    TopPokemon:
+      type: object
+      required:
+        - id
+        - pokemon_id
+        - name
+        - level
+        - sprite
+        - type
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Database record ID
+        pokemon_id:
+          type: string
+          description: Pokemon species ID from Source
+          example: "charizard"
+        name:
+          type: string
+          description: Pokemon display name
+          example: "Charizard"
+        level:
+          type: integer
+          minimum: 1
+          maximum: 20
+          description: Current level
+          example: 15
+        sprite:
+          type: string
+          description: Path to Pokemon sprite image
+          example: "/images/pokemon/6.png"
+        type:
+          type: array
+          items:
+            type: string
+          description: Pokemon types
+          example: ["fire", "flying"]
+
+    LevelDistribution:
+      type: object
+      required:
+        - "1-5"
+        - "6-10"
+        - "11-15"
+        - "16-20"
+      properties:
+        "1-5":
+          type: integer
+          minimum: 0
+          description: Count of Pokemon at levels 1-5
+        "6-10":
+          type: integer
+          minimum: 0
+          description: Count of Pokemon at levels 6-10
+        "11-15":
+          type: integer
+          minimum: 0
+          description: Count of Pokemon at levels 11-15
+        "16-20":
+          type: integer
+          minimum: 0
+          description: Count of Pokemon at levels 16-20
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code for programmatic handling
+              example: "UNAUTHORIZED"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "Authentication required"
+            details:
+              type: object
+              additionalProperties:
+                type: string
+              description: Additional error context
