@@ -17,6 +17,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Supabase PostgreSQL with RLS (users table for currency, new player_inventory table) (009-shop-api)
 - JavaScript (ES2020+) with React 18 + Next.js 14, @supabase/supabase-js, React 18 (011-game-layout)
 - Supabase PostgreSQL (users table for currency, player_pokemon for party) (011-game-layout)
+- JavaScript (ES2020+) with React 18, Next.js 14 + React 18, Next.js 14, @supabase/supabase-js (existing) (014-wild-encounter)
+- Static JSON file for locations (Source/locations.json), Supabase PostgreSQL for player data (014-wild-encounter)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -37,9 +39,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 014-wild-encounter: Added JavaScript (ES2020+) with React 18, Next.js 14 + React 18, Next.js 14, @supabase/supabase-js (existing)
 - 011-game-layout: Added JavaScript (ES2020+) with React 18 + Next.js 14, @supabase/supabase-js, React 18
 - 009-shop-api: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities
-- 008-healing-api: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, @supabase/supabase-js, existing lib/pokemonData.js utilities
 
 
 <!-- MANUAL ADDITIONS START -->

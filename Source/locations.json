@@ -1,0 +1,59 @@
+{
+  "locations": [
+    {
+      "id": "route-1",
+      "name": "Route 1",
+      "description": "A peaceful path connecting Pallet Town to Viridian City. New trainers often begin their journey here.",
+      "levelRange": { "min": 2, "max": 4 },
+      "pokemon": [
+        { "id": "rattata", "weight": 50 },
+        { "id": "pidgey", "weight": 50 }
+      ],
+      "terrain": "grass",
+      "unlockRequirement": null
+    },
+    {
+      "id": "viridian-forest",
+      "name": "Viridian Forest",
+      "description": "A dense forest maze filled with bug Pokemon. Trainers often get lost in its winding paths.",
+      "levelRange": { "min": 3, "max": 6 },
+      "pokemon": [
+        { "id": "caterpie", "weight": 40 },
+        { "id": "weedle", "weight": 40 },
+        { "id": "pikachu", "weight": 5 },
+        { "id": "metapod", "weight": 10 },
+        { "id": "kakuna", "weight": 5 }
+      ],
+      "terrain": "forest",
+      "unlockRequirement": null
+    },
+    {
+      "id": "route-22",
+      "name": "Route 22",
+      "description": "A rugged path west of Viridian City, known for its diverse Pokemon population.",
+      "levelRange": { "min": 3, "max": 5 },
+      "pokemon": [
+        { "id": "rattata", "weight": 30 },
+        { "id": "spearow", "weight": 30 },
+        { "id": "nidoran-m", "weight": 20 },
+        { "id": "nidoran-f", "weight": 20 }
+      ],
+      "terrain": "grass",
+      "unlockRequirement": null
+    },
+    {
+      "id": "mt-moon",
+      "name": "Mt. Moon",
+      "description": "A mountain cave system filled with mysterious Pokemon. Rare fossils are said to be found here.",
+      "levelRange": { "min": 6, "max": 10 },
+      "pokemon": [
+        { "id": "zubat", "weight": 50 },
+        { "id": "geodude", "weight": 30 },
+        { "id": "clefairy", "weight": 10 },
+        { "id": "paras", "weight": 10 }
+      ],
+      "terrain": "cave",
+      "unlockRequirement": null
+    }
+  ]
+}
