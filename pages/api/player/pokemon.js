@@ -40,7 +40,8 @@ export default async function handler(req, res) {
 /**
  * GET /api/player/pokemon
  *
- * Returns the user's Pokemon roster with Source data merged.
+ * Returns the user's Pokemon roster with Source data merged,
+ * plus dashboard summary stats (box_count, pokedex_caught, badge_count).
  */
 async function handleGet(req, res, userId) {
   try {
@@ -59,11 +60,22 @@ async function handleGet(req, res, userId) {
 
     const pokemon = buildPlayerPokemonListResponse(playerPokemon || []);
     const activeCount = pokemon.filter(p => p.is_active).length;
+    const boxCount = pokemon.filter(p => !p.is_active).length;
+
+    // Calculate Pokedex progress (distinct pokemon_id count)
+    const uniqueSpecies = new Set(pokemon.map(p => p.pokemon_id));
+    const pokedexCaught = uniqueSpecies.size;
+
+    // Badge count placeholder (0 until badges are implemented)
+    const badgeCount = 0;
 
     return sendSuccess(res, {
       pokemon,
       has_starter: pokemon.length > 0,
       active_count: activeCount,
+      box_count: boxCount,
+      pokedex_caught: pokedexCaught,
+      badge_count: badgeCount,
       total_count: pokemon.length,
     });
   } catch (error) {
