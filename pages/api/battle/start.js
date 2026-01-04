@@ -189,6 +189,7 @@ export default async function handler(req, res) {
         player_pokemon: playerCombatants.map(c => ({
           combatant_id: c.combatant_id,
           pokemon_id: c.pokemon_id,
+          number: c.number,
           name: c.name,
           level: c.level,
           current_hp: c.current_hp,
@@ -207,6 +208,7 @@ export default async function handler(req, res) {
         opponent_pokemon: [{
           combatant_id: opponentCombatant.combatant_id,
           pokemon_id: opponentCombatant.pokemon_id,
+          number: opponentCombatant.number,
           name: opponentCombatant.name,
           level: opponentCombatant.level,
           current_hp: opponentCombatant.current_hp,

@@ -30,6 +30,7 @@ import {
   clearSelection
 } from '../lib/battleState';
 import { toGridNotation } from '../lib/gridUtils';
+import { apiFetch } from '../lib/apiFetch';
 
 /**
  * Combat Page Component
@@ -65,7 +66,7 @@ export default function CombatPage() {
     }
 
     initializeBattle();
-  }, [router.isReady, opponent_id, opponent_level, party]);
+  }, [router.isReady, opponent_id, opponent_level]);
 
   // Handle opponent AI turn
   useEffect(() => {
@@ -81,14 +82,22 @@ export default function CombatPage() {
    * Initialize a new battle via API
    */
   const initializeBattle = async () => {
-    if (!party) return;
-
     setLoading(true);
     setError(null);
 
     try {
+      // Fetch fresh party data directly from API to avoid stale cache issues
+      const partyResponse = await apiFetch('/api/player/pokemon');
+      const partyData = await partyResponse.json();
+
+      if (!partyResponse.ok || !partyData.success) {
+        throw new Error('Failed to fetch party data');
+      }
+
+      const freshParty = partyData.data?.pokemon || [];
+
       // Get active party Pokemon IDs
-      const activePokemon = party?.filter(p => p.current_hp > 0) || [];
+      const activePokemon = freshParty.filter(p => p.current_hp > 0);
 
       if (activePokemon.length === 0) {
         setError('All your Pokemon have fainted! Visit the Pokemon Center to heal.');
@@ -96,14 +105,17 @@ export default function CombatPage() {
         return;
       }
 
+      // Refresh context in background so UI stays in sync
+      refreshData();
+
       const playerPokemonIds = activePokemon.map(p => p.id);
 
-      const response = await fetch('/api/battle/start', {
+      const response = await apiFetch('/api/battle/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           player_pokemon_ids: playerPokemonIds,
-          opponent_pokemon_id: parseInt(opponent_id, 10),
+          opponent_pokemon_id: opponent_id,
           opponent_level: parseInt(opponent_level, 10),
           battle_type: battle_type || 'wild',
           grid_mode: true
@@ -293,7 +305,7 @@ export default function CombatPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/battle/action', {
+      const response = await apiFetch('/api/battle/action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -434,7 +446,7 @@ export default function CombatPage() {
     const target = playerTargets[Math.floor(Math.random() * playerTargets.length)];
 
     try {
-      const response = await fetch('/api/battle/action', {
+      const response = await apiFetch('/api/battle/action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -481,7 +493,7 @@ export default function CombatPage() {
     setActionInProgress(true);
 
     try {
-      const response = await fetch('/api/battle/flee', {
+      const response = await apiFetch('/api/battle/flee', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -737,9 +749,15 @@ export default function CombatPage() {
                     onClick={() => handlePartyPokemonSelect(pokemon.combatant_id)}
                   >
                     <img
-                      src={`/images/pokemon/${pokemon.pokemon_id}.png`}
+                      src={`/images/pokemon/${pokemon.number}.png`}
                       alt={pokemon.name}
                       className="party-sprite"
+                      onError={(e) => {
+                        if (!e.target.dataset.fallback) {
+                          e.target.dataset.fallback = 'true';
+                          e.target.style.display = 'none';
+                        }
+                      }}
                     />
                     <div className="party-info">
                       <span className="party-name">{pokemon.name}</span>
@@ -776,7 +794,7 @@ export default function CombatPage() {
                 highlightedCells={highlightedCells}
                 highlightType={highlightType}
                 damageAnimations={damageAnimations}
-                disabled={actionInProgress || !isPlayerTurn}
+                disabled={actionInProgress || (battleState.phase === 'combat' && !isPlayerTurn)}
               />
             )}
           </div>

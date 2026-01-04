@@ -49,11 +49,14 @@ export default function TurnIndicator({
             >
               <div className={styles.portrait}>
                 <img
-                  src={`/images/pokemon/${combatant.pokemon_id}.png`}
+                  src={`/images/pokemon/${combatant.number}.png`}
                   alt={combatant.name}
                   className={styles.sprite}
                   onError={(e) => {
-                    e.target.src = '/images/pokemon/0.png';
+                    if (!e.target.dataset.fallback) {
+                      e.target.dataset.fallback = 'true';
+                      e.target.style.display = 'none';
+                    }
                   }}
                 />
                 {isCurrent && <div className={styles.currentMarker} />}

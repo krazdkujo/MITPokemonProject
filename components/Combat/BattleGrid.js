@@ -141,7 +141,7 @@ export default function BattleGrid({
                   {combatant && (
                     <PokemonToken
                       combatantId={combatant.combatant_id}
-                      pokemonId={combatant.pokemon_id}
+                      pokemonId={combatant.number}
                       name={combatant.name}
                       currentHp={combatant.current_hp}
                       maxHp={combatant.max_hp}
@@ -156,19 +156,7 @@ export default function BattleGrid({
                     />
                   )}
 
-                  {/* Render trainer sprite if present */}
-                  {trainer && !combatant && (
-                    <div className={`${styles.trainerSprite} ${styles[trainer]}`}>
-                      <img
-                        src={`/images/trainers/${trainer}.png`}
-                        alt={`${trainer} trainer`}
-                        className={styles.trainerImage}
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  )}
+                  {/* Trainer positions marked but no sprites for now */}
                 </GridSquare>
               );
             })}

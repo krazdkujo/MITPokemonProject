@@ -125,7 +125,11 @@ export default function PokemonToken({
           alt={name}
           className={styles.sprite}
           onError={(e) => {
-            e.target.src = '/images/pokemon/0.png';
+            // Prevent infinite loop by only setting fallback once
+            if (!e.target.dataset.fallback) {
+              e.target.dataset.fallback = 'true';
+              e.target.style.display = 'none';
+            }
           }}
         />
       </div>

@@ -292,11 +292,15 @@ function WildContent() {
   }
 
   function handleBattle() {
-    if (!battleData) return;
+    if (!battleData || !encounter) return;
 
     router.push({
       pathname: '/combat',
-      query: { battle_id: battleData.battle_id }
+      query: {
+        opponent_id: encounter.pokemon_id,
+        opponent_level: encounter.level,
+        battle_type: 'wild'
+      }
     });
   }
 
