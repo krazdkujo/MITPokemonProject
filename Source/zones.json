@@ -1,0 +1,245 @@
+{
+  "zones": [
+    {
+      "id": "water-pond",
+      "name": "Tranquil Pond",
+      "terrain": "water",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["water", "ice"],
+      "description": "A peaceful pond where young Water Pokemon gather."
+    },
+    {
+      "id": "water-lake",
+      "name": "Crystal Lake",
+      "terrain": "water",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["water", "ice"],
+      "description": "A large lake home to moderately strong aquatic Pokemon."
+    },
+    {
+      "id": "water-river",
+      "name": "Rushing Rapids",
+      "terrain": "water",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["water", "ice"],
+      "description": "Fast-flowing waters where powerful Water Pokemon train."
+    },
+    {
+      "id": "water-ocean",
+      "name": "Deep Ocean",
+      "terrain": "water",
+      "difficulty": "expert",
+      "srRange": { "min": 6, "max": 30 },
+      "types": ["water", "ice"],
+      "description": "The vast ocean depths where legendary aquatic Pokemon dwell."
+    },
+    {
+      "id": "fire-campfire",
+      "name": "Warm Campfire",
+      "terrain": "fire",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["fire", "dragon"],
+      "description": "A cozy campfire that attracts small Fire Pokemon."
+    },
+    {
+      "id": "fire-volcano",
+      "name": "Volcanic Slopes",
+      "terrain": "fire",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["fire", "dragon"],
+      "description": "The outer slopes of an active volcano, home to fierce Fire types."
+    },
+    {
+      "id": "fire-caldera",
+      "name": "Magma Caldera",
+      "terrain": "fire",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["fire", "dragon"],
+      "description": "The bubbling heart of the volcano where powerful Fire Pokemon thrive."
+    },
+    {
+      "id": "grass-meadow",
+      "name": "Sunny Meadow",
+      "terrain": "grass",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["grass", "bug"],
+      "description": "A bright meadow filled with young Grass and Bug Pokemon."
+    },
+    {
+      "id": "grass-garden",
+      "name": "Overgrown Garden",
+      "terrain": "grass",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["grass", "bug"],
+      "description": "An abandoned garden where Grass Pokemon have flourished."
+    },
+    {
+      "id": "grass-jungle",
+      "name": "Dense Jungle",
+      "terrain": "grass",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["grass", "bug"],
+      "description": "A thick jungle canopy sheltering powerful Grass-type predators."
+    },
+    {
+      "id": "electric-powerplant",
+      "name": "Old Power Plant",
+      "terrain": "electric",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["electric", "steel"],
+      "description": "An abandoned power plant attracting Electric Pokemon."
+    },
+    {
+      "id": "electric-storm",
+      "name": "Thunderstorm Plains",
+      "terrain": "electric",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["electric", "steel"],
+      "description": "Open plains frequently struck by lightning, drawing Electric types."
+    },
+    {
+      "id": "electric-factory",
+      "name": "High-Voltage Factory",
+      "terrain": "electric",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["electric", "steel"],
+      "description": "A massive industrial complex crackling with electrical energy."
+    },
+    {
+      "id": "cave-tunnel",
+      "name": "Dim Tunnel",
+      "terrain": "cave",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["rock", "ground", "dark", "ghost"],
+      "description": "A shallow tunnel entrance home to timid cave dwellers."
+    },
+    {
+      "id": "cave-cavern",
+      "name": "Crystal Cavern",
+      "terrain": "cave",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["rock", "ground", "dark", "ghost"],
+      "description": "A cavern of glittering crystals inhabited by stronger Rock types."
+    },
+    {
+      "id": "cave-abyss",
+      "name": "Abyssal Depths",
+      "terrain": "cave",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["rock", "ground", "dark", "ghost"],
+      "description": "The deepest reaches where only the strongest Pokemon survive."
+    },
+    {
+      "id": "forest-grove",
+      "name": "Peaceful Grove",
+      "terrain": "forest",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["bug", "grass", "normal", "fairy"],
+      "description": "A quiet grove where Bug and Normal Pokemon play."
+    },
+    {
+      "id": "forest-woods",
+      "name": "Whispering Woods",
+      "terrain": "forest",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["bug", "grass", "normal", "fairy"],
+      "description": "Dense woods filled with the sounds of forest Pokemon."
+    },
+    {
+      "id": "forest-ancient",
+      "name": "Ancient Forest",
+      "terrain": "forest",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["bug", "grass", "normal", "fairy"],
+      "description": "An ancient forest where legendary forest guardians dwell."
+    },
+    {
+      "id": "mountain-trail",
+      "name": "Mountain Trail",
+      "terrain": "mountain",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["flying", "fighting", "dragon", "rock"],
+      "description": "A gentle mountain path where Flying Pokemon soar."
+    },
+    {
+      "id": "mountain-peak",
+      "name": "Windy Peak",
+      "terrain": "mountain",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["flying", "fighting", "dragon", "rock"],
+      "description": "A windswept peak where Fighting Pokemon train."
+    },
+    {
+      "id": "mountain-summit",
+      "name": "Dragon Summit",
+      "terrain": "mountain",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["flying", "fighting", "dragon", "rock"],
+      "description": "The highest summit where powerful Dragon Pokemon rule."
+    },
+    {
+      "id": "urban-alley",
+      "name": "Back Alley",
+      "terrain": "urban",
+      "difficulty": "easy",
+      "srRange": { "min": 0, "max": 0.5 },
+      "types": ["normal", "poison", "steel", "electric", "psychic"],
+      "description": "A quiet alley where city Pokemon scavenge."
+    },
+    {
+      "id": "urban-district",
+      "name": "Industrial District",
+      "terrain": "urban",
+      "difficulty": "medium",
+      "srRange": { "min": 0.5, "max": 2 },
+      "types": ["normal", "poison", "steel", "electric", "psychic"],
+      "description": "A busy industrial area with diverse urban Pokemon."
+    },
+    {
+      "id": "urban-downtown",
+      "name": "Downtown Core",
+      "terrain": "urban",
+      "difficulty": "hard",
+      "srRange": { "min": 2, "max": 6 },
+      "types": ["normal", "poison", "steel", "electric", "psychic"],
+      "description": "The heart of the city where the strongest urban Pokemon thrive."
+    }
+  ],
+  "terrainGroups": {
+    "water": ["water-pond", "water-lake", "water-river", "water-ocean"],
+    "fire": ["fire-campfire", "fire-volcano", "fire-caldera"],
+    "grass": ["grass-meadow", "grass-garden", "grass-jungle"],
+    "electric": ["electric-powerplant", "electric-storm", "electric-factory"],
+    "cave": ["cave-tunnel", "cave-cavern", "cave-abyss"],
+    "forest": ["forest-grove", "forest-woods", "forest-ancient"],
+    "mountain": ["mountain-trail", "mountain-peak", "mountain-summit"],
+    "urban": ["urban-alley", "urban-district", "urban-downtown"]
+  },
+  "difficultyLabels": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "expert": "Expert"
+  }
+}

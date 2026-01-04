@@ -21,6 +21,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Static JSON file for locations (Source/locations.json), Supabase PostgreSQL for player data (014-wild-encounter)
 - JavaScript (ES2020+) with Node.js 18+ and Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/combatUtils.js, lib/statusEffects.js (015-combat-arena)
 - Supabase PostgreSQL (existing player_pokemon table) (015-combat-arena)
+- JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js (016-zone-encounters)
+- Supabase PostgreSQL (new active_battles table) + Source JSON files (016-zone-encounters)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -41,9 +43,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 016-zone-encounters: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js
 - 015-combat-arena: Added JavaScript (ES2020+) with Node.js 18+ and Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/combatUtils.js, lib/statusEffects.js
 - 014-wild-encounter: Added JavaScript (ES2020+) with React 18, Next.js 14 + React 18, Next.js 14, @supabase/supabase-js (existing)
-- 011-game-layout: Added JavaScript (ES2020+) with React 18 + Next.js 14, @supabase/supabase-js, React 18
 
 
 <!-- MANUAL ADDITIONS START -->

@@ -18,10 +18,12 @@ import {
   HealIcon,
   GrassIcon,
   BagIcon,
+  ZonesIcon,
 } from './NavIcons';
 
 const NAV_LINKS = [
   { href: '/dashboard', label: 'Dashboard', Icon: HomeIcon },
+  { href: '/zones', label: 'Encounter Zones', Icon: ZonesIcon },
   { href: '/combat', label: 'Combat Arena', Icon: SwordIcon },
   { href: '/pokemart', label: 'PokeMart', Icon: ShopIcon },
   { href: '/pokecenter', label: 'Pokemon Center', Icon: HealIcon },

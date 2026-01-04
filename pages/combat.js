@@ -29,7 +29,7 @@ import {
   setSelection,
   clearSelection
 } from '../lib/battleState';
-import { toGridNotation } from '../lib/gridUtils';
+import { toGridNotation, initializeGrid } from '../lib/gridUtils';
 import { apiFetch } from '../lib/apiFetch';
 
 /**
@@ -52,21 +52,126 @@ export default function CombatPage() {
   const [battleResult, setBattleResult] = useState(null);
 
   // Get query parameters for battle initialization
-  const { opponent_id, opponent_level, battle_type } = router.query;
+  const { opponent_id, opponent_level, battle_type, battle_id } = router.query;
 
-  // Initialize battle on mount
+  // Initialize battle on mount - check for active battle or start new one
   useEffect(() => {
     if (!router.isReady) return;
 
-    // Validate required parameters
-    if (!opponent_id || !opponent_level) {
-      setError('Missing battle parameters. Please start a battle from the wild encounter page.');
-      setLoading(false);
+    // If we have a battle_id, load that battle
+    if (battle_id) {
+      loadBattleFromDb(battle_id);
       return;
     }
 
-    initializeBattle();
-  }, [router.isReady, opponent_id, opponent_level]);
+    // Check for active battle first
+    checkForActiveBattle();
+  }, [router.isReady, battle_id]);
+
+  /**
+   * Check for an active battle and load it, or initialize new battle
+   */
+  const checkForActiveBattle = async () => {
+    setLoading(true);
+    try {
+      const response = await apiFetch('/api/battle/active');
+      const data = await response.json();
+
+      if (data.success && data.data.has_active_battle) {
+        // Load the active battle
+        await loadBattleFromDb(data.data.battle.battle_id);
+      } else if (opponent_id && opponent_level) {
+        // No active battle, but we have params to start new one
+        initializeBattle();
+      } else {
+        // No active battle and no params - redirect to zones
+        router.push('/zones');
+      }
+    } catch (err) {
+      console.error('Error checking active battle:', err);
+      if (opponent_id && opponent_level) {
+        initializeBattle();
+      } else {
+        router.push('/zones');
+      }
+    }
+  };
+
+  /**
+   * Load a battle from the database by ID
+   */
+  const loadBattleFromDb = async (id) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiFetch(`/api/battle/state/${id}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'Failed to load battle');
+      }
+
+      const battleData = data.data;
+
+      // Initialize a fresh grid
+      const grid = initializeGrid();
+
+      // Place combatants on the grid based on their positions
+      const combatants = battleData.combatants || { player: [], opponent: [] };
+      for (const owner of ['player', 'opponent']) {
+        for (const combatant of combatants[owner] || []) {
+          if (combatant.position) {
+            const { col, row } = combatant.position;
+            if (grid[row] && grid[row][col]) {
+              grid[row][col].occupant_type = 'pokemon';
+              grid[row][col].occupant_id = combatant.combatant_id;
+            }
+          }
+        }
+      }
+
+      // Reconstruct battle state from database
+      const state = {
+        battle_id: battleData.battle_id,
+        battle_type: battleData.battle_type || 'wild',
+        phase: battleData.phase || 'setup',
+        grid: grid,
+        combatants: combatants,
+        trainers: battleData.trainers || {
+          player: { col: 0, row: 4 },
+          opponent: { col: 9, row: 4 }
+        },
+        initiative_order: battleData.initiative_order || [],
+        current_turn_index: battleData.current_turn_index || 0,
+        round_number: battleData.round_number || 0,
+        battle_log: battleData.battle_log || [],
+        outcome: battleData.outcome || 'ongoing',
+        zone: battleData.zone,
+        selected: { pokemon: null, move: null, action: null }
+      };
+
+      setBattleState(state);
+
+      // Set up UI based on phase
+      if (state.phase === 'setup') {
+        const deploymentCells = [];
+        for (let col = 0; col < 10; col++) {
+          for (let row = 0; row < 2; row++) {
+            deploymentCells.push({ col, row });
+          }
+        }
+        setHighlightedCells(deploymentCells);
+        setHighlightType('placement');
+      }
+
+    } catch (err) {
+      console.error('Load battle error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle opponent AI turn
   useEffect(() => {
@@ -579,7 +684,40 @@ export default function CombatPage() {
     if (battleResult?.outcome === 'defeat') {
       router.push('/pokecenter');
     } else {
-      router.push('/wild');
+      router.push('/zones');
+    }
+  };
+
+  /**
+   * Handle abandon battle
+   */
+  const handleAbandon = async () => {
+    if (!battleState || battleState.battle_type !== 'wild') return;
+
+    if (!confirm('Abandon battle? This counts as fleeing.')) return;
+
+    setActionInProgress(true);
+
+    try {
+      const response = await apiFetch('/api/battle/abandon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ battle_id: battleState.battle_id })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.data.outcome === 'abandoned') {
+        setBattleState(null);
+        router.push('/zones');
+      } else {
+        throw new Error(data.error?.message || 'Failed to abandon battle');
+      }
+    } catch (err) {
+      console.error('Abandon error:', err);
+      setError(err.message);
+    } finally {
+      setActionInProgress(false);
     }
   };
 
@@ -818,13 +956,23 @@ export default function CombatPage() {
                     disabled={actionInProgress}
                   />
                   {battleState.battle_type === 'wild' && (
-                    <button
-                      className="flee-btn"
-                      onClick={handleFlee}
-                      disabled={actionInProgress}
-                    >
-                      Flee
-                    </button>
+                    <>
+                      <button
+                        className="flee-btn"
+                        onClick={handleFlee}
+                        disabled={actionInProgress}
+                      >
+                        Flee
+                      </button>
+                      <button
+                        className="abandon-btn"
+                        onClick={handleAbandon}
+                        disabled={actionInProgress}
+                        data-testid="abandon-btn"
+                      >
+                        Abandon Battle
+                      </button>
+                    </>
                   )}
                 </>
               ) : (
@@ -1069,6 +1217,29 @@ export default function CombatPage() {
         }
 
         .flee-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .abandon-btn {
+          width: 100%;
+          padding: 8px;
+          margin-top: 8px;
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          color: rgba(255, 255, 255, 0.6);
+          border-radius: 8px;
+          font-size: 12px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .abandon-btn:hover:not(:disabled) {
+          border-color: #f87171;
+          color: #f87171;
+        }
+
+        .abandon-btn:disabled {
           opacity: 0.5;
           cursor: not-allowed;
         }
