@@ -25,6 +25,10 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Supabase PostgreSQL (new active_battles table) + Source JSON files (016-zone-encounters)
 - JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js, existing lib/ utilities (017-5e-combat-research)
 - Supabase PostgreSQL with RLS (existing tables: player_pokemon, users, player_inventory, active_battles) (017-5e-combat-research)
+- JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/combatUtils.js, lib/gridUtils.js, lib/ppTracker.js (018-combat-enhancements)
+- Supabase PostgreSQL (active_battles table with JSONB battle_state, player_pokemon table with move_pp JSONB) (018-combat-enhancements)
+- JavaScript (ES2020+) with Node.js 18+ / Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/battleState.js (019-fix-combat-bugs)
+- Supabase PostgreSQL (existing tables: active_battles, player_pokemon) (019-fix-combat-bugs)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -45,9 +49,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 019-fix-combat-bugs: Added JavaScript (ES2020+) with Node.js 18+ / Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/battleState.js
+- 018-combat-enhancements: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/combatUtils.js, lib/gridUtils.js, lib/ppTracker.js
 - 017-5e-combat-research: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js, existing lib/ utilities
-- 016-zone-encounters: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js
-- 015-combat-arena: Added JavaScript (ES2020+) with Node.js 18+ and Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/combatUtils.js, lib/statusEffects.js
 
 
 <!-- MANUAL ADDITIONS START -->

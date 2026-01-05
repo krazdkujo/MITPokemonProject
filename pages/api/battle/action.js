@@ -6,9 +6,11 @@
  * Validates the action against battle rules and returns updated battle state.
  *
  * Feature: 015-combat-arena
+ * Updated: 018-combat-enhancements (added database persistence with retry)
  */
 
 import { authenticateRequest } from '../../../lib/authHelper';
+import { createAdminClient } from '../../../lib/supabase';
 import {
   sendSuccess,
   sendError,
@@ -22,6 +24,54 @@ import { processPlayerTurn, processOpponentTurn, calculateAttackRoll, calculateD
 import { getManhattanDistance, toGridNotation, isValidPosition } from '../../../lib/gridUtils';
 import { processEndOfTurnStatus, processStartOfTurnStatus } from '../../../lib/statusEffects';
 import { calculateBattleRewards } from '../../../lib/experienceUtils';
+import { computeStateHash, prepareStateForSave } from '../../../lib/battleState';
+import { parseRange } from '../../../lib/moveRanges';
+
+/**
+ * Save battle state to database with retry logic
+ * Feature: 018-combat-enhancements (T023)
+ */
+async function saveBattleState(battleId, battleState, userId, maxRetries = 3) {
+  const supabase = createAdminClient();
+
+  // Prepare state with hash and timestamp (T021, T022)
+  const stateToSave = prepareStateForSave(battleState);
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const { error } = await supabase
+        .from('active_battles')
+        .update({
+          battle_state: stateToSave,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', battleId)
+        .eq('user_id', userId);
+
+      if (!error) {
+        console.log(`Battle state saved successfully (attempt ${attempt}), hash: ${stateToSave.state_hash}`);
+        return { success: true, hash: stateToSave.state_hash };
+      }
+
+      console.error(`Failed to save battle state (attempt ${attempt}/${maxRetries}):`, error);
+
+      // Exponential backoff before retry
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 100; // 200ms, 400ms, 800ms
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    } catch (err) {
+      console.error(`Exception saving battle state (attempt ${attempt}/${maxRetries}):`, err);
+
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 100;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  return { success: false, error: 'Failed to save battle state after retries' };
+}
 
 export default async function handler(req, res) {
   // Only allow POST
@@ -171,6 +221,27 @@ export default async function handler(req, res) {
         return sendValidationError(res, 'Invalid target', {
           target_id: 'Target has already fainted'
         });
+      }
+
+      // Validate move range (T034 - Feature 018)
+      if (actor.position && target.position) {
+        const rangeInfo = parseRange(move.range);
+        const moveRange = rangeInfo.cells;
+        const distance = getManhattanDistance(actor.position, target.position);
+
+        if (distance > moveRange) {
+          return sendError(
+            res,
+            'OUT_OF_RANGE',
+            'Target is out of range for this move',
+            422,
+            {
+              move_range: moveRange,
+              target_distance: distance,
+              hint: `${move.name} has a range of ${moveRange} cells, but target is ${distance} cells away`
+            }
+          );
+        }
       }
 
       // Execute attack
@@ -380,7 +451,11 @@ export default async function handler(req, res) {
     let outcome = 'ongoing';
     let rewards = null;
 
-    if (allOpponentFainted) {
+    // T024 (Feature 019): Check player defeat FIRST - if both faint, defeat takes priority
+    if (allPlayerFainted) {
+      battleContinues = false;
+      outcome = 'defeat';
+    } else if (allOpponentFainted) {
       battleContinues = false;
       outcome = 'victory';
       // Calculate rewards
@@ -392,9 +467,6 @@ export default async function handler(req, res) {
           playerPokemon.filter(p => p.current_hp > 0).map(p => p.combatant_id)
         );
       }
-    } else if (allPlayerFainted) {
-      battleContinues = false;
-      outcome = 'defeat';
     }
 
     // Advance turn
@@ -415,6 +487,20 @@ export default async function handler(req, res) {
             name: nextCombatant.name,
             owner: nextCombatant.owner
           };
+
+          // Reset movement for the next combatant at turn start (T045 - Feature 018)
+          const nextOwner = nextCombatant.owner === 'player' ? 'player' : 'opponent';
+          const nextList = updatedState.combatants?.[nextOwner] ||
+                          (nextOwner === 'player' ? updatedState.player_pokemon : updatedState.opponent_pokemon);
+          const nextIndex = nextList.findIndex(c => c.combatant_id === nextId);
+          if (nextIndex !== -1) {
+            nextList[nextIndex] = {
+              ...nextList[nextIndex],
+              movement_remaining: nextList[nextIndex].walking_speed || 6,
+              has_moved_this_turn: false
+            };
+          }
+
           break;
         }
         attempts++;
@@ -423,22 +509,35 @@ export default async function handler(req, res) {
       updatedState.current_turn_index = nextTurnIndex;
     }
 
+    // Prepare full state for database save (T021, T022, T023)
+    const fullState = {
+      combatants: updatedState.combatants || {
+        player: updatedState.player_pokemon,
+        opponent: updatedState.opponent_pokemon
+      },
+      current_turn_index: nextTurnIndex,
+      round_number: updatedState.round_number || 1,
+      initiative_order: initiativeOrder,
+      phase: battleContinues ? 'combat' : 'ended',
+      outcome: outcome
+    };
+
+    // Save to database with retry logic (Feature 018)
+    const saveResult = await saveBattleState(battle_id, fullState, userId);
+
     // Build response
     const response = {
       ...actionResult,
-      updated_state: {
-        combatants: updatedState.combatants || {
-          player: updatedState.player_pokemon,
-          opponent: updatedState.opponent_pokemon
-        },
-        current_turn_index: nextTurnIndex,
-        round_number: updatedState.round_number || 1,
-        initiative_order: initiativeOrder
-      },
+      updated_state: fullState,
       battle_continues: battleContinues,
       outcome,
-      next_turn: nextTurn
+      next_turn: nextTurn,
+      save_status: saveResult.success ? 'saved' : 'save_failed'
     };
+
+    if (!saveResult.success) {
+      response.save_error = saveResult.error;
+    }
 
     if (rewards) {
       response.rewards = {

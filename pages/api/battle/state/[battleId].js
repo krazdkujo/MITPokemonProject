@@ -5,6 +5,7 @@
  * PATCH /api/battle/state/:battleId - Update battle state after action
  *
  * Feature: 016-zone-encounters
+ * Updated: 018-combat-enhancements (added state hash verification)
  */
 
 import { createAdminClient } from '../../../../lib/supabase';
@@ -20,6 +21,7 @@ import {
 } from '../../../../lib/apiResponse';
 import { getZoneById } from '../../../../lib/zoneData';
 import { getMoveById, getMovesForPokemonAtLevel } from '../../../../lib/pokemonData';
+import { verifyStateHash } from '../../../../lib/battleState';
 
 export default async function handler(req, res) {
   const { battleId } = req.query;
@@ -100,6 +102,16 @@ async function handleGet(req, res, battleId) {
     const zone = getZoneById(battle.zone_id);
     const battleState = battle.battle_state || {};
 
+    // Verify state hash if present (T024 - Feature 018)
+    let stateIntegrity = 'unknown';
+    if (battleState.state_hash) {
+      const hashValid = verifyStateHash(battleState);
+      stateIntegrity = hashValid ? 'verified' : 'mismatch';
+      if (!hashValid) {
+        console.warn(`State hash mismatch for battle ${battleId}. Expected: ${battleState.state_hash}`);
+      }
+    }
+
     // Hydrate combatant moves (ensure full move objects for UI)
     const combatants = battleState.combatants || { player: [], opponent: [] };
     const hydratedCombatants = {
@@ -128,7 +140,9 @@ async function handleGet(req, res, battleId) {
       round_number: battleState.round_number || 0,
       battle_log: battleState.battle_log || [],
       outcome: battleState.outcome || 'ongoing',
-      started_at: battle.created_at
+      started_at: battle.created_at,
+      state_integrity: stateIntegrity,
+      last_saved_at: battleState.last_saved_at || null
     };
 
     return sendSuccess(res, response);

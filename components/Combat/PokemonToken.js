@@ -7,11 +7,13 @@
 
 import { useState, useEffect } from 'react';
 import styles from './PokemonToken.module.css';
+import PokemonTooltip from './PokemonTooltip';
 
 /**
  * PokemonToken - Visual representation of a Pokemon on the grid
  *
  * @param {Object} props
+ * @param {Object} props.combatant - Full combatant data for tooltip display
  * @param {string} props.combatantId - Unique combatant identifier
  * @param {number} props.pokemonId - Pokemon species ID for sprite
  * @param {string} props.name - Pokemon's display name
@@ -27,6 +29,7 @@ import styles from './PokemonToken.module.css';
  * @param {boolean} props.disabled - Whether interaction is disabled
  */
 export default function PokemonToken({
+  combatant = null,
   combatantId,
   pokemonId,
   name,
@@ -43,6 +46,7 @@ export default function PokemonToken({
 }) {
   const [showDamage, setShowDamage] = useState(false);
   const [damageValue, setDamageValue] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Handle damage animation
   useEffect(() => {
@@ -108,11 +112,17 @@ export default function PokemonToken({
   // Get sprite path
   const spritePath = `/images/pokemon/${pokemonId}.png`;
 
+  // Hover handlers for tooltip
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
+
   return (
     <div
       className={classNames.join(' ')}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       role={onClick ? 'button' : 'img'}
       tabIndex={onClick && !disabled ? 0 : -1}
       aria-label={`${name}, ${currentHp}/${maxHp} HP${isFainted ? ', fainted' : ''}${isCurrentTurn ? ', current turn' : ''}`}
@@ -167,6 +177,16 @@ export default function PokemonToken({
       {/* Current Turn Indicator */}
       {isCurrentTurn && !isFainted && (
         <div className={styles.turnIndicator} />
+      )}
+
+      {/* Pokemon Stats Tooltip - Feature 018 */}
+      {combatant && (
+        <PokemonTooltip
+          combatant={combatant}
+          position={combatant.position}
+          visible={isHovered}
+          gridWidth={10}
+        />
       )}
     </div>
   );

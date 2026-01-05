@@ -3,9 +3,11 @@
  * Displays available moves for the selected Pokemon
  *
  * Feature: 015-combat-arena
+ * Updated: 018-combat-enhancements (added range display)
  */
 
 import styles from './MoveSelector.module.css';
+import { parseRange } from '../../lib/moveRanges';
 
 // Type colors for move badges
 const TYPE_COLORS = {
@@ -83,6 +85,12 @@ export default function MoveSelector({
           const isSelected = selectedMoveId === move.id;
           const typeColor = TYPE_COLORS[move.type?.toLowerCase()] || TYPE_COLORS.normal;
 
+          // Parse move range for display
+          const rangeInfo = parseRange(move.range);
+          const rangeDisplay = rangeInfo.type === 'self' ? 'Self' :
+                              rangeInfo.type === 'melee' ? 'Melee' :
+                              `${rangeInfo.cells} cells`;
+
           return (
             <div
               key={move.id}
@@ -91,7 +99,7 @@ export default function MoveSelector({
               onKeyDown={(e) => handleKeyDown(e, move)}
               role="button"
               tabIndex={disabled || noPp ? -1 : 0}
-              aria-label={`${move.name}, ${move.type} type, power ${move.power || '-'}, PP ${remainingPp}/${maxPp}`}
+              aria-label={`${move.name}, ${move.type} type, power ${move.power || '-'}, range ${rangeDisplay}, PP ${remainingPp}/${maxPp}`}
               aria-disabled={disabled || noPp}
             >
               <div className={styles.moveHeader}>
@@ -106,6 +114,9 @@ export default function MoveSelector({
               <div className={styles.moveStats}>
                 <span className={styles.movePower}>
                   PWR: {move.power || '-'}
+                </span>
+                <span className={styles.moveRange}>
+                  RNG: {rangeDisplay}
                 </span>
                 <span className={`${styles.movePp} ${remainingPp <= 2 ? styles.lowPp : ''}`}>
                   PP: {remainingPp}/{maxPp}

@@ -140,6 +140,7 @@ export default function BattleGrid({
                   {/* Render Pokemon if present */}
                   {combatant && (
                     <PokemonToken
+                      combatant={combatant}
                       combatantId={combatant.combatant_id}
                       pokemonId={combatant.number}
                       name={combatant.name}

@@ -1,0 +1,626 @@
+openapi: 3.0.3
+info:
+  title: Pokemon Combat API - Enhanced
+  description: API contracts for combat system enhancements including ranges, movement, and AI
+  version: 2.0.0
+
+servers:
+  - url: /api
+    description: Next.js API routes
+
+paths:
+  /battle/start:
+    post:
+      summary: Start a new battle
+      description: |
+        Initializes a battle with player and opponent Pokemon.
+        **Enhancement**: known_moves now always returns full move objects for both player and opponent combatants.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - zone_id
+                - player_pokemon_ids
+              properties:
+                zone_id:
+                  type: string
+                  description: Zone where battle occurs
+                player_pokemon_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: UUIDs of player's Pokemon to bring into battle
+                opponent_pokemon:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/OpponentPokemonInput'
+                  description: Wild or trainer opponent Pokemon
+      responses:
+        '200':
+          description: Battle started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      battle_id:
+                        type: string
+                        format: uuid
+                      battle_state:
+                        $ref: '#/components/schemas/BattleState'
+
+  /battle/action:
+    post:
+      summary: Execute a battle action
+      description: |
+        Executes an attack, movement, or pass action.
+        **Enhancement**: Now validates move range and movement distance.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - battle_id
+                - action_type
+                - actor_id
+              properties:
+                battle_id:
+                  type: string
+                  format: uuid
+                action_type:
+                  type: string
+                  enum: [attack, move, pass]
+                actor_id:
+                  type: string
+                  description: Combatant ID taking the action
+                move_id:
+                  type: string
+                  description: Move to use (required for attack action)
+                target_id:
+                  type: string
+                  description: Target combatant ID (required for attack action)
+                destination:
+                  $ref: '#/components/schemas/GridPosition'
+                  description: Destination cell (required for move action)
+      responses:
+        '200':
+          description: Action executed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      battle_state:
+                        $ref: '#/components/schemas/BattleState'
+                      action_result:
+                        $ref: '#/components/schemas/ActionResult'
+        '400':
+          description: Invalid action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                out_of_range:
+                  value:
+                    success: false
+                    error:
+                      code: "OUT_OF_RANGE"
+                      message: "Target is 4 cells away but move range is 1 cell"
+                      details:
+                        actor_position: { col: 2, row: 3 }
+                        target_position: { col: 6, row: 3 }
+                        distance: 4
+                        move_range: 1
+                movement_exceeded:
+                  value:
+                    success: false
+                    error:
+                      code: "MOVEMENT_EXCEEDED"
+                      message: "Cannot move 8 cells, only 6 movement remaining"
+                      details:
+                        requested_distance: 8
+                        movement_remaining: 6
+
+  /battle/state/{battleId}:
+    get:
+      summary: Get current battle state
+      description: |
+        Retrieves the persisted battle state.
+        **Enhancement**: Now includes state_hash for integrity verification.
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Battle state retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      battle_state:
+                        $ref: '#/components/schemas/BattleState'
+                      state_hash:
+                        type: string
+                        description: MD5 hash for integrity verification
+
+  /battle/ai-turn:
+    post:
+      summary: Execute AI turn (new endpoint)
+      description: |
+        **New**: Executes a complete AI turn with tactical decision-making.
+        Returns the AI's decision and resulting battle state.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - battle_id
+                - combatant_id
+              properties:
+                battle_id:
+                  type: string
+                  format: uuid
+                combatant_id:
+                  type: string
+                  description: AI-controlled combatant taking its turn
+      responses:
+        '200':
+          description: AI turn executed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      battle_state:
+                        $ref: '#/components/schemas/BattleState'
+                      ai_decision:
+                        $ref: '#/components/schemas/AIDecision'
+                      action_results:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ActionResult'
+
+  /battle/valid-targets:
+    post:
+      summary: Get valid targets for a move (new endpoint)
+      description: |
+        **New**: Returns all valid target cells for a selected move based on range.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - battle_id
+                - actor_id
+                - move_id
+              properties:
+                battle_id:
+                  type: string
+                  format: uuid
+                actor_id:
+                  type: string
+                move_id:
+                  type: string
+      responses:
+        '200':
+          description: Valid targets returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      move_range:
+                        type: integer
+                        description: Range in cells
+                      range_type:
+                        type: string
+                        enum: [self, melee, ranged, cone, line, radius]
+                      valid_cells:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/GridPosition'
+                      valid_targets:
+                        type: array
+                        items:
+                          type: string
+                          description: Combatant IDs of valid targets
+
+  /battle/valid-movement:
+    post:
+      summary: Get valid movement cells (new endpoint)
+      description: |
+        **New**: Returns all valid destination cells for movement.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - battle_id
+                - actor_id
+              properties:
+                battle_id:
+                  type: string
+                  format: uuid
+                actor_id:
+                  type: string
+      responses:
+        '200':
+          description: Valid movement cells returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      movement_remaining:
+                        type: integer
+                      valid_cells:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/GridPosition'
+
+components:
+  schemas:
+    BattleState:
+      type: object
+      properties:
+        battle_id:
+          type: string
+          format: uuid
+        battle_type:
+          type: string
+          enum: [wild, trainer, gym, pvp]
+        phase:
+          type: string
+          enum: [setup, combat, ended]
+        grid:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/GridCell'
+        combatants:
+          type: object
+          properties:
+            player:
+              type: array
+              items:
+                $ref: '#/components/schemas/Combatant'
+            opponent:
+              type: array
+              items:
+                $ref: '#/components/schemas/Combatant'
+        initiative_order:
+          type: array
+          items:
+            type: string
+        current_turn_index:
+          type: integer
+        round_number:
+          type: integer
+        battle_log:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+        outcome:
+          type: string
+          enum: [ongoing, victory, defeat, fled]
+        state_hash:
+          type: string
+          description: MD5 hash for integrity verification
+        highlighted_cells:
+          type: object
+          properties:
+            movement:
+              type: array
+              items:
+                $ref: '#/components/schemas/GridPosition'
+            targeting:
+              type: array
+              items:
+                $ref: '#/components/schemas/GridPosition'
+
+    Combatant:
+      type: object
+      properties:
+        combatant_id:
+          type: string
+        pokemon_id:
+          type: string
+        owner:
+          type: string
+          enum: [player, opponent]
+        name:
+          type: string
+        level:
+          type: integer
+        type:
+          type: array
+          items:
+            type: string
+        attributes:
+          type: object
+          properties:
+            str:
+              type: integer
+            dex:
+              type: integer
+            con:
+              type: integer
+            int:
+              type: integer
+            wis:
+              type: integer
+            cha:
+              type: integer
+        ac:
+          type: integer
+        max_hp:
+          type: integer
+        current_hp:
+          type: integer
+        known_moves:
+          type: array
+          items:
+            $ref: '#/components/schemas/Move'
+          description: Full move objects (not IDs)
+        known_move_ids:
+          type: array
+          items:
+            type: string
+        move_pp:
+          type: object
+          additionalProperties:
+            type: integer
+        status_effects:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusEffect'
+        position:
+          $ref: '#/components/schemas/GridPosition'
+        initiative_roll:
+          type: integer
+        has_acted_this_round:
+          type: boolean
+        is_fainted:
+          type: boolean
+        movement_remaining:
+          type: integer
+          description: Cells of movement left this turn
+        has_moved_this_turn:
+          type: boolean
+        proficiency_bonus:
+          type: integer
+
+    Move:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        power:
+          oneOf:
+            - type: array
+              items:
+                type: string
+            - type: string
+              enum: [none]
+        pp:
+          type: integer
+        range:
+          type: string
+        range_cells:
+          type: integer
+          description: Computed from range string
+        range_type:
+          type: string
+          enum: [self, melee, ranged, cone, line, radius]
+        is_aoe:
+          type: boolean
+        description:
+          type: string
+
+    GridCell:
+      type: object
+      properties:
+        col:
+          type: integer
+          minimum: 0
+          maximum: 9
+        row:
+          type: integer
+          minimum: 0
+          maximum: 9
+        occupant_id:
+          type: string
+          nullable: true
+        occupant_type:
+          type: string
+          enum: [pokemon, trainer]
+          nullable: true
+        is_movement_target:
+          type: boolean
+        is_attack_target:
+          type: boolean
+        is_in_aoe:
+          type: boolean
+
+    GridPosition:
+      type: object
+      required:
+        - col
+        - row
+      properties:
+        col:
+          type: integer
+          minimum: 0
+          maximum: 9
+        row:
+          type: integer
+          minimum: 0
+          maximum: 9
+
+    StatusEffect:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [ASLEEP, BURNED, FROZEN, PARALYZED, POISONED, BADLY_POISONED, CONFUSED, FLINCHED]
+        duration:
+          type: integer
+          nullable: true
+        source_id:
+          type: string
+        applied_at_round:
+          type: integer
+
+    ActionResult:
+      type: object
+      properties:
+        action_type:
+          type: string
+          enum: [attack, move, pass]
+        actor_id:
+          type: string
+        target_id:
+          type: string
+          nullable: true
+        move_id:
+          type: string
+          nullable: true
+        hit:
+          type: boolean
+          nullable: true
+        damage:
+          type: integer
+          nullable: true
+        critical:
+          type: boolean
+        status_applied:
+          type: string
+          nullable: true
+        pp_remaining:
+          type: integer
+          nullable: true
+        movement_from:
+          $ref: '#/components/schemas/GridPosition'
+        movement_to:
+          $ref: '#/components/schemas/GridPosition'
+
+    AIDecision:
+      type: object
+      properties:
+        action_type:
+          type: string
+          enum: [attack, move, pass]
+        move_id:
+          type: string
+          nullable: true
+        target_id:
+          type: string
+          nullable: true
+        destination:
+          $ref: '#/components/schemas/GridPosition'
+        score:
+          type: number
+          description: AI confidence score
+        reasoning:
+          type: array
+          items:
+            type: string
+          description: Debug info explaining decision
+
+    OpponentPokemonInput:
+      type: object
+      properties:
+        pokemon_id:
+          type: string
+        level:
+          type: integer
+        move_ids:
+          type: array
+          items:
+            type: string
+
+    LogEntry:
+      type: object
+      properties:
+        round:
+          type: integer
+        actor_id:
+          type: string
+        action:
+          type: string
+        target_id:
+          type: string
+          nullable: true
+        result:
+          type: object
+        timestamp:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object

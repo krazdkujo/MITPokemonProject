@@ -1,0 +1,71 @@
+/**
+ * GridHighlight Styles
+ * Feature: 018-combat-enhancements
+ */
+
+.highlightLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cell {
+  position: absolute;
+  border-radius: 4px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.cell:hover {
+  transform: scale(1.05);
+}
+
+.cell:focus {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
+/* Movement highlighting (blue) */
+.movement {
+  background-color: rgba(66, 165, 245, 0.4);
+  border: 2px solid rgba(66, 165, 245, 0.8);
+}
+
+.movement:hover {
+  background-color: rgba(66, 165, 245, 0.6);
+}
+
+/* Targeting highlighting (red/orange) */
+.targeting {
+  background-color: rgba(244, 67, 54, 0.4);
+  border: 2px solid rgba(244, 67, 54, 0.8);
+}
+
+.targeting:hover {
+  background-color: rgba(244, 67, 54, 0.6);
+}
+
+/* AoE highlighting (purple) */
+.aoe {
+  background-color: rgba(156, 39, 176, 0.3);
+  border: 2px dashed rgba(156, 39, 176, 0.7);
+  pointer-events: none;
+}
+
+/* Animation for pulsing effect */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.movement,
+.targeting {
+  animation: pulse 1.5s ease-in-out infinite;
+}

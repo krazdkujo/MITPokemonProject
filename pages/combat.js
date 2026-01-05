@@ -29,8 +29,9 @@ import {
   setSelection,
   clearSelection
 } from '../lib/battleState';
-import { toGridNotation, initializeGrid } from '../lib/gridUtils';
+import { toGridNotation, initializeGrid, getValidAttackTargetsInRange } from '../lib/gridUtils';
 import { apiFetch } from '../lib/apiFetch';
+import { parseRange } from '../lib/moveRanges';
 
 /**
  * Combat Page Component
@@ -50,6 +51,7 @@ export default function CombatPage() {
   const [actionInProgress, setActionInProgress] = useState(false);
   const [selectedMove, setSelectedMove] = useState(null);
   const [battleResult, setBattleResult] = useState(null);
+  const [isMovementMode, setIsMovementMode] = useState(false); // T038: Movement mode state
 
   // Get query parameters for battle initialization
   const { opponent_id, opponent_level, battle_type, battle_id } = router.query;
@@ -182,6 +184,7 @@ export default function CombatPage() {
       executeOpponentTurn(currentCombatant);
     }
   }, [battleState?.current_turn_index, battleState?.phase]);
+
 
   /**
    * Initialize a new battle via API
@@ -339,9 +342,23 @@ export default function CombatPage() {
   };
 
   /**
-   * Handle cell click during combat phase - target selection
+   * Handle cell click during combat phase - target selection or movement
+   * Feature 018: Updated to handle movement mode
    */
   const handleCombatCellClick = (col, row) => {
+    // Handle movement mode (T042)
+    if (isMovementMode) {
+      // Check if this is a valid movement destination
+      const isValidDestination = highlightedCells.some(
+        cell => cell.col === col && cell.row === row
+      );
+      if (isValidDestination) {
+        executeMovement({ col, row });
+      }
+      return;
+    }
+
+    // Handle attack targeting
     if (!selectedMove) return;
 
     // Find if there's an opponent at this position
@@ -384,17 +401,193 @@ export default function CombatPage() {
 
   /**
    * Handle move selection
+   * Feature 018: Uses move range to calculate valid targets
    */
   const handleMoveSelect = (move) => {
     setSelectedMove(move);
 
-    // Highlight valid targets (opponent Pokemon)
-    const targets = battleState.combatants.opponent
-      .filter(p => p.current_hp > 0 && p.position)
-      .map(p => ({ col: p.position.col, row: p.position.row }));
+    // Get current combatant position
+    const currentCombatant = getCurrentCombatant(battleState);
+    if (!currentCombatant || !currentCombatant.position) {
+      setError('Cannot select move: Pokemon has no position');
+      return;
+    }
 
-    setHighlightedCells(targets);
+    // Parse move range to get cells (T032)
+    const rangeInfo = parseRange(move.range);
+    const moveRange = rangeInfo.cells;
+
+    // Get valid targets within range (T031, T032)
+    const validTargets = getValidAttackTargetsInRange(
+      currentCombatant.position,
+      moveRange,
+      battleState.combatants.opponent
+    );
+
+    if (validTargets.length === 0) {
+      setError(`No targets in range for ${move.name} (range: ${moveRange} cells)`);
+      setSelectedMove(null);
+      return;
+    }
+
+    // Highlight valid target cells (T033)
+    setHighlightedCells(validTargets.map(t => ({ col: t.col, row: t.row })));
     setHighlightType('attack');
+  };
+
+  /**
+   * Enter movement mode - show valid movement destinations
+   * Feature 018: T037, T038, T039, T040
+   */
+  const handleEnterMovementMode = () => {
+    const currentCombatant = getCurrentCombatant(battleState);
+    if (!currentCombatant || !currentCombatant.position) {
+      setError('Cannot move: Pokemon has no position');
+      return;
+    }
+
+    // Check if already moved this turn (T046)
+    if (currentCombatant.has_moved_this_turn) {
+      setError('This Pokemon has already moved this turn');
+      return;
+    }
+
+    // Clear any selected move
+    setSelectedMove(null);
+    setIsMovementMode(true);
+
+    // Calculate valid movement destinations (T039)
+    // Use movement_remaining if set, otherwise fall back to walking_speed or default 6
+    const movementRange = currentCombatant.movement_remaining ?? currentCombatant.walking_speed ?? 6;
+
+    // Get all occupied cells (T040)
+    const occupiedCells = new Set();
+    [...battleState.combatants.player, ...battleState.combatants.opponent]
+      .filter(c => c.position && c.current_hp > 0)
+      .forEach(c => occupiedCells.add(`${c.position.col},${c.position.row}`));
+
+    // Calculate valid destinations
+    const validDestinations = [];
+    for (let col = 0; col < 10; col++) {
+      for (let row = 0; row < 10; row++) {
+        const distance = Math.abs(col - currentCombatant.position.col) + Math.abs(row - currentCombatant.position.row);
+        if (distance === 0) continue; // Skip current position
+        if (distance > movementRange) continue; // Skip out of range
+        if (occupiedCells.has(`${col},${row}`)) continue; // Skip occupied
+
+        validDestinations.push({ col, row });
+      }
+    }
+
+    if (validDestinations.length === 0) {
+      setError('No valid movement destinations available');
+      setIsMovementMode(false);
+      return;
+    }
+
+    // Highlight movement destinations (T041)
+    setHighlightedCells(validDestinations);
+    setHighlightType('move');
+  };
+
+  /**
+   * Cancel movement mode
+   */
+  const handleCancelMovement = () => {
+    setIsMovementMode(false);
+    setHighlightedCells([]);
+    setHighlightType(null);
+  };
+
+  /**
+   * Execute a movement action
+   * Feature 018: T042
+   */
+  const executeMovement = async (targetPosition) => {
+    if (!isMovementMode || actionInProgress) return;
+
+    const currentCombatant = getCurrentCombatant(battleState);
+    if (!currentCombatant) return;
+
+    setActionInProgress(true);
+    setError(null);
+
+    try {
+      const response = await apiFetch('/api/battle/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          battle_id: battleState.battle_id,
+          battle_state: {
+            combatants: battleState.combatants,
+            current_turn_index: battleState.current_turn_index,
+            initiative_order: battleState.initiative_order,
+            round_number: battleState.round_number
+          },
+          action_type: 'move',
+          actor_id: currentCombatant.combatant_id,
+          target_position: targetPosition
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'Movement failed');
+      }
+
+      // Update local state with new position
+      processMovementResult(data.data, currentCombatant.combatant_id, targetPosition);
+
+    } catch (err) {
+      console.error('Movement error:', err);
+      setError(err.message);
+    } finally {
+      setActionInProgress(false);
+      setIsMovementMode(false);
+      setHighlightedCells([]);
+      setHighlightType(null);
+    }
+  };
+
+  /**
+   * Process movement result and update state
+   */
+  const processMovementResult = (result, actorId, targetPosition) => {
+    let newState = { ...battleState };
+
+    // Update actor position
+    const actorOwner = battleState.combatants.player.find(p => p.combatant_id === actorId) ? 'player' : 'opponent';
+    const actorIndex = newState.combatants[actorOwner].findIndex(p => p.combatant_id === actorId);
+    if (actorIndex !== -1) {
+      newState.combatants[actorOwner][actorIndex] = {
+        ...newState.combatants[actorOwner][actorIndex],
+        position: targetPosition,
+        has_moved_this_turn: true,
+        movement_remaining: newState.combatants[actorOwner][actorIndex].movement_remaining - (result.movement?.distance || 0)
+      };
+    }
+
+    // Update grid
+    const oldPos = result.movement?.from;
+    if (oldPos && newState.grid?.[oldPos.row]?.[oldPos.col]) {
+      newState.grid[oldPos.row][oldPos.col].occupant_type = 'empty';
+      newState.grid[oldPos.row][oldPos.col].occupant_id = null;
+    }
+    if (newState.grid?.[targetPosition.row]?.[targetPosition.col]) {
+      newState.grid[targetPosition.row][targetPosition.col].occupant_type = 'pokemon';
+      newState.grid[targetPosition.row][targetPosition.col].occupant_id = actorId;
+    }
+
+    // Add log entry
+    const actor = findCombatant(battleState, actorId);
+    newState = addLogEntry(newState, {
+      type: 'move',
+      actor: actor?.name,
+      result: `Moved to ${result.movement?.to?.notation || toGridNotation(targetPosition.col, targetPosition.row)}`
+    });
+
+    setBattleState(clearSelection(newState));
   };
 
   /**
@@ -437,6 +630,12 @@ export default function CombatPage() {
       // Process the attack result
       processAttackResult(data.data, currentCombatant.combatant_id, targetId);
 
+      // Check for save failure (T026 - Feature 018)
+      if (data.data.save_status === 'save_failed') {
+        console.error('Failed to save battle state:', data.data.save_error);
+        setError('Warning: Battle state may not have been saved. Please refresh if issues occur.');
+      }
+
     } catch (err) {
       console.error('Attack error:', err);
       setError(err.message);
@@ -450,9 +649,20 @@ export default function CombatPage() {
 
   /**
    * Process attack result and update state
+   * Feature 019: Added delay before defeat/victory modal and API call for battle end
+   * @param {Object} result - API response data
+   * @param {string} actorId - Attacking combatant ID
+   * @param {string} targetId - Target combatant ID
+   * @param {Object} [move] - Move used (optional, falls back to selectedMove or result data)
    */
-  const processAttackResult = (result, actorId, targetId) => {
+  const processAttackResult = async (result, actorId, targetId, move = null) => {
     let newState = { ...battleState };
+
+    // Get move info from parameter, selectedMove, or result
+    const usedMove = move || selectedMove || {
+      id: result.attack_result?.move_id,
+      name: result.attack_result?.move_name || 'Attack'
+    };
 
     // Update target HP
     if (result.target) {
@@ -472,115 +682,347 @@ export default function CombatPage() {
     // Update actor's PP
     const actorOwner = battleState.combatants.player.find(p => p.combatant_id === actorId) ? 'player' : 'opponent';
     const actorIndex = newState.combatants[actorOwner].findIndex(p => p.combatant_id === actorId);
-    if (actorIndex !== -1 && result.attack_result) {
+    if (actorIndex !== -1 && result.attack_result && usedMove?.id) {
       newState.combatants[actorOwner][actorIndex] = {
         ...newState.combatants[actorOwner][actorIndex],
         move_pp: {
           ...newState.combatants[actorOwner][actorIndex].move_pp,
-          [selectedMove.id]: result.attack_result.pp_remaining
+          [usedMove.id]: result.attack_result.pp_remaining
         }
       };
     }
 
-    // Add log entry
+    // Add detailed log entry (Feature 019: US1 - Combat Action Feedback)
     const actor = findCombatant(battleState, actorId);
     const target = findCombatant(battleState, targetId);
     const hitMiss = result.attack_result?.hit ? 'Hit' : 'Miss';
     const damage = result.attack_result?.damage?.final_damage || 0;
+    const hpBefore = result.target?.hp_before ?? (target?.current_hp + damage);
+    const hpAfter = result.target?.hp_after ?? target?.current_hp;
+
+    // Create detailed log message with HP change
+    const logMessage = result.attack_result?.hit
+      ? `${hitMiss}! ${damage} damage. ${target?.name} HP: ${hpBefore} -> ${hpAfter}${result.target?.fainted ? ' - FAINTED!' : ''}`
+      : 'Miss!';
 
     newState = addLogEntry(newState, {
       type: 'attack',
       actor: actor?.name,
       target: target?.name,
-      move: selectedMove.name,
-      result: result.attack_result?.hit
-        ? `${hitMiss}! ${damage} damage${result.target?.fainted ? ' - FAINTED!' : ''}`
-        : 'Miss!'
+      move: usedMove?.name || 'Attack',
+      result: logMessage
     });
 
+    // Update state FIRST to show feedback before modal (Feature 019: US1, US2)
+    setBattleState(clearSelection(newState));
+
     // Check for battle end
-    if (result.outcome === 'victory') {
-      newState = transitionToEnded(newState, 'victory');
-      setBattleResult({
-        outcome: 'victory',
-        rewards: result.rewards
+    if (result.outcome === 'victory' || result.outcome === 'defeat') {
+      // Feature 019: Add 1.5 second delay for UI feedback visibility (US2)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Feature 019: Call battle end API to persist HP and cleanup (US3)
+      // T023: Added retry logic (1 retry on failure)
+      const combatantsPayload = {
+        player: newState.combatants.player.map(p => ({
+          combatant_id: p.combatant_id,
+          pokemon_db_id: p.pokemon_db_id,
+          current_hp: p.current_hp
+        })),
+        opponent: newState.combatants.opponent.map(p => ({
+          combatant_id: p.combatant_id,
+          current_hp: p.current_hp
+        }))
+      };
+
+      console.log('Calling /api/battle/end with:', {
+        battle_id: newState.battle_id,
+        outcome: result.outcome,
+        combatants: combatantsPayload
       });
-    } else if (result.outcome === 'defeat') {
-      newState = transitionToEnded(newState, 'defeat');
-      setBattleResult({ outcome: 'defeat' });
+
+      // Helper function to call battle end API with retry
+      const callBattleEndApi = async (retryCount = 0) => {
+        try {
+          const endResponse = await apiFetch('/api/battle/end', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              battle_id: newState.battle_id,
+              outcome: result.outcome,
+              combatants: combatantsPayload
+            })
+          });
+
+          const endData = await endResponse.json();
+
+          if (!endResponse.ok) {
+            console.error('Failed to end battle:', endData.error);
+            // Retry once on failure
+            if (retryCount < 1) {
+              console.log('Retrying battle end API call...');
+              await new Promise(resolve => setTimeout(resolve, 500));
+              return callBattleEndApi(retryCount + 1);
+            }
+          } else {
+            console.log('/api/battle/end response:', endData);
+          }
+        } catch (err) {
+          console.error('Error calling battle end API:', err);
+          // Retry once on network error
+          if (retryCount < 1) {
+            console.log('Retrying battle end API call after error...');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return callBattleEndApi(retryCount + 1);
+          }
+        }
+      };
+
+      await callBattleEndApi();
+
+      // Now transition state and show modal
+      const endedState = transitionToEnded(newState, result.outcome);
+      setBattleState(endedState);
+
+      if (result.outcome === 'victory') {
+        setBattleResult({
+          outcome: 'victory',
+          rewards: result.rewards
+        });
+      } else {
+        setBattleResult({ outcome: 'defeat' });
+      }
     } else {
       // Advance turn
-      newState = advanceTurn(newState);
+      const advancedState = advanceTurn(newState);
+      setBattleState(clearSelection(advancedState));
     }
-
-    setBattleState(clearSelection(newState));
   };
 
   /**
    * Execute opponent AI turn
+   * Feature 018: Updated to use AI endpoint for tactical decisions (T055)
+   * Supports move + attack in same turn (like D&D 5e)
    */
   const executeOpponentTurn = async (opponent) => {
     setActionInProgress(true);
 
     // Small delay for visual feedback
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-    // Select a random move with PP
-    const availableMoves = (opponent.known_moves || []).filter(move => {
-      const pp = opponent.move_pp?.[move.id] ?? move.pp ?? 1;
-      return pp > 0;
-    });
-
-    if (availableMoves.length === 0) {
-      // No moves available, skip turn
-      const newState = advanceTurn(battleState);
-      setBattleState(newState);
-      setActionInProgress(false);
-      return;
-    }
-
-    const move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-
-    // Select a random player target
-    const playerTargets = battleState.combatants.player.filter(p => p.current_hp > 0);
-    if (playerTargets.length === 0) {
-      setActionInProgress(false);
-      return;
-    }
-
-    const target = playerTargets[Math.floor(Math.random() * playerTargets.length)];
+    let currentState = battleState;
 
     try {
-      const response = await apiFetch('/api/battle/action', {
+      // Get AI decision from endpoint (T055)
+      const aiResponse = await apiFetch('/api/battle/ai-turn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          battle_id: battleState.battle_id,
+          battle_id: currentState.battle_id,
           battle_state: {
-            combatants: battleState.combatants,
-            current_turn_index: battleState.current_turn_index,
-            initiative_order: battleState.initiative_order,
-            round_number: battleState.round_number
+            combatants: currentState.combatants,
+            current_turn_index: currentState.current_turn_index,
+            initiative_order: currentState.initiative_order,
+            round_number: currentState.round_number,
+            grid: currentState.grid
           },
-          action_type: 'attack',
-          actor_id: opponent.combatant_id,
-          move_id: move.id,
-          target_id: target.combatant_id
+          combatant_id: opponent.combatant_id
         })
       });
 
-      const data = await response.json();
+      const aiData = await aiResponse.json();
 
-      if (response.ok) {
-        setSelectedMove(move); // Temporarily set for processAttackResult
-        processAttackResult(data.data, opponent.combatant_id, target.combatant_id);
+      if (!aiResponse.ok) {
+        console.error('AI decision failed:', aiData.error);
+        // Fall back to advancing turn
+        const newState = advanceTurn(currentState);
+        setBattleState(newState);
+        setActionInProgress(false);
+        return;
+      }
+
+      const aiDecision = aiData.data;
+
+      // Handle pass action
+      if (aiDecision.action_type === 'pass') {
+        let newState = addLogEntry(currentState, {
+          type: 'pass',
+          actor: opponent.name,
+          result: 'passed their turn'
+        });
+        newState = advanceTurn(newState);
+        setBattleState(newState);
+        setActionInProgress(false);
+        return;
+      }
+
+      // If AI wants to move first, do that
+      if (aiDecision.action_type === 'move') {
+        const moveResponse = await apiFetch('/api/battle/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            battle_id: currentState.battle_id,
+            battle_state: {
+              combatants: currentState.combatants,
+              current_turn_index: currentState.current_turn_index,
+              initiative_order: currentState.initiative_order,
+              round_number: currentState.round_number
+            },
+            action_type: 'move',
+            actor_id: opponent.combatant_id,
+            target_position: aiDecision.destination
+          })
+        });
+
+        const moveData = await moveResponse.json();
+
+        if (moveResponse.ok) {
+          // Update local state with movement
+          const actorIndex = currentState.combatants.opponent.findIndex(p => p.combatant_id === opponent.combatant_id);
+          if (actorIndex !== -1) {
+            const newCombatants = { ...currentState.combatants };
+            newCombatants.opponent = [...currentState.combatants.opponent];
+            newCombatants.opponent[actorIndex] = {
+              ...newCombatants.opponent[actorIndex],
+              position: aiDecision.destination,
+              has_moved_this_turn: true
+            };
+            currentState = {
+              ...currentState,
+              combatants: newCombatants
+            };
+            currentState = addLogEntry(currentState, {
+              type: 'move',
+              actor: opponent.name,
+              result: `Moved to ${toGridNotation(aiDecision.destination.col, aiDecision.destination.row)}`
+            });
+          }
+        }
+
+        // After moving, get another AI decision for attack
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        const attackResponse = await apiFetch('/api/battle/ai-turn', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            battle_id: currentState.battle_id,
+            battle_state: {
+              combatants: currentState.combatants,
+              current_turn_index: currentState.current_turn_index,
+              initiative_order: currentState.initiative_order,
+              round_number: currentState.round_number,
+              grid: currentState.grid
+            },
+            combatant_id: opponent.combatant_id
+          })
+        });
+
+        const attackData = await attackResponse.json();
+        if (attackResponse.ok && attackData.data.action_type === 'attack') {
+          // Execute the attack
+          const actionResponse = await apiFetch('/api/battle/action', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              battle_id: currentState.battle_id,
+              battle_state: {
+                combatants: currentState.combatants,
+                current_turn_index: currentState.current_turn_index,
+                initiative_order: currentState.initiative_order,
+                round_number: currentState.round_number
+              },
+              action_type: 'attack',
+              actor_id: opponent.combatant_id,
+              move_id: attackData.data.move_id,
+              target_id: attackData.data.target_id
+            })
+          });
+
+          const actionResult = await actionResponse.json();
+          if (actionResponse.ok) {
+            const move = opponent.known_moves?.find(m => m.id === attackData.data.move_id);
+            // Update state and advance turn via processAttackResult
+            setBattleState(currentState); // Set intermediate state first
+            processAttackResult(actionResult.data, opponent.combatant_id, attackData.data.target_id, move);
+            setActionInProgress(false);
+            return;
+          }
+        }
+
+        // If no attack possible after moving, just advance turn
+        const newState = advanceTurn(currentState);
+        setBattleState(newState);
+        setActionInProgress(false);
+        return;
+      }
+
+      // Direct attack (no movement needed)
+      if (aiDecision.action_type === 'attack') {
+        const actionResponse = await apiFetch('/api/battle/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            battle_id: currentState.battle_id,
+            battle_state: {
+              combatants: currentState.combatants,
+              current_turn_index: currentState.current_turn_index,
+              initiative_order: currentState.initiative_order,
+              round_number: currentState.round_number
+            },
+            action_type: 'attack',
+            actor_id: opponent.combatant_id,
+            move_id: aiDecision.move_id,
+            target_id: aiDecision.target_id
+          })
+        });
+
+        const actionData = await actionResponse.json();
+        if (actionResponse.ok) {
+          const move = opponent.known_moves?.find(m => m.id === aiDecision.move_id);
+          processAttackResult(actionData.data, opponent.combatant_id, aiDecision.target_id, move);
+        } else {
+          // Attack failed, advance turn
+          const newState = advanceTurn(currentState);
+          setBattleState(newState);
+        }
       }
     } catch (err) {
       console.error('Opponent turn error:', err);
+      // On error, advance turn to prevent getting stuck
+      const newState = advanceTurn(currentState);
+      setBattleState(newState);
     } finally {
       setActionInProgress(false);
       setSelectedMove(null);
     }
+  };
+
+  /**
+   * Handle pass turn - end turn without taking action
+   */
+  const handlePassTurn = () => {
+    if (actionInProgress) return;
+
+    const currentCombatant = getCurrentCombatant(battleState);
+    if (!currentCombatant || currentCombatant.owner !== 'player') return;
+
+    // Clear any selections
+    setSelectedMove(null);
+    setIsMovementMode(false);
+    setHighlightedCells([]);
+    setHighlightType(null);
+
+    // Add log entry and advance turn
+    let newState = addLogEntry(battleState, {
+      type: 'pass',
+      actor: currentCombatant.name,
+      result: 'passed their turn'
+    });
+
+    newState = advanceTurn(newState);
+    setBattleState(newState);
   };
 
   /**
@@ -675,9 +1117,18 @@ export default function CombatPage() {
 
   /**
    * Handle battle end continue button
+   * Feature 019: Added battle end API call for flee outcomes
    */
   const handleBattleEndContinue = async () => {
-    // Refresh party data
+    // For flee outcome, the abandon API already handled cleanup
+    // For victory/defeat, the processAttackResult already called battle end API
+    // But as a safety net, try to call end API if battle is still in memory
+
+    if (battleState && battleResult?.outcome === 'fled') {
+      // Flee was handled by abandon API, no additional action needed
+    }
+
+    // Refresh party data to get updated HP
     await refreshData();
 
     // Navigate based on outcome
@@ -944,16 +1395,51 @@ export default function CombatPage() {
               {isPlayerTurn && currentCombatant ? (
                 <>
                   <p className="panel-hint">
-                    {selectedMove
+                    {isMovementMode
+                      ? 'Click a blue cell to move'
+                      : selectedMove
                       ? `Select a target for ${selectedMove.name}`
-                      : 'Select a move, then click an enemy to attack'}
+                      : 'Select a move or action'}
                   </p>
+
+                  {/* Action Buttons: Move and Pass */}
+                  <div className="action-buttons">
+                    {isMovementMode ? (
+                      <button
+                        className="cancel-move-btn"
+                        onClick={handleCancelMovement}
+                        disabled={actionInProgress}
+                      >
+                        Cancel Movement
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          className="move-btn"
+                          onClick={handleEnterMovementMode}
+                          disabled={actionInProgress || currentCombatant.has_moved_this_turn === true}
+                          title={currentCombatant.has_moved_this_turn ? 'Already moved this turn' : `Walking speed: ${currentCombatant.walking_speed || currentCombatant.movement_remaining || 6} cells`}
+                        >
+                          Move ({currentCombatant.movement_remaining ?? currentCombatant.walking_speed ?? 6} cells)
+                        </button>
+                        <button
+                          className="pass-btn"
+                          onClick={handlePassTurn}
+                          disabled={actionInProgress}
+                          title="End your turn without taking an action"
+                        >
+                          Pass Turn
+                        </button>
+                      </>
+                    )}
+                  </div>
+
                   <MoveSelector
                     moves={currentCombatant.known_moves || []}
                     movePp={currentCombatant.move_pp || {}}
                     selectedMoveId={selectedMove?.id}
                     onMoveSelect={handleMoveSelect}
-                    disabled={actionInProgress}
+                    disabled={actionInProgress || isMovementMode}
                   />
                   {battleState.battle_type === 'wild' && (
                     <>
@@ -1196,6 +1682,69 @@ export default function CombatPage() {
         .start-battle-btn:disabled {
           background: #666;
           color: #999;
+          cursor: not-allowed;
+        }
+
+        .action-buttons {
+          margin-bottom: 12px;
+        }
+
+        .move-btn {
+          width: 100%;
+          padding: 10px;
+          background: rgba(66, 165, 245, 0.3);
+          border: 1px solid #42a5f5;
+          color: white;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .move-btn:hover:not(:disabled) {
+          background: rgba(66, 165, 245, 0.5);
+        }
+
+        .move-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .cancel-move-btn {
+          width: 100%;
+          padding: 10px;
+          background: rgba(255, 152, 0, 0.3);
+          border: 1px solid #ff9800;
+          color: white;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .cancel-move-btn:hover:not(:disabled) {
+          background: rgba(255, 152, 0, 0.5);
+        }
+
+        .pass-btn {
+          width: 100%;
+          padding: 10px;
+          margin-top: 8px;
+          background: rgba(156, 163, 175, 0.3);
+          border: 1px solid #9ca3af;
+          color: white;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .pass-btn:hover:not(:disabled) {
+          background: rgba(156, 163, 175, 0.5);
+        }
+
+        .pass-btn:disabled {
+          opacity: 0.5;
           cursor: not-allowed;
         }
 

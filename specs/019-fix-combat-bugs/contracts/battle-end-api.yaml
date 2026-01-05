@@ -1,0 +1,194 @@
+openapi: 3.0.3
+info:
+  title: Battle End API
+  description: Endpoint for finalizing battles and persisting results
+  version: 1.0.0
+
+paths:
+  /api/battle/end:
+    post:
+      summary: End a battle and persist results
+      description: |
+        Called when a battle ends in victory or defeat.
+        Updates active_battles status and persists final HP to player_pokemon.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - battle_id
+                - outcome
+                - combatants
+              properties:
+                battle_id:
+                  type: string
+                  format: uuid
+                  description: ID of the battle to end
+                outcome:
+                  type: string
+                  enum: [victory, defeat]
+                  description: Battle outcome from player's perspective
+                combatants:
+                  type: object
+                  description: Final state of all combatants
+                  properties:
+                    player:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/CombatantFinalState'
+                    opponent:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/CombatantFinalState'
+            example:
+              battle_id: "cd9c94dd-d897-4450-85fd-86cb82bf46cc"
+              outcome: "defeat"
+              combatants:
+                player:
+                  - combatant_id: "894bf0c7-98fe-4f47-84a0-8172bdfac5ae"
+                    pokemon_db_id: "550e8400-e29b-41d4-a716-446655440000"
+                    current_hp: 0
+                opponent:
+                  - combatant_id: "95658654-e4e2-441d-8df8-d34a230c0748"
+                    current_hp: 15
+      responses:
+        '200':
+          description: Battle ended successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      battle_id:
+                        type: string
+                        format: uuid
+                      outcome:
+                        type: string
+                        enum: [victory, defeat]
+                      hp_updated:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            pokemon_id:
+                              type: string
+                              format: uuid
+                            new_hp:
+                              type: integer
+                      battle_status:
+                        type: string
+                        enum: [victory, defeat]
+              example:
+                success: true
+                data:
+                  battle_id: "cd9c94dd-d897-4450-85fd-86cb82bf46cc"
+                  outcome: "defeat"
+                  hp_updated:
+                    - pokemon_id: "550e8400-e29b-41d4-a716-446655440000"
+                      new_hp: 0
+                  battle_status: "defeat"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                alreadyEnded:
+                  value:
+                    success: false
+                    error:
+                      code: "BATTLE_ALREADY_ENDED"
+                      message: "Battle has already ended"
+                invalidOutcome:
+                  value:
+                    success: false
+                    error:
+                      code: "INVALID_OUTCOME"
+                      message: "Outcome must be 'victory' or 'defeat'"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                error:
+                  code: "UNAUTHORIZED"
+                  message: "No authentication token provided"
+        '404':
+          description: Battle not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                error:
+                  code: "BATTLE_NOT_FOUND"
+                  message: "Battle not found or does not belong to user"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                error:
+                  code: "INTERNAL_ERROR"
+                  message: "Failed to save battle result"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    CombatantFinalState:
+      type: object
+      required:
+        - combatant_id
+        - current_hp
+      properties:
+        combatant_id:
+          type: string
+          format: uuid
+          description: In-battle combatant ID
+        pokemon_db_id:
+          type: string
+          format: uuid
+          description: Player's Pokemon database ID (only for player Pokemon)
+        current_hp:
+          type: integer
+          minimum: 0
+          description: Final HP value
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
