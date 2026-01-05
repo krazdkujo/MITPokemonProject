@@ -1,0 +1,659 @@
+openapi: 3.0.3
+info:
+  title: Pokemon 5e Battle API
+  version: 1.0.0
+  description: API contracts for the Pokemon 5e combat system
+
+servers:
+  - url: /api
+
+paths:
+  /battle/{battleId}:
+    get:
+      summary: Get battle state
+      operationId: getBattleState
+      tags: [Battle]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: battleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Current battle state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BattleStateResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /battle/action:
+    post:
+      summary: Execute a battle action
+      operationId: executeBattleAction
+      tags: [Battle]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BattleActionRequest'
+      responses:
+        '200':
+          description: Action result with updated battle state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BattleActionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /battle/switch:
+    post:
+      summary: Switch Pokemon in battle
+      operationId: switchPokemon
+      tags: [Battle]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwitchRequest'
+      responses:
+        '200':
+          description: Switch result with updated battle state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwitchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /battle/catch:
+    post:
+      summary: Attempt to catch a wild Pokemon
+      operationId: attemptCatch
+      tags: [Battle]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatchRequest'
+      responses:
+        '200':
+          description: Catch attempt result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /battle/flee:
+    post:
+      summary: Attempt to flee from battle
+      operationId: attemptFlee
+      tags: [Battle]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleeRequest'
+      responses:
+        '200':
+          description: Flee attempt result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleeResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /pokemon/rest:
+    post:
+      summary: Rest Pokemon to restore HP/PP
+      operationId: restPokemon
+      tags: [Pokemon]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestRequest'
+      responses:
+        '200':
+          description: Rest result with updated Pokemon state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /battle/transform:
+    post:
+      summary: Transform a Pokemon (Mega, Z-Move, Dynamax, Tera)
+      operationId: transformPokemon
+      tags: [Battle]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransformRequest'
+      responses:
+        '200':
+          description: Transformation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransformResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [success, error]
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+
+    BattleStateResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+          enum: [true]
+        data:
+          $ref: '#/components/schemas/BattleState'
+
+    BattleState:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        format:
+          type: string
+          enum: ['1v1', '2v2']
+        status:
+          type: string
+          enum: [active, victory, defeat, fled, caught]
+        turn_number:
+          type: integer
+        weather:
+          $ref: '#/components/schemas/WeatherState'
+        terrain:
+          $ref: '#/components/schemas/TerrainState'
+        player_combatants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Combatant'
+        enemy_combatants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Combatant'
+        initiative_order:
+          type: array
+          items:
+            $ref: '#/components/schemas/InitiativeEntry'
+        current_turn_combatant_id:
+          type: string
+        battle_log:
+          type: array
+          items:
+            $ref: '#/components/schemas/BattleLogEntry'
+
+    Combatant:
+      type: object
+      properties:
+        id:
+          type: string
+        pokemon_id:
+          type: string
+        name:
+          type: string
+        level:
+          type: integer
+        current_hp:
+          type: integer
+        max_hp:
+          type: integer
+        ac:
+          type: integer
+        position:
+          type: object
+          properties:
+            x:
+              type: integer
+            y:
+              type: integer
+        types:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          nullable: true
+        volatile_statuses:
+          type: array
+          items:
+            type: string
+        moves:
+          type: array
+          items:
+            $ref: '#/components/schemas/CombatMove'
+        can_act:
+          type: boolean
+        bond_level:
+          type: integer
+        transformation:
+          $ref: '#/components/schemas/TransformationState'
+
+    CombatMove:
+      type: object
+      properties:
+        move_id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        current_pp:
+          type: integer
+        max_pp:
+          type: integer
+        range:
+          type: string
+        description:
+          type: string
+
+    WeatherState:
+      type: object
+      nullable: true
+      properties:
+        type:
+          type: string
+          enum: [harsh-sunlight, rain, sandstorm, hail, snow, fog]
+        turns_remaining:
+          type: integer
+          nullable: true
+
+    TerrainState:
+      type: object
+      nullable: true
+      properties:
+        type:
+          type: string
+          enum: [electric, grassy, misty, psychic]
+        turns_remaining:
+          type: integer
+
+    InitiativeEntry:
+      type: object
+      properties:
+        combatant_id:
+          type: string
+        initiative_roll:
+          type: integer
+
+    BattleLogEntry:
+      type: object
+      properties:
+        turn:
+          type: integer
+        actor_id:
+          type: string
+        action_type:
+          type: string
+        result:
+          type: string
+        narrative:
+          type: string
+
+    TransformationState:
+      type: object
+      nullable: true
+      properties:
+        type:
+          type: string
+          enum: [mega, z-move, dynamax, terastallization]
+        turns_remaining:
+          type: integer
+          nullable: true
+
+    BattleActionRequest:
+      type: object
+      required: [battle_id, action_type]
+      properties:
+        battle_id:
+          type: string
+          format: uuid
+        action_type:
+          type: string
+          enum: [move, struggle]
+        move_id:
+          type: string
+          description: Required for action_type 'move'
+        target_combatant_ids:
+          type: array
+          items:
+            type: string
+          description: Target(s) for the action
+        target_position:
+          type: object
+          properties:
+            x:
+              type: integer
+            y:
+              type: integer
+          description: For area moves or movement
+        use_bond_point:
+          type: boolean
+          default: false
+          description: Spend bond point for advantage
+
+    BattleActionResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            action_result:
+              type: object
+              properties:
+                attack_roll:
+                  type: integer
+                hit:
+                  type: boolean
+                critical:
+                  type: boolean
+                damage:
+                  type: integer
+                effects_applied:
+                  type: array
+                  items:
+                    type: string
+                narrative:
+                  type: string
+            battle_state:
+              $ref: '#/components/schemas/BattleState'
+
+    SwitchRequest:
+      type: object
+      required: [battle_id, current_combatant_id, new_pokemon_id]
+      properties:
+        battle_id:
+          type: string
+          format: uuid
+        current_combatant_id:
+          type: string
+          description: ID of Pokemon being recalled
+        new_pokemon_id:
+          type: string
+          description: ID from player_pokemon table
+        target_position:
+          type: object
+          properties:
+            x:
+              type: integer
+            y:
+              type: integer
+          description: Where to place new Pokemon
+
+    SwitchResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            switch_result:
+              type: object
+              properties:
+                recalled_pokemon:
+                  type: string
+                sent_out_pokemon:
+                  type: string
+                provoked_aoo:
+                  type: boolean
+                aoo_result:
+                  type: object
+                  nullable: true
+            battle_state:
+              $ref: '#/components/schemas/BattleState'
+
+    CatchRequest:
+      type: object
+      required: [battle_id, target_combatant_id, pokeball_id]
+      properties:
+        battle_id:
+          type: string
+          format: uuid
+        target_combatant_id:
+          type: string
+        pokeball_id:
+          type: string
+          description: Item ID from inventory
+
+    CatchResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            catch_attempt:
+              type: object
+              properties:
+                target_pokemon:
+                  type: string
+                pokeball_used:
+                  type: string
+                base_dc:
+                  type: integer
+                final_dc:
+                  type: integer
+                roll:
+                  type: integer
+                has_advantage:
+                  type: boolean
+                caught:
+                  type: boolean
+            new_pokemon_id:
+              type: string
+              nullable: true
+              description: ID in player_pokemon if caught
+            battle_state:
+              $ref: '#/components/schemas/BattleState'
+
+    FleeRequest:
+      type: object
+      required: [battle_id]
+      properties:
+        battle_id:
+          type: string
+          format: uuid
+
+    FleeResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            fled:
+              type: boolean
+            blocked_by:
+              type: string
+              nullable: true
+              description: Ability or effect preventing flee
+            battle_state:
+              $ref: '#/components/schemas/BattleState'
+
+    RestRequest:
+      type: object
+      required: [rest_type]
+      properties:
+        rest_type:
+          type: string
+          enum: [short, long]
+        pokemon_ids:
+          type: array
+          items:
+            type: string
+          description: Which Pokemon to rest (default all)
+        hit_dice_to_spend:
+          type: object
+          additionalProperties:
+            type: integer
+          description: For short rest, map of pokemon_id to hit dice count
+
+    RestResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            rest_type:
+              type: string
+            pokemon_restored:
+              type: array
+              items:
+                type: object
+                properties:
+                  pokemon_id:
+                    type: string
+                  hp_restored:
+                    type: integer
+                  pp_restored:
+                    type: boolean
+                  statuses_cleared:
+                    type: array
+                    items:
+                      type: string
+
+    TransformRequest:
+      type: object
+      required: [battle_id, combatant_id, transformation_type]
+      properties:
+        battle_id:
+          type: string
+          format: uuid
+        combatant_id:
+          type: string
+        transformation_type:
+          type: string
+          enum: [mega, z-move, dynamax, terastallization]
+        z_move_id:
+          type: string
+          description: Required for z-move, the move to empower
+
+    TransformResponse:
+      type: object
+      required: [success, data]
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            transformation:
+              type: object
+              properties:
+                type:
+                  type: string
+                success:
+                  type: boolean
+                failure_reason:
+                  type: string
+                  nullable: true
+                new_stats:
+                  type: object
+                  nullable: true
+            battle_state:
+              $ref: '#/components/schemas/BattleState'

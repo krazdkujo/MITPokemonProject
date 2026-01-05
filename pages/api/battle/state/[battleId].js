@@ -19,6 +19,7 @@ import {
   sendInternalError
 } from '../../../../lib/apiResponse';
 import { getZoneById } from '../../../../lib/zoneData';
+import { getMoveById, getMovesForPokemonAtLevel } from '../../../../lib/pokemonData';
 
 export default async function handler(req, res) {
   const { battleId } = req.query;
@@ -30,6 +31,43 @@ export default async function handler(req, res) {
   } else {
     return sendMethodNotAllowed(res, ['GET', 'PATCH']);
   }
+}
+
+/**
+ * Hydrate combatant moves - ensure known_moves contains full move objects
+ * @param {Object} combatant - Combatant to hydrate
+ * @returns {Object} Combatant with hydrated moves
+ */
+function hydrateCombatantMoves(combatant) {
+  if (!combatant) return combatant;
+
+  // Check if known_moves needs hydration (array of strings vs objects)
+  const knownMoves = combatant.known_moves || [];
+
+  if (knownMoves.length === 0) {
+    // No moves stored - get from pokemon data
+    const moves = getMovesForPokemonAtLevel(combatant.pokemon_id, combatant.level || 1);
+    return {
+      ...combatant,
+      known_moves: moves.slice(0, 4)
+    };
+  }
+
+  // Check if first item is a string (needs hydration) or object (already hydrated)
+  if (typeof knownMoves[0] === 'string') {
+    // Hydrate move IDs to full objects
+    const hydratedMoves = knownMoves
+      .map(moveId => getMoveById(moveId))
+      .filter(Boolean);
+
+    return {
+      ...combatant,
+      known_moves: hydratedMoves
+    };
+  }
+
+  // Already hydrated
+  return combatant;
 }
 
 async function handleGet(req, res, battleId) {
@@ -62,6 +100,13 @@ async function handleGet(req, res, battleId) {
     const zone = getZoneById(battle.zone_id);
     const battleState = battle.battle_state || {};
 
+    // Hydrate combatant moves (ensure full move objects for UI)
+    const combatants = battleState.combatants || { player: [], opponent: [] };
+    const hydratedCombatants = {
+      player: (combatants.player || []).map(hydrateCombatantMoves),
+      opponent: (combatants.opponent || []).map(hydrateCombatantMoves)
+    };
+
     // Merge zone info into response
     const response = {
       battle_id: battle.id,
@@ -73,7 +118,7 @@ async function handleGet(req, res, battleId) {
       },
       phase: battleState.phase || 'setup',
       grid: battleState.grid || { width: 10, height: 10 },
-      combatants: battleState.combatants || { player: [], opponent: [] },
+      combatants: hydratedCombatants,
       trainers: battleState.trainers || {
         player: { position: { col: 0, row: 4 } },
         opponent: { position: { col: 9, row: 4 } }

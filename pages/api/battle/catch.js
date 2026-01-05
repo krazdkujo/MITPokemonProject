@@ -3,9 +3,10 @@
  *
  * POST /api/battle/catch - Attempt to catch a wild Pokemon
  *
- * Processes a catch attempt and awards reduced XP on success.
+ * Processes a catch attempt using Pokemon 5e catching mechanics.
+ * T073-T074: Full catch implementation
  *
- * Feature: 007-combat-engine
+ * Feature: 017-5e-combat-research
  */
 
 import { createAdminClient } from '../../../lib/supabase';
@@ -21,15 +22,11 @@ import {
 } from '../../../lib/apiResponse';
 import { getPokemonById } from '../../../lib/pokemonData';
 import { calculateBattleRewards } from '../../../lib/experienceUtils';
-import { rollD20 } from '../../../lib/diceRoller';
-
-// Pokeball catch rate modifiers
-const POKEBALL_MODIFIERS = {
-  pokeball: 1,
-  greatball: 1.5,
-  ultraball: 2,
-  masterball: 255 // Auto-catch
-};
+import {
+  attemptCatch,
+  calculateCatchDC,
+  POKEBALL_MODIFIERS
+} from '../../../lib/catchingMechanics';
 
 export default async function handler(req, res) {
   // Only allow POST
@@ -47,9 +44,10 @@ export default async function handler(req, res) {
     // Validate request body
     const {
       battle_id,
-      pokeball_type = 'pokeball',
+      pokeball_type = 'poke-ball',
       battle_state,
-      player_pokemon_id
+      player_pokemon_id,
+      trainer_animal_handling = 0
     } = req.body;
 
     if (!battle_id) {
@@ -58,9 +56,19 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!battle_state || !battle_state.opponent) {
+    if (!battle_state) {
       return sendValidationError(res, 'Missing required field', {
-        battle_state: 'battle_state with opponent data is required'
+        battle_state: 'battle_state is required'
+      });
+    }
+
+    // Get opponent/target from battle state
+    const opponent = battle_state.opponent ||
+                     (battle_state.combatants?.opponent || battle_state.opponent_pokemon || [])[0];
+
+    if (!opponent) {
+      return sendValidationError(res, 'No target Pokemon', {
+        opponent: 'No opponent Pokemon found in battle state'
       });
     }
 
@@ -73,8 +81,7 @@ export default async function handler(req, res) {
 
     const supabase = createAdminClient();
 
-    // Get opponent data
-    const opponent = battle_state.opponent;
+    // Get opponent source data
     const opponentSource = getPokemonById(opponent.pokemon_id);
     if (!opponentSource) {
       return sendValidationError(res, 'Invalid opponent Pokemon', {
@@ -82,36 +89,40 @@ export default async function handler(req, res) {
       });
     }
 
-    // Calculate catch rate
-    // Simplified formula: Higher HP = harder to catch
-    // Base catch rate = (3 * max_hp - 2 * current_hp) / (3 * max_hp) * catch_rate * ball_modifier
-    const maxHp = opponent.max_hp || opponentSource.hp || 20;
-    const currentHp = opponent.current_hp || maxHp;
-    const baseCatchRate = opponentSource.catchRate || 45; // Default catch rate
+    // Build target combatant object with all needed data
+    const target = {
+      ...opponent,
+      sr: opponent.sr || opponentSource.sr || 0.5,
+      level: opponent.level || opponentSource.min_level || 1,
+      current_hp: opponent.current_hp,
+      max_hp: opponent.max_hp || opponentSource.hp || 20,
+      type: opponent.type || opponentSource.type || [],
+      types: opponent.types || opponentSource.type || [],
+      status_effects: opponent.status_effects || []
+    };
 
-    const hpFactor = (3 * maxHp - 2 * currentHp) / (3 * maxHp);
-    const ballModifier = POKEBALL_MODIFIERS[pokeball_type];
+    // Build catch context
+    const catchContext = {
+      turnNumber: battle_state.round_number || 1,
+      isNight: battle_state.is_night || false,
+      isCave: battle_state.is_cave || false,
+      isUnderwater: battle_state.is_underwater || false,
+      previouslyCaught: false, // Would need to check player's pokedex
+      targetTypes: target.types
+    };
 
-    let caught = false;
-    let catchRoll = null;
-    let catchThreshold = null;
+    // Attempt the catch using 5e mechanics
+    const catchResult = attemptCatch({
+      target,
+      pokeballId: pokeball_type,
+      trainerAnimalHandling: trainer_animal_handling,
+      context: catchContext
+    });
 
-    if (ballModifier === 255) {
-      // Master Ball always catches
-      caught = true;
-    } else {
-      // Roll d20 against modified catch rate
-      catchRoll = rollD20();
-      catchThreshold = Math.floor(10 + (10 - baseCatchRate / 25.5) - (hpFactor * 5) - (ballModifier * 2));
-      catchThreshold = Math.max(2, Math.min(19, catchThreshold)); // Clamp between 2-19
-
-      caught = catchRoll >= catchThreshold;
-    }
-
-    if (caught) {
-      // Calculate catch rewards (1/5 XP)
+    if (catchResult.success) {
+      // Calculate catch rewards (1/5 XP per 5e rules)
       const rewards = calculateBattleRewards(
-        { level: opponent.level, sr: opponentSource.sr || 0.5 },
+        { level: target.level, sr: target.sr },
         true, // wasCaught = true
         player_pokemon_id ? [player_pokemon_id] : []
       );
@@ -133,6 +144,24 @@ export default async function handler(req, res) {
         }
       }
 
+      // Add caught Pokemon to player's collection
+      const { data: caughtPokemon, error: insertError } = await supabase
+        .from('player_pokemon')
+        .insert({
+          user_id: userId,
+          pokemon_id: opponent.pokemon_id,
+          level: target.level,
+          nickname: null,
+          current_hp: target.max_hp, // Full HP on catch (Heal Ball would already be at max)
+          experience: 0,
+          ability_id: opponent.ability_id || opponentSource.abilities?.[0],
+          nature: opponent.nature || 'hardy',
+          caught_at: new Date().toISOString(),
+          caught_with: pokeball_type
+        })
+        .select()
+        .single();
+
       return sendSuccess(res, {
         caught: true,
         battle_id: battle_id,
@@ -140,18 +169,34 @@ export default async function handler(req, res) {
         pokemon_caught: {
           pokemon_id: opponent.pokemon_id,
           name: opponentSource.name,
-          level: opponent.level
+          level: target.level,
+          player_pokemon_id: caughtPokemon?.id
         },
         catch_details: {
           pokeball_used: pokeball_type,
-          roll: catchRoll,
-          threshold: catchThreshold
+          pokeball_description: catchResult.dcBreakdown?.pokeballDescription,
+          auto_success: catchResult.autoSuccess,
+          roll: catchResult.roll,
+          modifier: catchResult.modifier,
+          total: catchResult.total,
+          dc: catchResult.finalDC,
+          had_advantage: catchResult.hasAdvantage,
+          rolls: catchResult.rolls,
+          dc_breakdown: {
+            base_dc: catchResult.dcBreakdown?.baseDC,
+            hp_modifier: catchResult.dcBreakdown?.hpModifier,
+            status_modifier: catchResult.dcBreakdown?.statusModifier,
+            pokeball_modifier: catchResult.dcBreakdown?.pokeballModifier,
+            final_dc: catchResult.dcBreakdown?.finalDC
+          }
         },
         rewards: {
           xp_awarded: rewards.xp_awarded,
+          currency_awarded: rewards.currency_awarded,
           xp_is_catch_bonus: true
         }
       });
+
     } else {
       // Catch failed
       return sendSuccess(res, {
@@ -160,10 +205,22 @@ export default async function handler(req, res) {
         outcome: 'escaped',
         catch_details: {
           pokeball_used: pokeball_type,
-          roll: catchRoll,
-          threshold: catchThreshold
+          pokeball_description: catchResult.dcBreakdown?.pokeballDescription,
+          roll: catchResult.roll,
+          modifier: catchResult.modifier,
+          total: catchResult.total,
+          dc: catchResult.finalDC,
+          had_advantage: catchResult.hasAdvantage,
+          rolls: catchResult.rolls,
+          dc_breakdown: {
+            base_dc: catchResult.dcBreakdown?.baseDC,
+            hp_modifier: catchResult.dcBreakdown?.hpModifier,
+            status_modifier: catchResult.dcBreakdown?.statusModifier,
+            pokeball_modifier: catchResult.dcBreakdown?.pokeballModifier,
+            final_dc: catchResult.dcBreakdown?.finalDC
+          }
         },
-        message: `${opponentSource.name} broke free!`
+        message: `${opponentSource.name} broke free! (Rolled ${catchResult.total} vs DC ${catchResult.finalDC})`
       });
     }
 
