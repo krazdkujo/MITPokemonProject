@@ -7,7 +7,7 @@
  * Feature: 015-combat-arena
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 import GameLayout from '../components/layout/GameLayout';
 import BattleGrid from '../components/Combat/BattleGrid';
@@ -52,6 +52,7 @@ export default function CombatPage() {
   const [selectedMove, setSelectedMove] = useState(null);
   const [battleResult, setBattleResult] = useState(null);
   const [isMovementMode, setIsMovementMode] = useState(false); // T038: Movement mode state
+  const aiTurnInProgressRef = useRef(false); // Ref to prevent double AI execution
 
   // Get query parameters for battle initialization
   const { opponent_id, opponent_level, battle_type, battle_id } = router.query;
@@ -177,11 +178,13 @@ export default function CombatPage() {
 
   // Handle opponent AI turn
   useEffect(() => {
-    if (!battleState || battleState.phase !== 'combat' || actionInProgress) return;
+    // Use ref to check if AI is already running (avoids stale closure with actionInProgress)
+    if (!battleState || battleState.phase !== 'combat' || aiTurnInProgressRef.current) return;
 
     const currentCombatant = getCurrentCombatant(battleState);
     if (currentCombatant?.owner === 'opponent') {
-      executeOpponentTurn(currentCombatant);
+      // Pass battleState explicitly to avoid stale closure issues
+      executeOpponentTurn(currentCombatant, battleState);
     }
   }, [battleState?.current_turn_index, battleState?.phase]);
 
@@ -654,22 +657,28 @@ export default function CombatPage() {
    * @param {string} actorId - Attacking combatant ID
    * @param {string} targetId - Target combatant ID
    * @param {Object} [move] - Move used (optional, falls back to selectedMove or result data)
+   * @param {Object} [stateOverride] - Optional state to use instead of battleState
    */
-  const processAttackResult = async (result, actorId, targetId, move = null) => {
-    let newState = { ...battleState };
+  const processAttackResult = async (result, actorId, targetId, move = null, stateOverride = null) => {
+    console.log('processAttackResult: START', { result, actorId, targetId, move: move?.name, hasStateOverride: !!stateOverride });
+    const baseState = stateOverride || battleState;
+    let newState = { ...baseState };
 
     // Get move info from parameter, selectedMove, or result
     const usedMove = move || selectedMove || {
       id: result.attack_result?.move_id,
       name: result.attack_result?.move_name || 'Attack'
     };
+    console.log('processAttackResult: usedMove:', usedMove?.name);
 
     // Update target HP
     if (result.target) {
+      console.log('processAttackResult: updating target HP to', result.target.hp_after);
       newState = updateCombatantHp(newState, targetId, result.target.hp_after);
 
       // Show damage animation
       if (result.attack_result?.hit && result.attack_result?.damage) {
+        console.log('processAttackResult: showing damage animation', result.attack_result.damage.final_damage);
         setDamageAnimations({
           [targetId]: {
             value: result.attack_result.damage.final_damage,
@@ -677,11 +686,14 @@ export default function CombatPage() {
           }
         });
       }
+    } else {
+      console.log('processAttackResult: no result.target');
     }
 
     // Update actor's PP
-    const actorOwner = battleState.combatants.player.find(p => p.combatant_id === actorId) ? 'player' : 'opponent';
+    const actorOwner = baseState.combatants.player.find(p => p.combatant_id === actorId) ? 'player' : 'opponent';
     const actorIndex = newState.combatants[actorOwner].findIndex(p => p.combatant_id === actorId);
+    console.log('processAttackResult: actorOwner:', actorOwner, 'actorIndex:', actorIndex);
     if (actorIndex !== -1 && result.attack_result && usedMove?.id) {
       newState.combatants[actorOwner][actorIndex] = {
         ...newState.combatants[actorOwner][actorIndex],
@@ -693,17 +705,19 @@ export default function CombatPage() {
     }
 
     // Add detailed log entry (Feature 019: US1 - Combat Action Feedback)
-    const actor = findCombatant(battleState, actorId);
-    const target = findCombatant(battleState, targetId);
+    const actor = findCombatant(baseState, actorId);
+    const target = findCombatant(baseState, targetId);
     const hitMiss = result.attack_result?.hit ? 'Hit' : 'Miss';
     const damage = result.attack_result?.damage?.final_damage || 0;
     const hpBefore = result.target?.hp_before ?? (target?.current_hp + damage);
     const hpAfter = result.target?.hp_after ?? target?.current_hp;
+    console.log('processAttackResult: hit:', result.attack_result?.hit, 'damage:', damage, 'hpBefore:', hpBefore, 'hpAfter:', hpAfter);
 
     // Create detailed log message with HP change
     const logMessage = result.attack_result?.hit
       ? `${hitMiss}! ${damage} damage. ${target?.name} HP: ${hpBefore} -> ${hpAfter}${result.target?.fainted ? ' - FAINTED!' : ''}`
       : 'Miss!';
+    console.log('processAttackResult: logMessage:', logMessage);
 
     newState = addLogEntry(newState, {
       type: 'attack',
@@ -714,7 +728,9 @@ export default function CombatPage() {
     });
 
     // Update state FIRST to show feedback before modal (Feature 019: US1, US2)
+    console.log('processAttackResult: setting battle state');
     setBattleState(clearSelection(newState));
+    console.log('processAttackResult: battle state set, checking outcome:', result.outcome);
 
     // Check for battle end
     if (result.outcome === 'victory' || result.outcome === 'defeat') {
@@ -794,8 +810,11 @@ export default function CombatPage() {
       }
     } else {
       // Advance turn
+      console.log('processAttackResult: no battle end, advancing turn');
       const advancedState = advanceTurn(newState);
+      console.log('processAttackResult: new turn index:', advancedState.current_turn_index);
       setBattleState(clearSelection(advancedState));
+      console.log('processAttackResult: END - turn advanced');
     }
   };
 
@@ -803,14 +822,27 @@ export default function CombatPage() {
    * Execute opponent AI turn
    * Feature 018: Updated to use AI endpoint for tactical decisions (T055)
    * Supports move + attack in same turn (like D&D 5e)
+   * @param {Object} opponent - The opponent combatant taking the turn
+   * @param {Object} [stateOverride] - Optional state to use instead of battleState (for when called after state updates)
    */
-  const executeOpponentTurn = async (opponent) => {
+  const executeOpponentTurn = async (opponent, stateOverride = null) => {
+    console.log('executeOpponentTurn called for:', opponent?.name, 'aiTurnInProgressRef:', aiTurnInProgressRef.current);
+    // Prevent double execution using ref (avoids stale closure issues)
+    if (aiTurnInProgressRef.current) {
+      console.log('executeOpponentTurn: blocked by aiTurnInProgressRef');
+      return;
+    }
+    aiTurnInProgressRef.current = true;
+    console.log('executeOpponentTurn: starting AI turn');
+
     setActionInProgress(true);
 
     // Small delay for visual feedback
     await new Promise(resolve => setTimeout(resolve, 500));
+    console.log('executeOpponentTurn: after delay, about to call AI');
 
-    let currentState = battleState;
+    let currentState = stateOverride || battleState;
+    console.log('executeOpponentTurn: currentState battle_id:', currentState?.battle_id, 'has combatants:', !!currentState?.combatants);
 
     try {
       // Get AI decision from endpoint (T055)
@@ -831,20 +863,24 @@ export default function CombatPage() {
       });
 
       const aiData = await aiResponse.json();
+      console.log('executeOpponentTurn: AI response ok:', aiResponse.ok, 'data:', aiData);
 
       if (!aiResponse.ok) {
         console.error('AI decision failed:', aiData.error);
         // Fall back to advancing turn
         const newState = advanceTurn(currentState);
         setBattleState(newState);
+        aiTurnInProgressRef.current = false;
         setActionInProgress(false);
         return;
       }
 
       const aiDecision = aiData.data;
+      console.log('executeOpponentTurn: AI decision:', aiDecision.action_type, 'target_position:', aiDecision.target_position, 'move_id:', aiDecision.move_id);
 
       // Handle pass action
       if (aiDecision.action_type === 'pass') {
+        console.log('executeOpponentTurn: AI chose to pass');
         let newState = addLogEntry(currentState, {
           type: 'pass',
           actor: opponent.name,
@@ -852,12 +888,24 @@ export default function CombatPage() {
         });
         newState = advanceTurn(newState);
         setBattleState(newState);
+        aiTurnInProgressRef.current = false;
         setActionInProgress(false);
         return;
       }
 
       // If AI wants to move first, do that
       if (aiDecision.action_type === 'move') {
+        console.log('executeOpponentTurn: AI chose to move to', aiDecision.target_position);
+        // Validate target_position exists (API returns target_position, not destination)
+        if (!aiDecision.target_position) {
+          console.error('AI returned move action without target_position:', aiDecision);
+          const newState = advanceTurn(currentState);
+          setBattleState(newState);
+          aiTurnInProgressRef.current = false;
+          setActionInProgress(false);
+          return;
+        }
+
         const moveResponse = await apiFetch('/api/battle/action', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -871,7 +919,7 @@ export default function CombatPage() {
             },
             action_type: 'move',
             actor_id: opponent.combatant_id,
-            target_position: aiDecision.destination
+            target_position: aiDecision.target_position
           })
         });
 
@@ -885,7 +933,7 @@ export default function CombatPage() {
             newCombatants.opponent = [...currentState.combatants.opponent];
             newCombatants.opponent[actorIndex] = {
               ...newCombatants.opponent[actorIndex],
-              position: aiDecision.destination,
+              position: aiDecision.target_position,
               has_moved_this_turn: true
             };
             currentState = {
@@ -895,9 +943,17 @@ export default function CombatPage() {
             currentState = addLogEntry(currentState, {
               type: 'move',
               actor: opponent.name,
-              result: `Moved to ${toGridNotation(aiDecision.destination.col, aiDecision.destination.row)}`
+              result: `Moved to ${toGridNotation(aiDecision.target_position.col, aiDecision.target_position.row)}`
             });
           }
+        } else {
+          // Move failed, log error and advance turn
+          console.error('AI move action failed:', moveData.error);
+          const newState = advanceTurn(currentState);
+          setBattleState(newState);
+          aiTurnInProgressRef.current = false;
+          setActionInProgress(false);
+          return;
         }
 
         // After moving, get another AI decision for attack
@@ -944,9 +1000,7 @@ export default function CombatPage() {
           if (actionResponse.ok) {
             const move = opponent.known_moves?.find(m => m.id === attackData.data.move_id);
             // Update state and advance turn via processAttackResult
-            setBattleState(currentState); // Set intermediate state first
-            processAttackResult(actionResult.data, opponent.combatant_id, attackData.data.target_id, move);
-            setActionInProgress(false);
+            await processAttackResult(actionResult.data, opponent.combatant_id, attackData.data.target_id, move, currentState);
             return;
           }
         }
@@ -960,6 +1014,7 @@ export default function CombatPage() {
 
       // Direct attack (no movement needed)
       if (aiDecision.action_type === 'attack') {
+        console.log('executeOpponentTurn: AI chose direct attack, move_id:', aiDecision.move_id, 'target_id:', aiDecision.target_id);
         const actionResponse = await apiFetch('/api/battle/action', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -979,14 +1034,22 @@ export default function CombatPage() {
         });
 
         const actionData = await actionResponse.json();
+        console.log('executeOpponentTurn: attack response ok:', actionResponse.ok, 'data:', actionData);
         if (actionResponse.ok) {
+          console.log('executeOpponentTurn: attack succeeded, calling processAttackResult');
           const move = opponent.known_moves?.find(m => m.id === aiDecision.move_id);
-          processAttackResult(actionData.data, opponent.combatant_id, aiDecision.target_id, move);
+          await processAttackResult(actionData.data, opponent.combatant_id, aiDecision.target_id, move, currentState);
+          console.log('executeOpponentTurn: processAttackResult completed, returning');
+          return;
         } else {
           // Attack failed, advance turn
+          console.log('executeOpponentTurn: attack API failed, advancing turn');
           const newState = advanceTurn(currentState);
           setBattleState(newState);
+          return;
         }
+      } else {
+        console.log('executeOpponentTurn: unhandled action type:', aiDecision.action_type);
       }
     } catch (err) {
       console.error('Opponent turn error:', err);
@@ -994,8 +1057,11 @@ export default function CombatPage() {
       const newState = advanceTurn(currentState);
       setBattleState(newState);
     } finally {
+      console.log('executeOpponentTurn: FINALLY block - resetting refs');
+      aiTurnInProgressRef.current = false;
       setActionInProgress(false);
       setSelectedMove(null);
+      console.log('executeOpponentTurn: END');
     }
   };
 
@@ -1003,9 +1069,14 @@ export default function CombatPage() {
    * Handle pass turn - end turn without taking action
    */
   const handlePassTurn = () => {
-    if (actionInProgress) return;
+    console.log('handlePassTurn called, actionInProgress:', actionInProgress, 'aiTurnInProgressRef:', aiTurnInProgressRef.current);
+    if (actionInProgress) {
+      console.log('handlePassTurn: blocked by actionInProgress');
+      return;
+    }
 
     const currentCombatant = getCurrentCombatant(battleState);
+    console.log('handlePassTurn: currentCombatant:', currentCombatant?.name, 'owner:', currentCombatant?.owner);
     if (!currentCombatant || currentCombatant.owner !== 'player') return;
 
     // Clear any selections
@@ -1022,7 +1093,18 @@ export default function CombatPage() {
     });
 
     newState = advanceTurn(newState);
+    console.log('handlePassTurn: turn advanced, new turn index:', newState.current_turn_index);
     setBattleState(newState);
+
+    // Check if next turn is opponent's and trigger AI
+    const nextCombatant = getCurrentCombatant(newState);
+    console.log('handlePassTurn: nextCombatant:', nextCombatant?.name, 'owner:', nextCombatant?.owner);
+    if (nextCombatant?.owner === 'opponent') {
+      console.log('handlePassTurn: triggering AI turn');
+      executeOpponentTurn(nextCombatant, newState);
+    } else {
+      console.log('handlePassTurn: not opponent turn, no AI triggered');
+    }
   };
 
   /**

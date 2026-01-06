@@ -10,7 +10,9 @@
     "lint": "next lint",
     "db:migrate": "node scripts/run-migrations.js",
     "db:reset": "node scripts/run-migrations.js reset",
-    "db:fresh": "node scripts/run-migrations.js reset && node scripts/run-migrations.js"
+    "db:fresh": "node scripts/run-migrations.js reset && node scripts/run-migrations.js",
+    "db:clear": "node scripts/reset-db.js",
+    "test:combat": "node scripts/test-combat.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",

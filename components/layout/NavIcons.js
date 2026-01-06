@@ -89,3 +89,14 @@ export function ZonesIcon() {
     </svg>
   );
 }
+
+export function TestIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 3h6v2H9z" />
+      <path d="M8 5h8l2 16H6L8 5z" />
+      <path d="M9 12h6" />
+      <path d="M10 15h4" />
+    </svg>
+  );
+}

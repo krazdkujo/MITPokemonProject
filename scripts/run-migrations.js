@@ -18,8 +18,8 @@ const path = require('path');
 // Load environment variables from .env.local
 require('dotenv').config({ path: '.env.local' });
 
-// Build connection string from environment
-function getConnectionString() {
+// Build connection config from environment
+function getConnectionConfig() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const dbPassword = process.env.SUPABASE;
 
@@ -34,9 +34,18 @@ function getConnectionString() {
   // Extract project ref from URL (e.g., https://abcdef.supabase.co -> abcdef)
   const projectRef = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
 
-  // Supabase direct connection format (port 5432)
-  // Format: postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres
-  return `postgresql://postgres:${dbPassword}@db.${projectRef}.supabase.co:5432/postgres`;
+  // Try direct connection first (requires IPv6 support)
+  // If this fails, user may need to use Supabase Dashboard SQL Editor
+  return {
+    host: `db.${projectRef}.supabase.co`,
+    port: 5432,
+    database: 'postgres',
+    user: 'postgres',
+    password: dbPassword,
+    ssl: { rejectUnauthorized: false },
+    // Force IPv6 if needed (Supabase direct connection only has IPv6)
+    family: 6
+  };
 }
 
 async function runMigration(client, filePath) {
@@ -106,10 +115,10 @@ async function main() {
   // Connect to database
   let client;
   try {
-    const connectionString = getConnectionString();
-    client = new Client({ connectionString, ssl: { rejectUnauthorized: false } });
+    const config = getConnectionConfig();
+    console.log(`\nConnecting to Supabase (${config.host}:${config.port})...`);
 
-    console.log('\nConnecting to Supabase...');
+    client = new Client(config);
     await client.connect();
     console.log('[OK] Connected to database');
   } catch (error) {

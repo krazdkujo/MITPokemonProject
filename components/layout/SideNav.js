@@ -19,6 +19,7 @@ import {
   GrassIcon,
   BagIcon,
   ZonesIcon,
+  TestIcon,
 } from './NavIcons';
 
 const NAV_LINKS = [
@@ -29,6 +30,7 @@ const NAV_LINKS = [
   { href: '/pokecenter', label: 'Pokemon Center', Icon: HealIcon },
   { href: '/wild', label: 'Wild Pokemon', Icon: GrassIcon },
   { href: '/inventory', label: 'Inventory', Icon: BagIcon },
+  { href: '/test-combat', label: 'Combat Tester', Icon: TestIcon },
 ];
 
 export default function SideNav() {

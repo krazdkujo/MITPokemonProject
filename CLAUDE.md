@@ -29,6 +29,10 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Supabase PostgreSQL (active_battles table with JSONB battle_state, player_pokemon table with move_pp JSONB) (018-combat-enhancements)
 - JavaScript (ES2020+) with Node.js 18+ / Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/battleState.js (019-fix-combat-bugs)
 - Supabase PostgreSQL (existing tables: active_battles, player_pokemon) (019-fix-combat-bugs)
+- JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0 (020-fix-combat-encounter-bugs)
+- Supabase PostgreSQL with RLS (tables: player_pokemon, active_battles, users) (020-fix-combat-encounter-bugs)
+- JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities (021-combat-test-harness)
+- N/A (no persistence required - uses existing Source data files for Pokemon/moves) (021-combat-test-harness)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -49,9 +53,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 021-combat-test-harness: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities
+- 020-fix-combat-encounter-bugs: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0
 - 019-fix-combat-bugs: Added JavaScript (ES2020+) with Node.js 18+ / Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/battleState.js
-- 018-combat-enhancements: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/combatUtils.js, lib/gridUtils.js, lib/ppTracker.js
-- 017-5e-combat-research: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14, React 18, @supabase/supabase-js, existing lib/ utilities
 
 
 <!-- MANUAL ADDITIONS START -->
