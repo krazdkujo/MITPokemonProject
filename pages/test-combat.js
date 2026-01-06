@@ -260,10 +260,15 @@ export default function TestCombatPage() {
     setBattleState(pokemon1Id && pokemon2Id ? 'ready' : 'idle');
   }, [pokemon1Id, pokemon2Id]);
 
-  // Mode change
+  // Mode change - if switching to auto during a running battle, start auto-run
   const handleModeChange = useCallback((newMode) => {
     setMode(newMode);
-  }, []);
+    // If switching to auto mode during an active battle, start auto-run to finish it
+    if (newMode === 'auto' && simulation && (battleState === 'running' || battleState === 'paused')) {
+      setBattleState('running');
+      startAutoRun(simulation.id);
+    }
+  }, [simulation, battleState, startAutoRun]);
 
   // Speed change
   const handleSpeedChange = useCallback((newSpeed) => {

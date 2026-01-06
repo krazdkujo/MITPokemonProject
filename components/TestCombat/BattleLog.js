@@ -3,16 +3,31 @@
  * Scrollable log panel for displaying combat events
  *
  * Feature: 021-combat-test-harness
- * Task: T008
+ * Task: T008, T016 (status effect rendering)
  */
 
 import { useRef, useEffect } from 'react';
+
+// T016, T021, T036, T040, T045: Log entry type constants for styling
+const LogEntryType = {
+  STATUS_APPLIED: 'status_applied',
+  STATUS_BLOCKED: 'status_blocked',
+  STATUS_DAMAGE: 'status_damage',
+  STATUS_CHECK: 'status_check',
+  STATUS_REMOVED: 'status_removed',
+  TURN_SKIP: 'turn_skip',
+  HEALING: 'healing',
+  RECOIL: 'recoil',
+  AC_CHANGE: 'ac_change',
+  BURNED_PENALTY: 'burned_penalty',
+  FLINCHED_EFFECT: 'flinched_effect'
+};
 
 /**
  * BattleLog - Display scrollable combat log entries
  *
  * @param {Object} props
- * @param {Array<string>} props.entries - Array of log entry strings
+ * @param {Array<string|Object>} props.entries - Array of log entry strings or structured entries
  * @param {boolean} props.autoScroll - Whether to auto-scroll to bottom on new entries
  * @param {number} props.maxHeight - Maximum height of log panel in pixels
  */
@@ -53,7 +68,7 @@ export default function BattleLog({
         ) : (
           <pre style={styles.logContent}>
             {entries.map((entry, index) => (
-              <div key={index} style={styles.logEntry}>
+              <div key={index} style={getEntryStyle(entry)}>
                 {formatLogEntry(entry)}
               </div>
             ))}
@@ -65,15 +80,96 @@ export default function BattleLog({
 }
 
 /**
+ * T016: Get style for an entry based on its type
+ * @param {string|Object} entry - Log entry
+ * @returns {Object} Style object
+ */
+function getEntryStyle(entry) {
+  const baseStyle = { ...styles.logEntry };
+
+  // Handle structured entries
+  if (typeof entry === 'object' && entry.type) {
+    switch (entry.type) {
+      case LogEntryType.STATUS_APPLIED:
+        return { ...baseStyle, ...styles.statusApplied };
+      case LogEntryType.STATUS_BLOCKED:
+        return { ...baseStyle, ...styles.statusBlocked };
+      case LogEntryType.STATUS_DAMAGE:
+        return { ...baseStyle, ...styles.statusDamage };
+      case LogEntryType.STATUS_CHECK:
+        return { ...baseStyle, ...styles.statusCheck };
+      case LogEntryType.TURN_SKIP:
+        return { ...baseStyle, ...styles.turnSkip };
+      case LogEntryType.STATUS_REMOVED:
+        return { ...baseStyle, ...styles.statusRemoved };
+      case LogEntryType.HEALING:
+        return { ...baseStyle, ...styles.healing };
+      case LogEntryType.RECOIL:
+        return { ...baseStyle, ...styles.recoil };
+      case LogEntryType.AC_CHANGE:
+        return { ...baseStyle, ...styles.acChange };
+      case LogEntryType.BURNED_PENALTY:
+        return { ...baseStyle, ...styles.burnedPenalty };
+      case LogEntryType.FLINCHED_EFFECT:
+        return { ...baseStyle, ...styles.flinchedEffect };
+      default:
+        return baseStyle;
+    }
+  }
+
+  // T021: Check for faint from status damage
+  if (typeof entry === 'object' && entry.details?.fainted) {
+    return { ...baseStyle, ...styles.statusFaint };
+  }
+
+  // Handle string entries with status indicators
+  if (typeof entry === 'string') {
+    if (entry.includes('is now') && (entry.includes('PARALYZED') || entry.includes('BURNED') ||
+        entry.includes('POISONED') || entry.includes('FROZEN') || entry.includes('ASLEEP') ||
+        entry.includes('CONFUSED') || entry.includes('FLINCHED'))) {
+      return { ...baseStyle, ...styles.statusApplied };
+    }
+    if (entry.includes('blocked')) {
+      return { ...baseStyle, ...styles.statusBlocked };
+    }
+    if (entry.includes('takes') && entry.includes('damage') && (entry.includes('BURNED') ||
+        entry.includes('POISONED') || entry.includes('BADLY_POISONED'))) {
+      return { ...baseStyle, ...styles.statusDamage };
+    }
+  }
+
+  return baseStyle;
+}
+
+/**
  * Format a log entry for display (convert ANSI codes to spans if needed)
- * @param {string} entry - Raw log entry string
+ * @param {string|Object} entry - Raw log entry string or structured entry
  * @returns {string|JSX.Element} Formatted entry
  */
 function formatLogEntry(entry) {
-  // Strip ANSI codes for web display and just return plain text
-  // The logger can use colorize:false for web or we strip here
+  // Handle structured entries
+  if (typeof entry === 'object') {
+    // Use the formatted string if available
+    if (entry.formatted) {
+      return stripAnsi(entry.formatted);
+    }
+    // Fallback: stringify the details
+    return JSON.stringify(entry.details || entry, null, 2);
+  }
+
+  // Handle string entries - strip ANSI codes for web display
+  return stripAnsi(entry);
+}
+
+/**
+ * Strip ANSI codes from a string
+ * @param {string} text - Text with potential ANSI codes
+ * @returns {string} Clean text
+ */
+function stripAnsi(text) {
+  if (typeof text !== 'string') return String(text);
   const ansiRegex = /\x1b\[[0-9;]*m/g;
-  return entry.replace(ansiRegex, '');
+  return text.replace(ansiRegex, '');
 }
 
 const styles = {
@@ -124,5 +220,77 @@ const styles = {
   },
   logEntry: {
     marginBottom: '2px'
+  },
+  // T016: Status effect entry styles
+  statusApplied: {
+    color: '#e040fb',
+    borderLeft: '3px solid #e040fb',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  statusBlocked: {
+    color: '#888',
+    fontStyle: 'italic'
+  },
+  statusDamage: {
+    color: '#ff7043',
+    borderLeft: '3px solid #ff7043',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  statusCheck: {
+    color: '#ffca28',
+    borderLeft: '3px solid #ffca28',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  turnSkip: {
+    color: '#ffa726',
+    fontStyle: 'italic'
+  },
+  // T021: Additional status damage styles
+  statusRemoved: {
+    color: '#81c784',
+    fontStyle: 'italic'
+  },
+  statusFaint: {
+    color: '#f44336',
+    fontWeight: 'bold',
+    borderLeft: '3px solid #f44336',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  // T036: Move extra effect styles
+  healing: {
+    color: '#66bb6a',
+    borderLeft: '3px solid #66bb6a',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  recoil: {
+    color: '#ffa726',
+    borderLeft: '3px solid #ffa726',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  acChange: {
+    color: '#42a5f5',
+    borderLeft: '3px solid #42a5f5',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  // T040, T045: Burn penalty and flinch effect styles
+  burnedPenalty: {
+    color: '#ff5722',
+    borderLeft: '3px solid #ff5722',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  flinchedEffect: {
+    color: '#ffeb3b',
+    fontStyle: 'italic',
+    borderLeft: '3px solid #ffeb3b',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
   }
 };

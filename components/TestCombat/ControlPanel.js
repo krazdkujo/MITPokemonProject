@@ -78,9 +78,9 @@ export default function ControlPanel({
               ...(mode === 'auto' ? styles.modeButtonActive : {})
             }}
             onClick={() => onModeChange && onModeChange('auto')}
-            disabled={isRunning}
+            disabled={mode === 'auto' && isRunning}
           >
-            Auto-Run
+            {isRunning && mode === 'step' ? 'Finish Battle' : 'Auto-Run'}
           </button>
         </div>
       </div>

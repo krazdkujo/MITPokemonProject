@@ -33,6 +33,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Supabase PostgreSQL with RLS (tables: player_pokemon, active_battles, users) (020-fix-combat-encounter-bugs)
 - JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities (021-combat-test-harness)
 - N/A (no persistence required - uses existing Source data files for Pokemon/moves) (021-combat-test-harness)
+- JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities (battleEngine.js, statusEffects.js, combatLogger.js, combatSimulator.js) (022-combat-status-effects)
+- N/A (uses in-memory battle state, existing Supabase for persistence) (022-combat-status-effects)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -53,9 +55,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 022-combat-status-effects: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities (battleEngine.js, statusEffects.js, combatLogger.js, combatSimulator.js)
 - 021-combat-test-harness: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities
 - 020-fix-combat-encounter-bugs: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0
-- 019-fix-combat-bugs: Added JavaScript (ES2020+) with Node.js 18+ / Next.js 14 + React 18, @supabase/supabase-js, existing lib/battleEngine.js, lib/battleState.js
 
 
 <!-- MANUAL ADDITIONS START -->
