@@ -20,7 +20,10 @@ const LogEntryType = {
   RECOIL: 'recoil',
   AC_CHANGE: 'ac_change',
   BURNED_PENALTY: 'burned_penalty',
-  FLINCHED_EFFECT: 'flinched_effect'
+  FLINCHED_EFFECT: 'flinched_effect',
+  // T036: Movement log entry type
+  MOVEMENT: 'movement',
+  RANGE_CHECK: 'range_check'
 };
 
 /**
@@ -112,6 +115,11 @@ function getEntryStyle(entry) {
         return { ...baseStyle, ...styles.burnedPenalty };
       case LogEntryType.FLINCHED_EFFECT:
         return { ...baseStyle, ...styles.flinchedEffect };
+      // T036: Movement entry styling
+      case LogEntryType.MOVEMENT:
+        return { ...baseStyle, ...styles.movement };
+      case LogEntryType.RANGE_CHECK:
+        return { ...baseStyle, ...styles.rangeCheck };
       default:
         return baseStyle;
     }
@@ -290,6 +298,19 @@ const styles = {
     color: '#ffeb3b',
     fontStyle: 'italic',
     borderLeft: '3px solid #ffeb3b',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  // T036: Movement log entry style
+  movement: {
+    color: '#29b6f6',
+    borderLeft: '3px solid #29b6f6',
+    paddingLeft: '8px',
+    marginLeft: '-8px'
+  },
+  rangeCheck: {
+    color: '#ab47bc',
+    borderLeft: '3px solid #ab47bc',
     paddingLeft: '8px',
     marginLeft: '-8px'
   }

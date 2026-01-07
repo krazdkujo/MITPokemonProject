@@ -35,6 +35,10 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - N/A (no persistence required - uses existing Source data files for Pokemon/moves) (021-combat-test-harness)
 - JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities (battleEngine.js, statusEffects.js, combatLogger.js, combatSimulator.js) (022-combat-status-effects)
 - N/A (uses in-memory battle state, existing Supabase for persistence) (022-combat-status-effects)
+- JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/gridUtils.js, lib/battleEngine.js, lib/combatSimulator.js (023-movement-test-harness)
+- N/A (in-memory only - extends existing test harness) (023-movement-test-harness)
+- JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0, uuid 13.0.0 (024-complete-move-effects)
+- Supabase PostgreSQL (existing tables: player_pokemon, active_battles) + Source JSON files (moves.json) (024-complete-move-effects)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -55,9 +59,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 024-complete-move-effects: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0, uuid 13.0.0
+- 023-movement-test-harness: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/gridUtils.js, lib/battleEngine.js, lib/combatSimulator.js
 - 022-combat-status-effects: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities (battleEngine.js, statusEffects.js, combatLogger.js, combatSimulator.js)
-- 021-combat-test-harness: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities
-- 020-fix-combat-encounter-bugs: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0
 
 
 <!-- MANUAL ADDITIONS START -->
