@@ -135,6 +135,7 @@ const AI_WEIGHTS = {
   TYPE_DISADVANTAGE_QUARTER: -60,// Doubly resisted (0.25x)
 
   // Move properties
+  MOVE_POWER_PER_10: 1,          // Bonus per 10 power (unused in current impl)
   STATUS_ON_HEALTHY: 20,         // Status move on target without status
   STATUS_ON_STATUSED: -50,       // Status move on already-statused target
   LOW_PP_WARNING: -10,           // Move has ≤2 PP remaining
@@ -468,6 +469,7 @@ In Tactical mode, the battle log shows AI decision reasoning:
 | Type 0.5x | -30 | Not very effective |
 | Type 0.25x | -60 | Doubly resisted |
 | Type immune | -2000 | Never use |
+| Move power per 10 | +1 | Bonus per 10 base power (unused) |
 | Target low HP | +15 | Focus fire on weak targets |
 | Status on healthy | +20 | Good status opportunity |
 | Status on statused | -50 | Avoid redundant status |
