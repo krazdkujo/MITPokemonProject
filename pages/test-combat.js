@@ -55,9 +55,6 @@ export default function TestCombatPage() {
   const [quickBattleSR, setQuickBattleSR] = useState('any'); // 'any' or specific SR value
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // AI mode state: 'random' (original) or 'tactical' (weighted scoring)
-  const [aiMode, setAiMode] = useState('random');
-
   // Load Pokemon list on mount
   useEffect(() => {
     async function loadPokemon() {
@@ -178,8 +175,7 @@ export default function TestCombatPage() {
             level: pokemon2Level,
             moves: pokemon2Moves.length > 0 ? pokemon2Moves : null
           },
-          seed: seed,
-          aiMode: aiMode
+          seed: seed
         })
       });
 
@@ -213,7 +209,7 @@ export default function TestCombatPage() {
     } catch (err) {
       console.error('Error starting battle:', err);
     }
-  }, [pokemon1Id, pokemon1Level, pokemon1Moves, pokemon2Id, pokemon2Level, pokemon2Moves, seed, mode, aiMode]);
+  }, [pokemon1Id, pokemon1Level, pokemon1Moves, pokemon2Id, pokemon2Level, pokemon2Moves, seed, mode]);
 
   // Run next turn (T012)
   const handleNextTurn = useCallback(async () => {
@@ -689,37 +685,6 @@ export default function TestCombatPage() {
               </button>
             </div>
 
-            {/* AI Mode Toggle */}
-            <div style={styles.aiModeRow}>
-              <label style={styles.quickBattleLabel}>AI Mode:</label>
-              <div style={styles.aiModeToggle}>
-                <button
-                  onClick={() => setAiMode('random')}
-                  disabled={isRunning}
-                  style={{
-                    ...styles.aiModeButton,
-                    backgroundColor: aiMode === 'random' ? '#4CAF50' : '#333',
-                    borderColor: aiMode === 'random' ? '#4CAF50' : '#555'
-                  }}
-                >
-                  Random
-                </button>
-                <button
-                  onClick={() => setAiMode('tactical')}
-                  disabled={isRunning}
-                  style={{
-                    ...styles.aiModeButton,
-                    backgroundColor: aiMode === 'tactical' ? '#f44336' : '#333',
-                    borderColor: aiMode === 'tactical' ? '#f44336' : '#555'
-                  }}
-                >
-                  Tactical
-                </button>
-              </div>
-              <span style={styles.aiModeDescription}>
-                {aiMode === 'random' ? 'Picks moves randomly' : 'Uses weighted scoring'}
-              </span>
-            </div>
           </div>
 
           <div style={styles.selectors}>
@@ -905,11 +870,11 @@ export default function TestCombatPage() {
         </div>
       </main>
 
-      {/* Footer with seed and AI mode info */}
+      {/* Footer with seed info */}
       {displaySeed && (
         <footer style={styles.footer}>
           <span style={styles.seedInfo}>
-            Seed: {displaySeed} | AI: {simulation?.aiMode === 'tactical' ? 'Tactical' : 'Random'} | Use this seed to reproduce this battle
+            Seed: {displaySeed} | AI: Tactical | Use this seed to reproduce this battle
           </span>
         </footer>
       )}
@@ -1020,34 +985,6 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
     transition: 'background-color 0.2s'
-  },
-  aiModeRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    marginTop: '10px',
-    paddingTop: '10px',
-    borderTop: '1px solid #333'
-  },
-  aiModeToggle: {
-    display: 'flex',
-    gap: '4px'
-  },
-  aiModeButton: {
-    padding: '6px 12px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    color: '#fff',
-    border: '2px solid',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'all 0.2s'
-  },
-  aiModeDescription: {
-    fontSize: '11px',
-    color: '#666',
-    fontStyle: 'italic',
-    marginLeft: '4px'
   },
   vsContainer: {
     display: 'flex',

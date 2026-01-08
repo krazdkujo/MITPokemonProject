@@ -5,7 +5,7 @@
  * Feature: 021-combat-test-harness
  */
 
-import { createSimulation, AI_MODE } from '../../../lib/combatSimulator';
+import { createSimulation } from '../../../lib/combatSimulator';
 import { createLogger } from '../../../lib/combatLogger';
 
 // In-memory simulation storage (for test harness only)
@@ -30,16 +30,13 @@ export default function handler(req, res) {
   }
 
   try {
-    const { pokemon1, pokemon2, seed, aiMode } = req.body;
+    const { pokemon1, pokemon2, seed } = req.body;
 
     if (!pokemon1?.id || !pokemon2?.id) {
       return res.status(400).json({ error: 'pokemon1 and pokemon2 with id are required' });
     }
 
-    // Validate aiMode (default to random for backward compatibility)
-    const validAiMode = aiMode === AI_MODE.TACTICAL ? AI_MODE.TACTICAL : AI_MODE.RANDOM;
-
-    // Create simulation
+    // Create simulation (always uses tactical AI mode)
     const simulation = createSimulation({
       pokemon1: {
         id: pokemon1.id,
@@ -51,8 +48,7 @@ export default function handler(req, res) {
         level: pokemon2.level || 5,
         moves: pokemon2.moves || null
       },
-      seed: seed || null,
-      aiMode: validAiMode
+      seed: seed || null
     });
 
     // Store simulation
@@ -70,7 +66,6 @@ export default function handler(req, res) {
       simulation: {
         id: simulation.id,
         seed: simulation.seed,
-        aiMode: simulation.aiMode,
         combatant1: simulation.combatant1,
         combatant2: simulation.combatant2,
         currentTurn: 0,
