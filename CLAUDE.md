@@ -39,6 +39,8 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - N/A (in-memory only - extends existing test harness) (023-movement-test-harness)
 - JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0, uuid 13.0.0 (024-complete-move-effects)
 - Supabase PostgreSQL (existing tables: player_pokemon, active_battles) + Source JSON files (moves.json) (024-complete-move-effects)
+- JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/pokemonData.js utilities (025-gen1-pokemon)
+- Static JSON files (Source/pokemon/pokemon.json, Source/locations.json, Source/evolution/evolution.json), Supabase PostgreSQL (player_pokemon table) (025-gen1-pokemon)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -59,9 +61,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 025-gen1-pokemon: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, data file modifications only
 - 024-complete-move-effects: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0, uuid 13.0.0
 - 023-movement-test-harness: Added JavaScript (ES2020+) with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/gridUtils.js, lib/battleEngine.js, lib/combatSimulator.js
-- 022-combat-status-effects: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/ battle utilities (battleEngine.js, statusEffects.js, combatLogger.js, combatSimulator.js)
 
 
 <!-- MANUAL ADDITIONS START -->
