@@ -43,6 +43,9 @@ Auto-generated from all feature plans. Last updated: 2026-01-03
 - Static JSON files (Source/pokemon/pokemon.json, Source/locations.json, Source/evolution/evolution.json), Supabase PostgreSQL (player_pokemon table) (025-gen1-pokemon)
 - N/A (Documentation only - Markdown) + N/A (Reads existing `lib/combatAI.js` and `lib/combatSimulator.js`) (026-combat-ai-docs)
 - N/A (Static Markdown file) (026-combat-ai-docs)
+- Supabase PostgreSQL with Row-Level Security (RLS) (001-env-auth-setup)
+- JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/combatSimulator.js, lib/combatAI.js (027-combat-ai-harness)
+- N/A (in-memory simulation state, no database changes) (027-combat-ai-harness)
 
 - JavaScript/TypeScript with Node.js 18+ + Next.js 14, @supabase/supabase-js, React 18 (001-env-auth-setup)
 
@@ -63,9 +66,9 @@ npm test; npm run lint
 JavaScript/TypeScript with Node.js 18+: Follow standard conventions
 
 ## Recent Changes
+- 027-combat-ai-harness: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, existing lib/combatSimulator.js, lib/combatAI.js
+- 001-env-auth-setup: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0
 - 026-combat-ai-docs: Added N/A (Documentation only - Markdown) + N/A (Reads existing `lib/combatAI.js` and `lib/combatSimulator.js`)
-- 025-gen1-pokemon: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, data file modifications only
-- 024-complete-move-effects: Added JavaScript ES2020+ with Node.js 18+ + Next.js 14.0.0 (Pages Router), React 18.2.0, @supabase/supabase-js 2.39.0, uuid 13.0.0
 
 
 <!-- MANUAL ADDITIONS START -->
