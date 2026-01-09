@@ -1,0 +1,187 @@
+[
+  {
+    "moveId": "acupressure",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "bulk-up",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "burning-bulwark",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "court-change",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "decorate",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "diamond-storm",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "doom-desire",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "fling",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "fly",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "force-palm",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "force-palm",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "hidden-power",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "hold-hands",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "ivy-cudgel",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "laser-focus",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "lock-on",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "magnitude",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "mind-reader",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "natural-gift",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "nature-power",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "nightmare",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "nuzzle",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "order-up",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "raging-bull",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "revelation-dance",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "secret-power",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "shed-tail",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "struggle-bug",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "surging-strikes",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "swords-dance",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "take-down",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "terrain-pulse",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "tidy-up",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "wave-crash",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  },
+  {
+    "moveId": "weather-ball",
+    "type": "ambiguous",
+    "message": "Description contains [object Object]"
+  },
+  {
+    "moveId": "weather-ball",
+    "type": "incomplete",
+    "message": "Has damage but no attack_type detected"
+  },
+  {
+    "moveId": "work-up",
+    "type": "validation",
+    "message": "Flavor text contains mechanical keywords"
+  }
+]
