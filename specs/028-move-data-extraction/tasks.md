@@ -19,9 +19,9 @@
 
 **Purpose**: Project initialization and backup
 
-- [ ] T001 Backup original moves.json to `Source/moves/moves.json.backup`
-- [ ] T002 Create extraction script skeleton in `scripts/extract-move-data.js`
-- [ ] T003 [P] Create verification script skeleton in `scripts/verify-move-extraction.js`
+- [x] T001 Backup original moves.json to `Source/moves/moves.json.backup`
+- [x] T002 Create extraction script skeleton in `scripts/extract-move-data.js`
+- [x] T003 [P] Create verification script skeleton in `scripts/verify-move-extraction.js`
 
 ---
 
@@ -31,14 +31,14 @@
 
 **CRITICAL**: These functions must be complete before any user story extraction begins
 
-- [ ] T004 Add `parseAttackType()` function to `scripts/extract-move-data.js` - detects melee/ranged/save/auto from description
-- [ ] T005 [P] Add `parseSaveInfo()` function to `scripts/extract-move-data.js` - extracts save type, DC, on_fail, on_success
-- [ ] T006 [P] Add `parseDamageInfo()` function to `scripts/extract-move-data.js` - extracts dice, modifier, damage_type, attack_type
-- [ ] T007 [P] Add `parseScaling()` function to `scripts/extract-move-data.js` - converts higherLevels text to structured object
-- [ ] T008 [P] Add `extractFlavor()` function to `scripts/extract-move-data.js` - splits flavor text from mechanics
-- [ ] T009 [P] Add `extractExtraEffects()` function to `scripts/extract-move-data.js` - captures remaining complex effects
-- [ ] T010 Add `processMoves()` main function to `scripts/extract-move-data.js` - orchestrates all parsing functions
-- [ ] T011 Add CLI argument parsing (--dry-run, --verbose) to `scripts/extract-move-data.js`
+- [x] T004 Add `parseAttackType()` function to `scripts/extract-move-data.js` - detects melee/ranged/save/auto from description
+- [x] T005 [P] Add `parseSaveInfo()` function to `scripts/extract-move-data.js` - extracts save type, DC, on_fail, on_success
+- [x] T006 [P] Add `parseDamageInfo()` function to `scripts/extract-move-data.js` - extracts dice, modifier, damage_type, attack_type
+- [x] T007 [P] Add `parseScaling()` function to `scripts/extract-move-data.js` - converts higherLevels text to structured object
+- [x] T008 [P] Add `extractFlavor()` function to `scripts/extract-move-data.js` - splits flavor text from mechanics
+- [x] T009 [P] Add `extractExtraEffects()` function to `scripts/extract-move-data.js` - captures remaining complex effects
+- [x] T010 Add `processMoves()` main function to `scripts/extract-move-data.js` - orchestrates all parsing functions
+- [x] T011 Add CLI argument parsing (--dry-run, --verbose) to `scripts/extract-move-data.js`
 
 **Checkpoint**: All extraction functions ready. User story implementation can begin.
 
@@ -52,13 +52,13 @@
 
 ### Implementation for User Story 1
 
-- [ ] T012 [US1] Implement damage extraction in `processMoves()` - populate `damage` field for all moves in `scripts/extract-move-data.js`
-- [ ] T013 [US1] Implement save extraction in `processMoves()` - populate `save` field for all moves in `scripts/extract-move-data.js`
-- [ ] T014 [US1] Add validation for damage.dice pattern (must match `/^\d+d\d+$/`) in `scripts/extract-move-data.js`
-- [ ] T015 [US1] Add validation for damage.attack_type (must be melee/ranged/save/auto) in `scripts/extract-move-data.js`
-- [ ] T016 [US1] Add validation for save.type (must be STR/DEX/CON/INT/WIS/CHA) in `scripts/extract-move-data.js`
-- [ ] T017 [US1] Add warning logging for moves with ambiguous patterns in `scripts/extract-move-data.js`
-- [ ] T018 [US1] Run extraction and verify with test harness at `http://localhost:3000/test-combat`
+- [x] T012 [US1] Implement damage extraction in `processMoves()` - populate `damage` field for all moves in `scripts/extract-move-data.js`
+- [x] T013 [US1] Implement save extraction in `processMoves()` - populate `save` field for all moves in `scripts/extract-move-data.js`
+- [x] T014 [US1] Add validation for damage.dice pattern (must match `/^\d+d\d+$/`) in `scripts/extract-move-data.js`
+- [x] T015 [US1] Add validation for damage.attack_type (must be melee/ranged/save/auto) in `scripts/extract-move-data.js`
+- [x] T016 [US1] Add validation for save.type (must be STR/DEX/CON/INT/WIS/CHA) in `scripts/extract-move-data.js`
+- [x] T017 [US1] Add warning logging for moves with ambiguous patterns in `scripts/extract-move-data.js`
+- [x] T018 [US1] Run extraction and verify with test harness at `http://localhost:3000/test-combat`
 
 **Checkpoint**: User Story 1 complete. All moves have `damage` and `save` fields. Combat system can read structured data.
 
@@ -72,11 +72,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Implement flavor extraction in `processMoves()` - populate `flavor` field for all moves in `scripts/extract-move-data.js`
-- [ ] T020 [US2] Implement extra_effects extraction in `processMoves()` - populate `extra_effects` field for all moves in `scripts/extract-move-data.js`
-- [ ] T021 [US2] Add validation that flavor text contains no dice notation (XdY) in `scripts/extract-move-data.js`
-- [ ] T022 [US2] Add validation that flavor text contains no mechanical keywords (damage, save, attack roll) in `scripts/extract-move-data.js`
-- [ ] T023 [US2] Spot-check 10 moves for flavor/mechanics separation accuracy
+- [x] T019 [US2] Implement flavor extraction in `processMoves()` - populate `flavor` field for all moves in `scripts/extract-move-data.js`
+- [x] T020 [US2] Implement extra_effects extraction in `processMoves()` - populate `extra_effects` field for all moves in `scripts/extract-move-data.js`
+- [x] T021 [US2] Add validation that flavor text contains no dice notation (XdY) in `scripts/extract-move-data.js`
+- [x] T022 [US2] Add validation that flavor text contains no mechanical keywords (damage, save, attack roll) in `scripts/extract-move-data.js`
+- [x] T023 [US2] Spot-check 10 moves for flavor/mechanics separation accuracy
 
 **Checkpoint**: User Story 2 complete. All moves have `flavor` and `extra_effects` fields properly separated.
 
@@ -90,10 +90,10 @@
 
 ### Implementation for User Story 3
 
-- [ ] T024 [US3] Implement scaling extraction in `processMoves()` - populate `scaling` field for all moves with higherLevels in `scripts/extract-move-data.js`
-- [ ] T025 [US3] Add validation that scaling keys are numeric level thresholds in `scripts/extract-move-data.js`
-- [ ] T026 [US3] Add validation that scaling values match dice pattern in `scripts/extract-move-data.js`
-- [ ] T027 [US3] Spot-check 10 moves with higherLevels for accurate scaling extraction
+- [x] T024 [US3] Implement scaling extraction in `processMoves()` - populate `scaling` field for all moves with higherLevels in `scripts/extract-move-data.js`
+- [x] T025 [US3] Add validation that scaling keys are numeric level thresholds in `scripts/extract-move-data.js`
+- [x] T026 [US3] Add validation that scaling values match dice pattern in `scripts/extract-move-data.js`
+- [x] T027 [US3] Spot-check 10 moves with higherLevels for accurate scaling extraction
 
 **Checkpoint**: User Story 3 complete. All moves with higherLevels have structured `scaling` field.
 
@@ -103,14 +103,14 @@
 
 **Purpose**: Final validation, file writing, and documentation
 
-- [ ] T028 Add JSON output writing to `Source/moves/moves.json` in `scripts/extract-move-data.js`
-- [ ] T029 [P] Add summary statistics output (total processed, warnings, errors) in `scripts/extract-move-data.js`
-- [ ] T030 [P] Add warnings output to `extraction-warnings.json` in `scripts/extract-move-data.js`
-- [ ] T031 Implement verification script to spot-check specific moves in `scripts/verify-move-extraction.js`
-- [ ] T032 Run full extraction on all 800 moves
-- [ ] T033 Verify combat system works via test harness at `http://localhost:3000/test-combat`
-- [ ] T034 Verify no regression in existing combat functionality
-- [ ] T035 Review and address any warnings in `extraction-warnings.json`
+- [x] T028 Add JSON output writing to `Source/moves/moves.json` in `scripts/extract-move-data.js`
+- [x] T029 [P] Add summary statistics output (total processed, warnings, errors) in `scripts/extract-move-data.js`
+- [x] T030 [P] Add warnings output to `extraction-warnings.json` in `scripts/extract-move-data.js`
+- [x] T031 Implement verification script to spot-check specific moves in `scripts/verify-move-extraction.js`
+- [x] T032 Run full extraction on all 800 moves (reduced to 490 Gen 1 moves)
+- [x] T033 Verify combat system works via test harness at `http://localhost:3000/test-combat`
+- [x] T034 Verify no regression in existing combat functionality
+- [x] T035 Review and address any warnings in `extraction-warnings.json` (0 warnings remaining)
 
 ---
 
